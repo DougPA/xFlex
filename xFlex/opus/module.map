@@ -1,0 +1,4 @@
+module opus [system] {
+    header “/opt/local/include/opus/opus.h”
+    export *
+}

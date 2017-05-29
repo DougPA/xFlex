@@ -1,0 +1,705 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		910813BC1CE9EF4E00972948 /* PhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910813BB1CE9EF4E00972948 /* PhoneViewController.swift */; };
+		9116D8F11CF71DEC0043C542 /* Basic.tex in Resources */ = {isa = PBXBuildFile; fileRef = 9116D8EB1CF71DEC0043C542 /* Basic.tex */; };
+		9116D8F21CF71DEC0043C542 /* Dark.tex in Resources */ = {isa = PBXBuildFile; fileRef = 9116D8EC1CF71DEC0043C542 /* Dark.tex */; };
+		9116D8F31CF71DEC0043C542 /* Deuteranopia.tex in Resources */ = {isa = PBXBuildFile; fileRef = 9116D8ED1CF71DEC0043C542 /* Deuteranopia.tex */; };
+		9116D8F41CF71DEC0043C542 /* Grayscale.tex in Resources */ = {isa = PBXBuildFile; fileRef = 9116D8EE1CF71DEC0043C542 /* Grayscale.tex */; };
+		9116D8F51CF71DEC0043C542 /* Purple.tex in Resources */ = {isa = PBXBuildFile; fileRef = 9116D8EF1CF71DEC0043C542 /* Purple.tex */; };
+		9116D8F61CF71DEC0043C542 /* Tritanopia.tex in Resources */ = {isa = PBXBuildFile; fileRef = 9116D8F01CF71DEC0043C542 /* Tritanopia.tex */; };
+		911AF72B1D0A5EDB00DCC20B /* PanafallButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AF72A1D0A5EDB00DCC20B /* PanafallButtonViewController.swift */; };
+		911C83F71E3A5F2300E8AD1B /* RxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911C83F61E3A5F2300E8AD1B /* RxViewController.swift */; };
+		911ED5B81E9EAB6B0021CAAB /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911ED5B71E9EAB6B0021CAAB /* SwiftyUserDefaults.framework */; };
+		911ED5B91E9EAB6B0021CAAB /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911ED5B71E9EAB6B0021CAAB /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		911ED5BC1E9EAB8E0021CAAB /* AudioLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911ED5BA1E9EAB8E0021CAAB /* AudioLibrary.framework */; };
+		911ED5BD1E9EAB8E0021CAAB /* AudioLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911ED5BA1E9EAB8E0021CAAB /* AudioLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		911ED5BE1E9EAB8E0021CAAB /* OpusOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911ED5BB1E9EAB8E0021CAAB /* OpusOSX.framework */; };
+		911ED5BF1E9EAB8E0021CAAB /* OpusOSX.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911ED5BB1E9EAB8E0021CAAB /* OpusOSX.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		912B75841DDE33EF00398AED /* WaterfallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912B75831DDE33EF00398AED /* WaterfallViewController.swift */; };
+		9130BE461D07245D00ED1E94 /* PanadapterLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9130BE451D07245D00ED1E94 /* PanadapterLayer.swift */; };
+		91362CDC1E82112600505758 /* OpusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91362CDB1E82112600505758 /* OpusManager.swift */; };
+		91473E621CF7E0F700DE2ADF /* WaterfallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91473E611CF7E0F700DE2ADF /* WaterfallView.swift */; };
+		914C2DCA1E20992000B5A5B2 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 914C2DC91E20992000B5A5B2 /* Defaults.plist */; };
+		914FC3EF1E67C7BD0024D87D /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914FC3EE1E67C7BD0024D87D /* MainWindowController.swift */; };
+		915EE2841CFA0025006B8365 /* WaterfallLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915EE2831CFA0025006B8365 /* WaterfallLayer.swift */; };
+		917F2B191CE9463D001C6BB6 /* PCWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F2B181CE9463D001C6BB6 /* PCWViewController.swift */; };
+		919449471E3C367A00678C1C /* PanafallButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 919449461E3C367A00678C1C /* PanafallButtonView.swift */; };
+		91A6E3C21ED9F73D0099CC2E /* xFlexAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A6E3C11ED9F73D0099CC2E /* xFlexAPI.framework */; };
+		91A6E3C31ED9F73D0099CC2E /* xFlexAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 91A6E3C11ED9F73D0099CC2E /* xFlexAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		91A6E3D11EDBBF570099CC2E /* ObjcExceptionBridging.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 91A6E3CF1EDBBF570099CC2E /* ObjcExceptionBridging.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		91A6E3D21EDBBF570099CC2E /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 91A6E3D01EDBBF570099CC2E /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		91B170B91CDF80A000600E02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170771CDF80A000600E02 /* AppDelegate.swift */; };
+		91B170BA1CDF80A000600E02 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91B170781CDF80A000600E02 /* Assets.xcassets */; };
+		91B170BB1CDF80A000600E02 /* Band.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170791CDF80A000600E02 /* Band.swift */; };
+		91B170BC1CDF80A000600E02 /* BandButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B1707A1CDF80A000600E02 /* BandButtonViewController.swift */; };
+		91B170BE1CDF80A000600E02 /* BandSegments.plist in Resources */ = {isa = PBXBuildFile; fileRef = 91B1707C1CDF80A000600E02 /* BandSegments.plist */; };
+		91B170C01CDF80A000600E02 /* ColorsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B1707F1CDF80A000600E02 /* ColorsViewController.swift */; };
+		91B170C81CDF80A000600E02 /* EqViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170871CDF80A000600E02 /* EqViewController.swift */; };
+		91B170CA1CDF80A000600E02 /* Filters.plist in Resources */ = {isa = PBXBuildFile; fileRef = 91B170891CDF80A000600E02 /* Filters.plist */; };
+		91B170CC1CDF80A000600E02 /* FlagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B1708B1CDF80A000600E02 /* FlagViewController.swift */; };
+		91B170CD1CDF80A000600E02 /* FlagViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 91B1708C1CDF80A000600E02 /* FlagViewController.xib */; };
+		91B170D51CDF80A000600E02 /* OpenGLTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170941CDF80A000600E02 /* OpenGLTools.swift */; };
+		91B170D71CDF80A000600E02 /* Panadapter.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 91B170971CDF80A000600E02 /* Panadapter.fsh */; };
+		91B170D81CDF80A000600E02 /* Panadapter.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 91B170981CDF80A000600E02 /* Panadapter.vsh */; };
+		91B170DA1CDF80A000600E02 /* PanadapterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B1709A1CDF80A000600E02 /* PanadapterView.swift */; };
+		91B170DB1CDF80A000600E02 /* PanadapterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B1709B1CDF80A000600E02 /* PanadapterViewController.swift */; };
+		91B170DC1CDF80A000600E02 /* PanafallsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B1709C1CDF80A000600E02 /* PanafallsViewController.swift */; };
+		91B170DD1CDF80A000600E02 /* PanafallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B1709D1CDF80A000600E02 /* PanafallViewController.swift */; };
+		91B170E01CDF80A000600E02 /* RadioPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170A01CDF80A000600E02 /* RadioPickerViewController.swift */; };
+		91B170E11CDF80A000600E02 /* RadioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170A11CDF80A000600E02 /* RadioViewController.swift */; };
+		91B170E31CDF80A000600E02 /* SideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170A31CDF80A000600E02 /* SideViewController.swift */; };
+		91B170EF1CDF80A000600E02 /* Waterfall.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 91B170AF1CDF80A000600E02 /* Waterfall.fsh */; };
+		91B170F01CDF80A000600E02 /* Waterfall.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 91B170B01CDF80A000600E02 /* Waterfall.vsh */; };
+		91B170F11CDF80A000600E02 /* WaterfallGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170B11CDF80A000600E02 /* WaterfallGradient.swift */; };
+		91B171051CDF855C00600E02 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B171041CDF855C00600E02 /* Extensions.swift */; };
+		91B1710F1CDF867000600E02 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91B171081CDF867000600E02 /* Main.storyboard */; };
+		91B171101CDF867000600E02 /* Panafall.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91B1710A1CDF867000600E02 /* Panafall.storyboard */; };
+		91B171111CDF867000600E02 /* Preferences.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91B1710C1CDF867000600E02 /* Preferences.storyboard */; };
+		91B1DB211CE8E2EA00F53712 /* Side.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91B1DB201CE8E2EA00F53712 /* Side.storyboard */; };
+		91C489E41ECB4AF700EAAA1C /* SliceLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91C489E31ECB4AF700EAAA1C /* SliceLayer.swift */; };
+		91CF916E1D7A0BBF0055AE0E /* CARingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 91CF916C1D7A0BBF0055AE0E /* CARingBuffer.cpp */; };
+		91CF91721D7A0E830055AE0E /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 91CF91711D7A0E830055AE0E /* RingBuffer.mm */; };
+		91F4E3841CE4CAC700D2294F /* ParameterMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F4E3831CE4CAC700D2294F /* ParameterMonitor.swift */; };
+		91F5422C1DDCD8D000D32F77 /* PreferencesTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F5422B1DDCD8D000D32F77 /* PreferencesTabViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		911ED5B61E9EAB460021CAAB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				91A6E3D11EDBBF570099CC2E /* ObjcExceptionBridging.framework in Embed Frameworks */,
+				91A6E3D21EDBBF570099CC2E /* XCGLogger.framework in Embed Frameworks */,
+				911ED5BD1E9EAB8E0021CAAB /* AudioLibrary.framework in Embed Frameworks */,
+				911ED5BF1E9EAB8E0021CAAB /* OpusOSX.framework in Embed Frameworks */,
+				911ED5B91E9EAB6B0021CAAB /* SwiftyUserDefaults.framework in Embed Frameworks */,
+				91A6E3C31ED9F73D0099CC2E /* xFlexAPI.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		910813BB1CE9EF4E00972948 /* PhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneViewController.swift; sourceTree = "<group>"; };
+		9116D8EB1CF71DEC0043C542 /* Basic.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = Basic.tex; sourceTree = "<group>"; };
+		9116D8EC1CF71DEC0043C542 /* Dark.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = Dark.tex; sourceTree = "<group>"; };
+		9116D8ED1CF71DEC0043C542 /* Deuteranopia.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = Deuteranopia.tex; sourceTree = "<group>"; };
+		9116D8EE1CF71DEC0043C542 /* Grayscale.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = Grayscale.tex; sourceTree = "<group>"; };
+		9116D8EF1CF71DEC0043C542 /* Purple.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = Purple.tex; sourceTree = "<group>"; };
+		9116D8F01CF71DEC0043C542 /* Tritanopia.tex */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tritanopia.tex; sourceTree = "<group>"; };
+		911AF72A1D0A5EDB00DCC20B /* PanafallButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanafallButtonViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		911C83F61E3A5F2300E8AD1B /* RxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxViewController.swift; sourceTree = "<group>"; };
+		911ED5AC1E9EAAE40021CAAB /* xFlexAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = xFlexAPI.framework; path = "../../../Library/Developer/Xcode/DerivedData/xFlexAPI-hkzbxdzrkgrlqvfjmymgmyftgalx/Build/Products/Debug/xFlexAPI.framework"; sourceTree = "<group>"; };
+		911ED5B71E9EAB6B0021CAAB /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = ../../../Library/Frameworks/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
+		911ED5BA1E9EAB8E0021CAAB /* AudioLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioLibrary.framework; path = ../../../Library/Frameworks/AudioLibrary.framework; sourceTree = "<group>"; };
+		911ED5BB1E9EAB8E0021CAAB /* OpusOSX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpusOSX.framework; path = ../../../Library/Frameworks/OpusOSX.framework; sourceTree = "<group>"; };
+		912B75831DDE33EF00398AED /* WaterfallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterfallViewController.swift; sourceTree = "<group>"; };
+		9130BE451D07245D00ED1E94 /* PanadapterLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanadapterLayer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91362CDB1E82112600505758 /* OpusManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OpusManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91473E611CF7E0F700DE2ADF /* WaterfallView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterfallView.swift; sourceTree = "<group>"; };
+		914C2DC91E20992000B5A5B2 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
+		914FC3EE1E67C7BD0024D87D /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
+		915EE2831CFA0025006B8365 /* WaterfallLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WaterfallLayer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		917F2B181CE9463D001C6BB6 /* PCWViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCWViewController.swift; sourceTree = "<group>"; };
+		919449461E3C367A00678C1C /* PanafallButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanafallButtonView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91A6E3BD1ED9F6510099CC2E /* xFlexAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = xFlexAPI.framework; path = "../../../Library/Developer/Xcode/DerivedData/xFlexAPI-hkzbxdzrkgrlqvfjmymgmyftgalx/Build/Products/Debug/xFlexAPI.framework"; sourceTree = "<group>"; };
+		91A6E3C11ED9F73D0099CC2E /* xFlexAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = xFlexAPI.framework; path = ../../../Library/Frameworks/xFlexAPI.framework; sourceTree = "<group>"; };
+		91A6E3CF1EDBBF570099CC2E /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjcExceptionBridging.framework; path = ../../../Library/Frameworks/ObjcExceptionBridging.framework; sourceTree = "<group>"; };
+		91A6E3D01EDBBF570099CC2E /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = ../../../Library/Frameworks/XCGLogger.framework; sourceTree = "<group>"; };
+		91B16FD71CDF7F5E00600E02 /* xFlex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xFlex.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		91B170771CDF80A000600E02 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		91B170781CDF80A000600E02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		91B170791CDF80A000600E02 /* Band.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Band.swift; sourceTree = "<group>"; };
+		91B1707A1CDF80A000600E02 /* BandButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BandButtonViewController.swift; sourceTree = "<group>"; };
+		91B1707C1CDF80A000600E02 /* BandSegments.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BandSegments.plist; sourceTree = "<group>"; };
+		91B1707F1CDF80A000600E02 /* ColorsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorsViewController.swift; sourceTree = "<group>"; };
+		91B170871CDF80A000600E02 /* EqViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EqViewController.swift; sourceTree = "<group>"; };
+		91B170891CDF80A000600E02 /* Filters.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Filters.plist; sourceTree = "<group>"; };
+		91B1708B1CDF80A000600E02 /* FlagViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlagViewController.swift; sourceTree = "<group>"; };
+		91B1708C1CDF80A000600E02 /* FlagViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FlagViewController.xib; sourceTree = "<group>"; };
+		91B170901CDF80A000600E02 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		91B170941CDF80A000600E02 /* OpenGLTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenGLTools.swift; sourceTree = "<group>"; };
+		91B170971CDF80A000600E02 /* Panadapter.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Panadapter.fsh; sourceTree = "<group>"; };
+		91B170981CDF80A000600E02 /* Panadapter.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Panadapter.vsh; sourceTree = "<group>"; };
+		91B1709A1CDF80A000600E02 /* PanadapterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanadapterView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91B1709B1CDF80A000600E02 /* PanadapterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanadapterViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91B1709C1CDF80A000600E02 /* PanafallsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanafallsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91B1709D1CDF80A000600E02 /* PanafallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanafallViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91B170A01CDF80A000600E02 /* RadioPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = RadioPickerViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91B170A11CDF80A000600E02 /* RadioViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = RadioViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91B170A31CDF80A000600E02 /* SideViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideViewController.swift; sourceTree = "<group>"; };
+		91B170AF1CDF80A000600E02 /* Waterfall.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Waterfall.fsh; sourceTree = "<group>"; };
+		91B170B01CDF80A000600E02 /* Waterfall.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Waterfall.vsh; sourceTree = "<group>"; };
+		91B170B11CDF80A000600E02 /* WaterfallGradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WaterfallGradient.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		91B171011CDF846800600E02 /* xFlex-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "xFlex-Bridging-Header.h"; sourceTree = "<group>"; };
+		91B171041CDF855C00600E02 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		91B171091CDF867000600E02 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		91B1710B1CDF867000600E02 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Panafall.storyboard; sourceTree = "<group>"; };
+		91B1710D1CDF867000600E02 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Preferences.storyboard; sourceTree = "<group>"; };
+		91B1DB201CE8E2EA00F53712 /* Side.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Side.storyboard; sourceTree = "<group>"; };
+		91C489E31ECB4AF700EAAA1C /* SliceLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliceLayer.swift; sourceTree = "<group>"; };
+		91CF91691D7A0BBF0055AE0E /* CAAtomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAAtomic.h; sourceTree = "<group>"; };
+		91CF916A1D7A0BBF0055AE0E /* CAAutoDisposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAAutoDisposer.h; sourceTree = "<group>"; };
+		91CF916B1D7A0BBF0055AE0E /* CABitOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CABitOperations.h; sourceTree = "<group>"; };
+		91CF916C1D7A0BBF0055AE0E /* CARingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CARingBuffer.cpp; sourceTree = "<group>"; };
+		91CF916D1D7A0BBF0055AE0E /* CARingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CARingBuffer.h; sourceTree = "<group>"; };
+		91CF91701D7A0E830055AE0E /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
+		91CF91711D7A0E830055AE0E /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RingBuffer.mm; sourceTree = "<group>"; };
+		91F4E3831CE4CAC700D2294F /* ParameterMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterMonitor.swift; sourceTree = "<group>"; };
+		91F5422B1DDCD8D000D32F77 /* PreferencesTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesTabViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		91B16FD41CDF7F5E00600E02 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				911ED5BC1E9EAB8E0021CAAB /* AudioLibrary.framework in Frameworks */,
+				911ED5BE1E9EAB8E0021CAAB /* OpusOSX.framework in Frameworks */,
+				911ED5B81E9EAB6B0021CAAB /* SwiftyUserDefaults.framework in Frameworks */,
+				91A6E3C21ED9F73D0099CC2E /* xFlexAPI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		911AF72E1D0C6C8F00DCC20B /* Panafall */ = {
+			isa = PBXGroup;
+			children = (
+				91B1710A1CDF867000600E02 /* Panafall.storyboard */,
+				91B1709C1CDF80A000600E02 /* PanafallsViewController.swift */,
+				911AF72A1D0A5EDB00DCC20B /* PanafallButtonViewController.swift */,
+				919449461E3C367A00678C1C /* PanafallButtonView.swift */,
+				91B1709D1CDF80A000600E02 /* PanafallViewController.swift */,
+				91B1708B1CDF80A000600E02 /* FlagViewController.swift */,
+			);
+			name = Panafall;
+			sourceTree = "<group>";
+		};
+		91473E631CF7E20E00DE2ADF /* Panadapter */ = {
+			isa = PBXGroup;
+			children = (
+				91B1709B1CDF80A000600E02 /* PanadapterViewController.swift */,
+				91B1709A1CDF80A000600E02 /* PanadapterView.swift */,
+				9130BE451D07245D00ED1E94 /* PanadapterLayer.swift */,
+				91C489E31ECB4AF700EAAA1C /* SliceLayer.swift */,
+			);
+			name = Panadapter;
+			sourceTree = "<group>";
+		};
+		91473E641CF7E22400DE2ADF /* Waterfall */ = {
+			isa = PBXGroup;
+			children = (
+				912B75831DDE33EF00398AED /* WaterfallViewController.swift */,
+				91473E611CF7E0F700DE2ADF /* WaterfallView.swift */,
+				915EE2831CFA0025006B8365 /* WaterfallLayer.swift */,
+			);
+			name = Waterfall;
+			sourceTree = "<group>";
+		};
+		9188A3CB1CFF012D003F05A3 /* Side */ = {
+			isa = PBXGroup;
+			children = (
+				91B1DB201CE8E2EA00F53712 /* Side.storyboard */,
+				91B170871CDF80A000600E02 /* EqViewController.swift */,
+				917F2B181CE9463D001C6BB6 /* PCWViewController.swift */,
+				910813BB1CE9EF4E00972948 /* PhoneViewController.swift */,
+				91B170A31CDF80A000600E02 /* SideViewController.swift */,
+				911C83F61E3A5F2300E8AD1B /* RxViewController.swift */,
+			);
+			name = Side;
+			sourceTree = "<group>";
+		};
+		9188A3CD1CFF01BA003F05A3 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				91B1707A1CDF80A000600E02 /* BandButtonViewController.swift */,
+			);
+			name = Buttons;
+			sourceTree = "<group>";
+		};
+		9188A3CE1CFF01F9003F05A3 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				91B1707F1CDF80A000600E02 /* ColorsViewController.swift */,
+				91B1710C1CDF867000600E02 /* Preferences.storyboard */,
+				91F5422B1DDCD8D000D32F77 /* PreferencesTabViewController.swift */,
+			);
+			name = Preferences;
+			sourceTree = "<group>";
+		};
+		91B16FCE1CDF7F5E00600E02 = {
+			isa = PBXGroup;
+			children = (
+				91A6E3CF1EDBBF570099CC2E /* ObjcExceptionBridging.framework */,
+				91A6E3D01EDBBF570099CC2E /* XCGLogger.framework */,
+				91A6E3C11ED9F73D0099CC2E /* xFlexAPI.framework */,
+				91A6E3BD1ED9F6510099CC2E /* xFlexAPI.framework */,
+				911ED5BA1E9EAB8E0021CAAB /* AudioLibrary.framework */,
+				911ED5BB1E9EAB8E0021CAAB /* OpusOSX.framework */,
+				911ED5B71E9EAB6B0021CAAB /* SwiftyUserDefaults.framework */,
+				91B16FD91CDF7F5E00600E02 /* xFlex */,
+				91B16FD81CDF7F5E00600E02 /* Products */,
+				91ED52501E1EE5390086A56D /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		91B16FD81CDF7F5E00600E02 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				91B16FD71CDF7F5E00600E02 /* xFlex.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		91B16FD91CDF7F5E00600E02 /* xFlex */ = {
+			isa = PBXGroup;
+			children = (
+				91B170901CDF80A000600E02 /* Info.plist */,
+				91B170771CDF80A000600E02 /* AppDelegate.swift */,
+				91B171011CDF846800600E02 /* xFlex-Bridging-Header.h */,
+				91B171041CDF855C00600E02 /* Extensions.swift */,
+				91B171141CDF86F500600E02 /* Radio */,
+				911AF72E1D0C6C8F00DCC20B /* Panafall */,
+				9188A3CD1CFF01BA003F05A3 /* Buttons */,
+				9188A3CB1CFF012D003F05A3 /* Side */,
+				91473E631CF7E20E00DE2ADF /* Panadapter */,
+				91473E641CF7E22400DE2ADF /* Waterfall */,
+				9188A3CE1CFF01F9003F05A3 /* Preferences */,
+				91B171131CDF86C600600E02 /* Xibs */,
+				91B171151CDF872000600E02 /* Gradients */,
+				91B171171CDF876D00600E02 /* OpenGL */,
+				91B170781CDF80A000600E02 /* Assets.xcassets */,
+				91B1711A1CDF87CB00600E02 /* Misc */,
+			);
+			path = xFlex;
+			sourceTree = "<group>";
+		};
+		91B171131CDF86C600600E02 /* Xibs */ = {
+			isa = PBXGroup;
+			children = (
+				91B1708C1CDF80A000600E02 /* FlagViewController.xib */,
+			);
+			name = Xibs;
+			sourceTree = "<group>";
+		};
+		91B171141CDF86F500600E02 /* Radio */ = {
+			isa = PBXGroup;
+			children = (
+				91B171081CDF867000600E02 /* Main.storyboard */,
+				91B170A01CDF80A000600E02 /* RadioPickerViewController.swift */,
+				914FC3EE1E67C7BD0024D87D /* MainWindowController.swift */,
+				91B170A11CDF80A000600E02 /* RadioViewController.swift */,
+			);
+			name = Radio;
+			sourceTree = "<group>";
+		};
+		91B171151CDF872000600E02 /* Gradients */ = {
+			isa = PBXGroup;
+			children = (
+				9116D8EB1CF71DEC0043C542 /* Basic.tex */,
+				9116D8EC1CF71DEC0043C542 /* Dark.tex */,
+				9116D8ED1CF71DEC0043C542 /* Deuteranopia.tex */,
+				9116D8EE1CF71DEC0043C542 /* Grayscale.tex */,
+				9116D8EF1CF71DEC0043C542 /* Purple.tex */,
+				9116D8F01CF71DEC0043C542 /* Tritanopia.tex */,
+				91B170B11CDF80A000600E02 /* WaterfallGradient.swift */,
+			);
+			name = Gradients;
+			sourceTree = "<group>";
+		};
+		91B171171CDF876D00600E02 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				91B170941CDF80A000600E02 /* OpenGLTools.swift */,
+				91B170971CDF80A000600E02 /* Panadapter.fsh */,
+				91B170981CDF80A000600E02 /* Panadapter.vsh */,
+				91B170AF1CDF80A000600E02 /* Waterfall.fsh */,
+				91B170B01CDF80A000600E02 /* Waterfall.vsh */,
+			);
+			name = OpenGL;
+			sourceTree = "<group>";
+		};
+		91B1711A1CDF87CB00600E02 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				91362CDB1E82112600505758 /* OpusManager.swift */,
+				91CF916F1D7A0BC70055AE0E /* RingBuffer */,
+				91B170791CDF80A000600E02 /* Band.swift */,
+				91B1707C1CDF80A000600E02 /* BandSegments.plist */,
+				91B170891CDF80A000600E02 /* Filters.plist */,
+				91F4E3831CE4CAC700D2294F /* ParameterMonitor.swift */,
+				914C2DC91E20992000B5A5B2 /* Defaults.plist */,
+			);
+			name = Misc;
+			sourceTree = "<group>";
+		};
+		91CF916F1D7A0BC70055AE0E /* RingBuffer */ = {
+			isa = PBXGroup;
+			children = (
+				91CF91701D7A0E830055AE0E /* RingBuffer.h */,
+				91CF91711D7A0E830055AE0E /* RingBuffer.mm */,
+				91CF91691D7A0BBF0055AE0E /* CAAtomic.h */,
+				91CF916A1D7A0BBF0055AE0E /* CAAutoDisposer.h */,
+				91CF916B1D7A0BBF0055AE0E /* CABitOperations.h */,
+				91CF916C1D7A0BBF0055AE0E /* CARingBuffer.cpp */,
+				91CF916D1D7A0BBF0055AE0E /* CARingBuffer.h */,
+			);
+			name = RingBuffer;
+			sourceTree = "<group>";
+		};
+		91ED52501E1EE5390086A56D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				911ED5AC1E9EAAE40021CAAB /* xFlexAPI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		91B16FD61CDF7F5E00600E02 /* xFlex */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91B16FE61CDF7F5E00600E02 /* Build configuration list for PBXNativeTarget "xFlex" */;
+			buildPhases = (
+				91B16FD31CDF7F5E00600E02 /* Sources */,
+				91B16FD41CDF7F5E00600E02 /* Frameworks */,
+				91B16FD51CDF7F5E00600E02 /* Resources */,
+				91533CE41E230578003CEEBA /* ShellScript */,
+				911ED5B61E9EAB460021CAAB /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xFlex;
+			productName = xFlex;
+			productReference = 91B16FD71CDF7F5E00600E02 /* xFlex.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		91B16FCF1CDF7F5E00600E02 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = "Douglas Adams";
+				TargetAttributes = {
+					91B16FD61CDF7F5E00600E02 = {
+						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0820;
+					};
+				};
+			};
+			buildConfigurationList = 91B16FD21CDF7F5E00600E02 /* Build configuration list for PBXProject "xFlex" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 91B16FCE1CDF7F5E00600E02;
+			productRefGroup = 91B16FD81CDF7F5E00600E02 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				91B16FD61CDF7F5E00600E02 /* xFlex */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		91B16FD51CDF7F5E00600E02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91B170D71CDF80A000600E02 /* Panadapter.fsh in Resources */,
+				91B170BA1CDF80A000600E02 /* Assets.xcassets in Resources */,
+				91B1710F1CDF867000600E02 /* Main.storyboard in Resources */,
+				91B171111CDF867000600E02 /* Preferences.storyboard in Resources */,
+				91B170CD1CDF80A000600E02 /* FlagViewController.xib in Resources */,
+				9116D8F51CF71DEC0043C542 /* Purple.tex in Resources */,
+				9116D8F21CF71DEC0043C542 /* Dark.tex in Resources */,
+				9116D8F31CF71DEC0043C542 /* Deuteranopia.tex in Resources */,
+				9116D8F61CF71DEC0043C542 /* Tritanopia.tex in Resources */,
+				9116D8F41CF71DEC0043C542 /* Grayscale.tex in Resources */,
+				91B170CA1CDF80A000600E02 /* Filters.plist in Resources */,
+				91B1DB211CE8E2EA00F53712 /* Side.storyboard in Resources */,
+				914C2DCA1E20992000B5A5B2 /* Defaults.plist in Resources */,
+				91B170D81CDF80A000600E02 /* Panadapter.vsh in Resources */,
+				91B170EF1CDF80A000600E02 /* Waterfall.fsh in Resources */,
+				91B170F01CDF80A000600E02 /* Waterfall.vsh in Resources */,
+				91B171101CDF867000600E02 /* Panafall.storyboard in Resources */,
+				9116D8F11CF71DEC0043C542 /* Basic.tex in Resources */,
+				91B170BE1CDF80A000600E02 /* BandSegments.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		91533CE41E230578003CEEBA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		91B16FD31CDF7F5E00600E02 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				91B170C01CDF80A000600E02 /* ColorsViewController.swift in Sources */,
+				91F4E3841CE4CAC700D2294F /* ParameterMonitor.swift in Sources */,
+				91B170C81CDF80A000600E02 /* EqViewController.swift in Sources */,
+				91B170DA1CDF80A000600E02 /* PanadapterView.swift in Sources */,
+				91B170E11CDF80A000600E02 /* RadioViewController.swift in Sources */,
+				91473E621CF7E0F700DE2ADF /* WaterfallView.swift in Sources */,
+				91B170CC1CDF80A000600E02 /* FlagViewController.swift in Sources */,
+				91B170DB1CDF80A000600E02 /* PanadapterViewController.swift in Sources */,
+				917F2B191CE9463D001C6BB6 /* PCWViewController.swift in Sources */,
+				91B171051CDF855C00600E02 /* Extensions.swift in Sources */,
+				919449471E3C367A00678C1C /* PanafallButtonView.swift in Sources */,
+				91B170BB1CDF80A000600E02 /* Band.swift in Sources */,
+				91CF91721D7A0E830055AE0E /* RingBuffer.mm in Sources */,
+				91362CDC1E82112600505758 /* OpusManager.swift in Sources */,
+				911C83F71E3A5F2300E8AD1B /* RxViewController.swift in Sources */,
+				912B75841DDE33EF00398AED /* WaterfallViewController.swift in Sources */,
+				91B170D51CDF80A000600E02 /* OpenGLTools.swift in Sources */,
+				910813BC1CE9EF4E00972948 /* PhoneViewController.swift in Sources */,
+				91B170DC1CDF80A000600E02 /* PanafallsViewController.swift in Sources */,
+				91F5422C1DDCD8D000D32F77 /* PreferencesTabViewController.swift in Sources */,
+				91B170BC1CDF80A000600E02 /* BandButtonViewController.swift in Sources */,
+				91B170B91CDF80A000600E02 /* AppDelegate.swift in Sources */,
+				915EE2841CFA0025006B8365 /* WaterfallLayer.swift in Sources */,
+				914FC3EF1E67C7BD0024D87D /* MainWindowController.swift in Sources */,
+				91B170E01CDF80A000600E02 /* RadioPickerViewController.swift in Sources */,
+				91CF916E1D7A0BBF0055AE0E /* CARingBuffer.cpp in Sources */,
+				9130BE461D07245D00ED1E94 /* PanadapterLayer.swift in Sources */,
+				91B170F11CDF80A000600E02 /* WaterfallGradient.swift in Sources */,
+				91C489E41ECB4AF700EAAA1C /* SliceLayer.swift in Sources */,
+				91B170DD1CDF80A000600E02 /* PanafallViewController.swift in Sources */,
+				911AF72B1D0A5EDB00DCC20B /* PanafallButtonViewController.swift in Sources */,
+				91B170E31CDF80A000600E02 /* SideViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		91B171081CDF867000600E02 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				91B171091CDF867000600E02 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		91B1710A1CDF867000600E02 /* Panafall.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				91B1710B1CDF867000600E02 /* Base */,
+			);
+			name = Panafall.storyboard;
+			sourceTree = "<group>";
+		};
+		91B1710C1CDF867000600E02 /* Preferences.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				91B1710D1CDF867000600E02 /* Base */,
+			);
+			name = Preferences.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		91B16FE41CDF7F5E00600E02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_STATIC_ANALYZER_MODE = shallow;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		91B16FE51CDF7F5E00600E02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_STATIC_ANALYZER_MODE = shallow;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		91B16FE71CDF7F5E00600E02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = xFlex/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = net.k3tzr.xFlex;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "xFlex/xFlex-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		91B16FE81CDF7F5E00600E02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
+				INFOPLIST_FILE = xFlex/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = net.k3tzr.xFlex;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "xFlex/xFlex-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		91B16FD21CDF7F5E00600E02 /* Build configuration list for PBXProject "xFlex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91B16FE41CDF7F5E00600E02 /* Debug */,
+				91B16FE51CDF7F5E00600E02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91B16FE61CDF7F5E00600E02 /* Build configuration list for PBXNativeTarget "xFlex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91B16FE71CDF7F5E00600E02 /* Debug */,
+				91B16FE81CDF7F5E00600E02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 91B16FCF1CDF7F5E00600E02 /* Project object */;
+}
