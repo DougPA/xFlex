@@ -1,0 +1,10 @@
+framework module xFlexAPI {
+  umbrella header "xFlexAPI.h"
+
+  export *
+  module * { export * }
+}
+
+module xFlexAPI.Swift {
+    header "xFlexAPI-Swift.h"
+}
