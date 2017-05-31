@@ -280,7 +280,7 @@ class PanafallsViewController: NSSplitViewController {
         if let panadapter = note.object as? Panadapter {
             
             // YES, log the event
-            (NSApp.delegate as! AppDelegate).message("Panadapter Initialized, ID = \(panadapter.id)", level: .debug, source: kModule)
+            _log.msg("Panadapter Initialized, ID = \(panadapter.id)", level: .debug, function: #function, file: #file, line: #line)
             
             // observe changes to Panadapter properties
             observations(panadapter, paths: _panadapterKeyPaths)
@@ -316,7 +316,7 @@ class PanafallsViewController: NSSplitViewController {
         if let waterfall = note.object as? Waterfall {
             
             // YES, log the event
-            (NSApp.delegate as! LogHandler).message("Waterfall Initialized, ID = \(waterfall.id)", level: .debug, source: kModule)
+            _log.msg("Waterfall Initialized, ID = \(waterfall.id)", level: .debug, function: #function, file: #file, line: #line)
 
             // observe changes to Waterfall properties
             observations(waterfall, paths: _waterfallKeyPaths)
@@ -339,7 +339,7 @@ class PanafallsViewController: NSSplitViewController {
         if let panadapter = note.object as? Panadapter {
             
             // YES, log the event
-            (NSApp.delegate as! LogHandler).message("Panadapter is being Removed, ID = \(panadapter.id)", level: .debug, source: kModule)
+            _log.msg("Panadapter is being Removed, ID = \(panadapter.id)", level: .debug, function: #function, file: #file, line: #line)
 
             // remove Panadapter property observers
             observations(panadapter, paths: _panadapterKeyPaths, remove: true)
@@ -357,7 +357,7 @@ class PanafallsViewController: NSSplitViewController {
         if let waterfall = note.object as? Waterfall {
             
             // YES, log the event
-            (NSApp.delegate as! LogHandler).message("Waterfall  Removed, ID = \(waterfall.id)", level: .debug, source: kModule)
+            _log.msg("Waterfall  Removed, ID = \(waterfall.id)", level: .debug, function: #function, file: #file, line: #line)
             
             // remove Waterfall property observers
             observations(waterfall, paths: _waterfallKeyPaths, remove: true)
@@ -387,7 +387,7 @@ class PanafallsViewController: NSSplitViewController {
         if let slice = note.object as? xFlexAPI.Slice {
             
             // log the event
-            (NSApp.delegate as! LogHandler).message("Slice initialized, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, source: kModule)
+            _log.msg("Slice initialized, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, function: #function, file: #file, line: #line)
             
             // observe changes to Slice properties
             observations(slice, paths: _sliceKeyPaths)
@@ -406,7 +406,7 @@ class PanafallsViewController: NSSplitViewController {
         if let slice = note.object as? xFlexAPI.Slice {
             
             // log the event
-            _log.message("Slice removed, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, source: kModule)
+            _log.msg("Slice removed, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, function: #function, file: #file, line: #line)
             
             // remove Slice property observers
             self.observations(slice, paths: self._sliceKeyPaths, remove: true)
@@ -430,7 +430,7 @@ class PanafallsViewController: NSSplitViewController {
         if let tnf = note.object as? xFlexAPI.Tnf {
             
             // YES, log the event
-            (NSApp.delegate as! LogHandler).message("Tnf initialized, ID = \(tnf.id)", level: .debug, source: kModule)
+            _log.msg("Tnf initialized, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)
             
             // observe changes to Tnf properties
             observations(tnf, paths: _tnfKeyPaths)
@@ -449,8 +449,8 @@ class PanafallsViewController: NSSplitViewController {
         if let tnf = note.object as? xFlexAPI.Tnf {
             
             // YES, log the event
-            _log.message("Tnf removed, ID = \(tnf.id)", level: .debug, source: kModule)
-            
+            _log.msg("Tnf removed, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)
+
             // remove Tnf property observers
             observations(tnf, paths: _tnfKeyPaths, remove: true)
             

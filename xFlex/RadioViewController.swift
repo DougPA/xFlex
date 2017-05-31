@@ -104,7 +104,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         
         if defaultRadio.ipAddress != "" && defaultRadio.port != 0 {
             
-            _log.message("Attempting to open Default Radio, IP \(defaultRadio.ipAddress), Port \(defaultRadio.port)", level: .info, source: kModule)
+            _log.msg("Attempting to open Default Radio, IP \(defaultRadio.ipAddress), Port \(defaultRadio.port)", level: .info, function: #function, file: #file, line: #line)
             
             // there is a default, try to open it
             if !openRadio(defaultRadio) {
@@ -612,7 +612,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
                         
                     default:
                         // log and ignore any other keyPaths
-                        (NSApp.delegate as! LogHandler).message("Unknown observation - \(String(describing: keyPath))", level: .error, source: self.kModule)
+                        self._log.msg("Unknown observation - \(String(describing: keyPath))", level: .error, function: #function, file: #file, line: #line)
                     }
                 }
             }
@@ -799,7 +799,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
             if !radio!.connect(selectedRadio: selectedRadio!) {
                 
                 // connect failed, log the error and return
-                (NSApp.delegate as! LogHandler).message(kConnectFailed, level: .error, source: kModule)
+                self._log.msg(kConnectFailed, level: .error, function: #function, file: #file, line: #line)
                 
                 return false        // Connect failed
             }

@@ -214,8 +214,8 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
         // create a ProgramID, Compile & Link the Shaders
         if !_tools.loadShaders(&_shaders) {
             // FIXME: do something if there is an error
-            (NSApp.delegate as! AppDelegate).message("OpenGL Shader - \(_shaders[0].error!)", level: .error, source: kModule)
-        }        
+            _log.msg("OpenGL Shader - \(_shaders[0].error!)", level: .error, function: #function, file: #file, line: #line)
+        }
         // set a "Clear" color
         let background = Defaults[.spectrumBackground]
         glClearColor(GLfloat( background.redComponent ),

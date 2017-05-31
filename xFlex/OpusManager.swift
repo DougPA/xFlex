@@ -194,7 +194,7 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
         let encodeResult = opus_encode_float(_encoder, &_txInterleaved[0], samples, &_txEncodedBuffer[0], Int32(kMaxEncodedBytes))
 
         // check for errors
-        if encodeResult < 0 { (NSApp.delegate as! LogHandler).message(String(cString: opus_strerror(encodeResult)), level: .error, source: kModule)}
+        if encodeResult < 0 { _log.msg(String(cString: opus_strerror(encodeResult)), level: .error, function: #function, file: #file, line: #line) }
         
         // TODO: send to Radio
         print("Encode = \(String(cString: opus_strerror(encodeResult)))")
@@ -217,8 +217,8 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
         let decodeResult = opus_decode_float(_decoder, frame.samples, Int32(frame.numberOfSamples), _rxBufferHead, Int32(_outputSampleCount * MemoryLayout<Float>.size * kNumberOfChannels), Int32(0))
         
         // check for decode errors
-        if decodeResult < 0 { (NSApp.delegate as! LogHandler).message(String(cString: opus_strerror(decodeResult)), level: .error, source: kModule) }
-        
+        if decodeResult < 0 { _log.msg(String(cString: opus_strerror(decodeResult)), level: .error, function: #function, file: #file, line: #line) }
+
         // convert the decoded audio from interleaved to non-interleaved
         _rxBufferHead.withMemoryRebound(to: DSPComplex.self, capacity: 1) { bufferHeadDSP in
             vDSP_ctoz(bufferHeadDSP, kNumberOfChannels, &_rxSplitComplex, 1, vDSP_Length(decodeResult))
