@@ -146,6 +146,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 SWIFT_CLASS("_TtC8xFlexAPI11AudioStream")
 @interface AudioStream : NSObject
 @property (nonatomic, readonly) NSInteger rxLostPacketCount;
+- (BOOL)requestAudioStream SWIFT_WARN_UNUSED_RESULT;
+- (void)removeAudioStream;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
@@ -157,8 +159,10 @@ SWIFT_CLASS("_TtC8xFlexAPI11AudioStream")
 @property (nonatomic) BOOL inUse;
 @property (nonatomic, copy) NSString * _Nonnull ip;
 @property (nonatomic) NSInteger port;
+@property (nonatomic) BOOL radioAck;
 @property (nonatomic) NSInteger rxGain;
 @property (nonatomic, strong) Slice * _Nullable slice;
+@property (nonatomic, copy) NSString * _Nonnull streamId;
 @end
 
 
@@ -210,29 +214,6 @@ SWIFT_CLASS("_TtC8xFlexAPI9Equalizer")
 @property (nonatomic) NSInteger level2000Hz;
 @property (nonatomic) NSInteger level4000Hz;
 @property (nonatomic) NSInteger level8000Hz;
-@end
-
-@class NSBundle;
-@class NSMutableDictionary;
-@class NSMutableArray;
-
-SWIFT_CLASS("_TtC8xFlexAPI10FileHelper")
-@interface FileHelper : NSObject
-+ (void)writeArray:(NSArray * _Nonnull)anArray toUserFile:(NSString * _Nonnull)filePath;
-+ (BOOL)writeArray:(NSArray * _Nonnull)anArray toURL:(NSURL * _Nonnull)url SWIFT_WARN_UNUSED_RESULT;
-+ (void)writeDictionary:(NSDictionary * _Nonnull)aDictionary toUserFile:(NSString * _Nonnull)filePath;
-+ (BOOL)writeDictionary:(NSDictionary * _Nonnull)aDictionary toURL:(NSURL * _Nonnull)url SWIFT_WARN_UNUSED_RESULT;
-+ (NSURL * _Nonnull)appFolder SWIFT_WARN_UNUSED_RESULT;
-+ (BOOL)pathExists:(NSString * _Nonnull)path SWIFT_WARN_UNUSED_RESULT;
-+ (NSDictionary * _Nonnull)dictionaryForFile:(NSString * _Nonnull)fileName ofType:(NSString * _Nonnull)fileType fromBundle:(NSBundle * _Nonnull)bundle folder:(NSString * _Nonnull)folder SWIFT_WARN_UNUSED_RESULT;
-+ (NSDictionary * _Nonnull)dictionaryForFile:(NSString * _Nonnull)fileName ofType:(NSString * _Nonnull)fileType path:(NSString * _Nonnull)path SWIFT_WARN_UNUSED_RESULT;
-+ (NSDictionary * _Nonnull)dictionaryForURL:(NSURL * _Nonnull)url SWIFT_WARN_UNUSED_RESULT;
-+ (NSMutableDictionary * _Nonnull)mutableDictionaryForFile:(NSString * _Nonnull)fileName ofType:(NSString * _Nonnull)fileType fromBundle:(NSBundle * _Nonnull)bundle folder:(NSString * _Nonnull)folder SWIFT_WARN_UNUSED_RESULT;
-+ (NSArray * _Nonnull)arrayForFile:(NSString * _Nonnull)fileName ofType:(NSString * _Nonnull)fileType fromBundle:(NSBundle * _Nonnull)bundle SWIFT_WARN_UNUSED_RESULT;
-+ (NSArray * _Nonnull)arrayForURL:(NSURL * _Nonnull)url SWIFT_WARN_UNUSED_RESULT;
-+ (NSMutableArray * _Nonnull)mutableArrayForFile:(NSString * _Nonnull)fileName ofType:(NSString * _Nonnull)fileType fromBundle:(NSBundle * _Nonnull)bundle SWIFT_WARN_UNUSED_RESULT;
-+ (void)delay:(double)delay closure:(void (^ _Nonnull)(void))closure;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -292,6 +273,8 @@ SWIFT_CLASS("_TtC8xFlexAPI6Memory")
 SWIFT_CLASS("_TtC8xFlexAPI14MicAudioStream")
 @interface MicAudioStream : NSObject
 @property (nonatomic) NSInteger rxLostPacketCount;
+- (BOOL)requestMicAudioStream SWIFT_WARN_UNUSED_RESULT;
+- (void)removeMicAudioStream;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
@@ -300,7 +283,9 @@ SWIFT_CLASS("_TtC8xFlexAPI14MicAudioStream")
 @property (nonatomic) BOOL inUse;
 @property (nonatomic, copy) NSString * _Nonnull ip;
 @property (nonatomic) NSInteger port;
+@property (nonatomic) BOOL radioAck;
 @property (nonatomic) NSInteger micGain;
+@property (nonatomic, copy) NSString * _Nonnull streamId;
 @end
 
 
@@ -342,9 +327,7 @@ SWIFT_CLASS("_TtC8xFlexAPI4Opus")
 @interface Opus (SWIFT_EXTENSION(xFlexAPI))
 @property (nonatomic) BOOL remoteRxOn;
 @property (nonatomic) BOOL remoteTxOn;
-@property (nonatomic, copy) NSString * _Nonnull rxStream;
 @property (nonatomic) BOOL rxStreamStopped;
-@property (nonatomic, copy) NSString * _Nonnull txStream;
 @end
 
 @class Radio;
@@ -425,12 +408,12 @@ SWIFT_CLASS("_TtC8xFlexAPI5Radio")
 - (void)requestAntennaList;
 - (void)atuStart;
 - (void)atuBypass;
-- (void)createAudioStream:(NSString * _Nonnull)channel;
-- (void)removeAudioStream:(NSString * _Nonnull)channel;
+- (AudioStream * _Nonnull)createAudioStream:(NSInteger)channel SWIFT_WARN_UNUSED_RESULT;
+- (void)removeAudioStream:(NSString * _Nonnull)streamId;
 - (void)createMemory;
 - (void)requestMeterList;
-- (void)createMicAudioStream;
-- (void)removeMicAudioStreamWithId:(NSString * _Nonnull)id;
+- (MicAudioStream * _Nonnull)createMicAudioStream SWIFT_WARN_UNUSED_RESULT;
+- (void)removeMicAudioStream:(NSString * _Nonnull)streamId;
 - (void)requestMicList;
 - (void)startOffset:(BOOL)value;
 - (void)createPanafall:(CGSize)dimensions;
