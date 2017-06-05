@@ -18,7 +18,9 @@ final public class Band {
     typealias BandExtent = (start: Int, end: Int)
     
     // ----------------------------------------------------------------------------
-    // MARK: - Internal Properties
+    // MARK: - Private Properties
+
+    fileprivate let _log = (NSApp.delegate as! AppDelegate)
     
     fileprivate(set) var segments = [Segment]()
     fileprivate(set) var bands = [BandName:BandExtent]()
@@ -85,7 +87,7 @@ final public class Band {
     fileprivate init() {            // "private" prevents others from calling init()
         
         // read the BandSegments file (prefer the User version, if it exists)
-        let bandSegments = FileHelper.arrayForFile( kBandSegmentsFile, ofType: "plist", fromBundle: Bundle.main ) as! [[String:AnyObject]]
+        let bandSegments = arrayForFile( kBandSegmentsFile, ofType: "plist", fromBundle: Bundle.main ) as! [[String:AnyObject]]
         for s in bandSegments {
             
             segments.append(Segment(name: s["band"] as! String,
@@ -237,6 +239,46 @@ final public class Band {
     //    }
     //    return allBandsArray
     //  }
+    //
+    // Return an Array with the contents of a file in the User domain (if it exists)
+    //
+    func arrayForFile( _ fileName:String, ofType fileType:String, fromBundle bundle:Bundle ) -> [AnyObject] {
+        var theArray: NSArray
+        
+        let userFilePath = appFolder().path + "/" + fileName + "." + fileType
+        let fileManager = FileManager.default
+        if fileManager.fileExists( atPath: userFilePath ) {
+            // user file exists
+            theArray = NSArray(contentsOfFile: userFilePath )!
+        } else {
+            // no user file exists, use the default file
+            let defaultFilePath = bundle.path(forResource: fileName, ofType: fileType )
+            theArray = NSArray(contentsOfFile: defaultFilePath! )!
+            // create a user version of the file
+            theArray.write(toFile: userFilePath, atomically: true)
+//            writeArray(theArray as [AnyObject], toUserFile: userFilePath )
+        }
+        return theArray as [AnyObject]
+    }
+    //
+    // Return the folder (as a URL) for App specific files
+    //
+    func appFolder() -> URL {
+        let fileManager = FileManager()
+        let urls = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask ) as [URL]
+        
+        let appFolder = urls.first!.appendingPathComponent( Bundle.main.bundleIdentifier! )
+        // does the folder exist?
+        if !fileManager.fileExists( atPath: appFolder.path ) {
+            // NO, create it
+            do {
+                try fileManager.createDirectory( at: appFolder, withIntermediateDirectories: false, attributes: nil)
+            } catch let error as NSError {
+                _log.msg("Error creating App Support folder: \(error.localizedDescription)", level: .warning, function: #function, file: #file, line: #line)
+            }
+        }
+        return appFolder
+    }
     
 }
 

@@ -20,7 +20,7 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
     fileprivate var _decoder: OpaquePointer!                        // Opaque pointer to Opus Decoder
     fileprivate var _encoder: OpaquePointer!                        // Opaque pointer to Opus Encoder
     fileprivate let _audioManager = AFManager()                     // AudioLibrary manager
-    fileprivate var _outputSampleCount: Int!                        // Number of decoded samples expected
+    fileprivate var _tenMsSampleCount: Int!                        // Number of decoded samples expected
 
     fileprivate let _outputSoundcard: AFSoundcard?                  // audio output device
     fileprivate var _rxInterleavedBuffer: [Float]!                  // output of Opus decoder
@@ -31,7 +31,7 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
     fileprivate let _rxRightBuffer: [Float]!                        // non-interleaved buffer, Right
     
     fileprivate let _inputSoundcard: AFSoundcard?                   // audio input device
-//    fileprivate var _txComplex: DSPComplex
+    fileprivate var _txComplex: DSPComplex
     fileprivate var _txInterleaved: [Float]!
     fileprivate let _txLeftBuffer: [Float]!                         // non-interleaved buffer, Left
     fileprivate let _txRightBuffer: [Float]!                        // non-interleaved buffer, Right
@@ -45,8 +45,9 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
     fileprivate let kSampleRate: Float = 24_000                     // Sample Rate (samples/second)
     fileprivate let kNumberOfChannels = 2                           // Stereo, Right & Left channels
     fileprivate let kStereoChannelMask: Int32 = 0x3
+    fileprivate let kSampleCount: Int32 = 240                       // Number of input samples
     
-    fileprivate let kMaxEncodedBytes = 512                          // max size of encoded frame
+    fileprivate let kMaxEncodedBytes = 240                          // max size of encoded frame
     
     fileprivate enum OpusApplication: Int32 {                       // Opus "application" values
         case voip = 2048
@@ -59,7 +60,7 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
     
     override init() {
         
-        _outputSampleCount = Int(kSampleRate * 0.01)                // 10 ms worth
+        _tenMsSampleCount = Int(kSampleRate * 0.01)                // 10 ms worth
         
         // RX STREAM setup (audio from the Radio to the Mac)
 
@@ -67,18 +68,18 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
         _outputSoundcard = _audioManager.newOutputSoundcard()
         guard _outputSoundcard != nil else { fatalError("Unable to create output sound card") }
         _outputSoundcard!.setSamplingRate(kSampleRate)
-        _outputSoundcard!.setBufferLength(Int32(_outputSampleCount))
+        _outputSoundcard!.setBufferLength(Int32(_tenMsSampleCount))
         _outputSoundcard!.setChannelMask(kStereoChannelMask)
         
         // allocate the interleaved Rx buffer
-        _rxInterleavedBuffer = [Float](repeating: 0.0, count: _outputSampleCount * kNumberOfChannels)
+        _rxInterleavedBuffer = [Float](repeating: 0.0, count: _tenMsSampleCount * kNumberOfChannels)
         
         // get a pointer to the start of the interleaved Rx buffer
         _rxBufferHead = UnsafeMutablePointer<Float>(mutating: _rxInterleavedBuffer)
         
         // allocate the non-interleaved Rx buffers
-        _rxLeftBuffer = [Float](repeating: 0.0, count: _outputSampleCount)
-        _rxRightBuffer = [Float](repeating: 0.0, count: _outputSampleCount)
+        _rxLeftBuffer = [Float](repeating: 0.0, count: _tenMsSampleCount)
+        _rxRightBuffer = [Float](repeating: 0.0, count: _tenMsSampleCount)
         
         // allocate an Rx buffer list & initialize it
         _rxBufferList = UnsafeMutablePointer<UnsafeMutablePointer<Float>?>.allocate(capacity: 2)
@@ -99,21 +100,21 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
         _inputSoundcard = _audioManager.newInputSoundcard()
         guard _inputSoundcard != nil else { fatalError("Unable to create input sound card") }
         _inputSoundcard!.setSamplingRate(kSampleRate)
-        _inputSoundcard!.setBufferLength(Int32(512))
+        _inputSoundcard!.setBufferLength(Int32(_tenMsSampleCount))
         _inputSoundcard!.setChannelMask(kStereoChannelMask)
         
         // initialize the interleaved Tx encoded buffer & get a pointer to its start
-        _txEncodedBuffer = [UInt8](repeating: 0, count: kMaxEncodedBytes)
+        _txEncodedBuffer = [UInt8](repeating: 0, count: _tenMsSampleCount)
         _txEncodedBufferHead = UnsafeMutablePointer<UInt8>(mutating: _txEncodedBuffer)
         
         // allocate the non-interleaved Tx buffers
-        _txLeftBuffer = [Float](repeating: 0.0, count: 512)
-        _txRightBuffer = [Float](repeating: 0.0, count: 512)
+        _txLeftBuffer = [Float](repeating: 0.0, count: _tenMsSampleCount)
+        _txRightBuffer = [Float](repeating: 0.0, count: _tenMsSampleCount)
         
-//        // view the non-interleaved Tx buffers as a DSPComplex (for vDSP)
-//        _txComplex = DSPComplex(real: _txLeftBuffer[0], imag: _txRightBuffer[0])
+        // view the non-interleaved Tx buffers as a DSPComplex (for vDSP)
+        _txComplex = DSPComplex(real: _txLeftBuffer[0], imag: _txRightBuffer[0])
         
-        _txInterleaved = [Float](repeating: 0.0, count: 2 * 512)
+        _txInterleaved = [Float](repeating: 0.0, count: 2 * _tenMsSampleCount)
         
         // create the Opus encoder
         _encoder = opus_encoder_create(Int32(kSampleRate), 2, OpusApplication.audio.rawValue, &opusError)
@@ -168,38 +169,38 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
     
         // buffers is a "bufferList" with buffers[0] = left & buffers[1] = right
         
+        assert(samples == kSampleCount, "Samples != \(_tenMsSampleCount)")
+        assert(n == Int32(kNumberOfChannels), "Number of channels != \(kNumberOfChannels)")
+        
         // make sure we have stereo
         guard n == 2 else { return }
         
-//        // view the left & right channels as a DSPSplitComplex (for vDSP)
-//        var txSplitComplex = DSPSplitComplex(realp: buffers[0]!, imagp: buffers[1]!)
+//        // convert the nonInterleaved samples to Interleaved
+//        for i in 0..<Int(samples) {
+//            
+//            _txInterleaved[2*i] = buffers[0]![i]
+//            _txInterleaved[(2*i)+1] = buffers[1]![i]
+//        }
+
+        // view the non-interleaved samples as a DSPSplitComplex
+        var nonInterleaved = DSPSplitComplex(realp: buffers[0]!, imagp: buffers[1]!)
+        
+        // view the interleaved buffer as a DSPComplex
+        var interleaved = DSPComplex(real: _txInterleaved[0], imag: _txInterleaved[1])
         
         // convert the nonInterleaved samples to Interleaved
-        for i in 0..<Int(samples) {
-            
-            _txInterleaved[2*i] = buffers[0]![i]
-            _txInterleaved[(2*i)+1] = buffers[1]![i]
-        }
-        
-        print("Samples = \(samples)")
-        
+        vDSP_ztoc(&nonInterleaved, 1, &interleaved, kNumberOfChannels, vDSP_Length(samples));
 
-//        // convert the samples from the left & right (non-interleaved) buffers to an interleaved buffer
-//        vDSP_ztoc(&txSplitComplex, vDSP_Stride(1), &_txComplex, 2, vDSP_Length(samples))
+
         
-//        // obtain a pointer to the beginning of the interleaved buffer
-//        let txBufferHead = UnsafeMutablePointer<Float>(mutating: &_txInterleaved[0])
-        
-        // encode the bytes
-        let encodeResult = opus_encode_float(_encoder, &_txInterleaved[0], samples, &_txEncodedBuffer[0], Int32(kMaxEncodedBytes))
+        // encode the audio
+        let encodeResult = opus_encode_float(_encoder, UnsafePointer<Float>(_txInterleaved), samples, UnsafeMutablePointer<UInt8>(mutating: _txEncodedBuffer), Int32(kMaxEncodedBytes))
 
         // check for errors
         if encodeResult < 0 { _log.msg(String(cString: opus_strerror(encodeResult)), level: .error, function: #function, file: #file, line: #line) }
         
-        // TODO: send to Radio
-        print("Encode = \(String(cString: opus_strerror(encodeResult)))")
-        
-        
+        // TODO: send the data
+        print("encoded to = \(encodeResult) bytes")
     }
     
     // ----------------------------------------------------------------------------
@@ -214,7 +215,7 @@ class OpusManager : NSObject, OpusStreamHandler, AFSoundcardDelegate {
     func opusStreamHandler(_ frame: OpusFrame) {
         
         // perform Opus decoding
-        let decodeResult = opus_decode_float(_decoder, frame.samples, Int32(frame.numberOfSamples), _rxBufferHead, Int32(_outputSampleCount * MemoryLayout<Float>.size * kNumberOfChannels), Int32(0))
+        let decodeResult = opus_decode_float(_decoder, frame.samples, Int32(frame.numberOfSamples), _rxBufferHead, Int32(_tenMsSampleCount * MemoryLayout<Float>.size * kNumberOfChannels), Int32(0))
         
         // check for decode errors
         if decodeResult < 0 { _log.msg(String(cString: opus_strerror(decodeResult)), level: .error, function: #function, file: #file, line: #line) }

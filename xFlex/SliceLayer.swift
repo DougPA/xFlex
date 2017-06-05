@@ -173,7 +173,9 @@ class SliceLayer: CALayer, CALayerDelegate {
         switch keyPath! {
             
         case "frequency":
-            setNeedsDisplay()
+            DispatchQueue.main.async { [unowned self] in
+                self.setNeedsDisplay()
+            }
             
 //            print("frequency = \((object as! xFlexAPI.Slice).frequency)" )
             

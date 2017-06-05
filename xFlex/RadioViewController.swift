@@ -599,7 +599,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
                         
                     case #keyPath(Opus.remoteTxOn):
                         
-                        if let opus = object as? Opus, let start = ch[.newKey] as? Bool{
+                        if let _ = object as? Opus, let start = ch[.newKey] as? Bool{
                             
                             // Tx Opus starting / stopping
                             self._opusManager.txAudio( start )
