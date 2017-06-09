@@ -130,12 +130,19 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
         // force a redraw of DbLegend layer
         panadapterView?.redrawDbLegendLayer()
     }
+    /// Redraw a Slice
+    ///
+    public func redrawSlice(_ slice: xFlexAPI.Slice) {
+        
+        // force a redraw of a Slice layer
+        panadapterView?.redrawSliceLayer(slice)
+    }
     /// Redraw the Slice(s)
     ///
     public func redrawSlices() {
         
-        // force a redraw of the Slice layer
-        panadapterView?.redrawSliceLayer()
+        // force a redraw of all the Slice layers
+        panadapterView?.redrawSliceLayers()
     }
     /// Redraw all of the components
     ///
@@ -189,7 +196,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
             // NO, adjust the slice frequency (move the Slice)
             slice.frequency += incr
             
-            redrawSlices()
+            redrawSlice(slice)
         }
     }
     
@@ -323,6 +330,12 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
         }
     }
     /// Respond to Pan gesture (right mouse down)
+    ///     TNF:
+    ///         Up / Down movement:     increase / decrease the Tnf width
+    ///         Right / Left movement:  lower / raise the Tnf frequency
+    ///
+    ///     SLICE:
+    ///         Right / Left movement:  lower / raise the Slice frequency
     ///
     /// - Parameter gr: the Pan Gesture Recognizer
     ///
@@ -354,6 +367,8 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
                 
                 // Slice, adjust the Slice frequency
                 if let slice = _panSlice { adjustSliceFrequency(slice, incr: xOffset) }
+                
+                
             }
         }
         

@@ -172,23 +172,26 @@ final class WaterfallView: NSView, CALayerDelegate {
     ///
     private func calcLegendParams() {
 
-        // calc the height in seconds of the waterfall
-        let maxDuration = Int(frame.height * CGFloat(_lineDuration) / 1_000.0)
-        
-        // calc the number of legends and the spacing between them
-        switch maxDuration {
-        case 0..<10 :
-            _numberOfLegends = 3
-        case 10..<30 :
-            _numberOfLegends = 6
-        case 30..<60 :
-            _numberOfLegends = 9
-        default:
-            _numberOfLegends = 12
+        DispatchQueue.main.async { [unowned self] in
+            // calc the height in seconds of the waterfall
+            let maxDuration = Int(self.frame.height * CGFloat(self._lineDuration) / 1_000.0)
+            
+            // calc the number of legends and the spacing between them
+            switch maxDuration {
+            case 0..<10 :
+                self._numberOfLegends = 3
+            case 10..<30 :
+                self._numberOfLegends = 6
+            case 30..<60 :
+                self._numberOfLegends = 9
+            default:
+                self._numberOfLegends = 12
+            }
+            // calc the "seconds" between legends
+            self._increment = maxDuration / (self._numberOfLegends + 1)
         }
-        // calc the "seconds" between legends
-        _increment = maxDuration / (_numberOfLegends + 1)
 
+        
     }
     // ----------------------------------------------------------------------------
     // MARK: - Observation methods

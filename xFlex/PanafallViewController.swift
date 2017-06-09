@@ -182,13 +182,14 @@ final class PanafallViewController: NSSplitViewController {
             
             // YES, make the Slice active
             slice.active = true
+            _panadapterView?.redrawSliceLayer(slice)
             
         } else if let slice = _panadapter.radio!.findActiveSliceOn(_panadapter.id) {
             
             // move the Slice
             slice.frequency = mouseFrequency
+            _panadapterView?.redrawSliceLayer(slice)
         }
-        _panadapterView?.redrawSliceLayer()
     }
     /// Respond to a Right Click gesture
     ///
@@ -323,14 +324,18 @@ final class PanafallViewController: NSSplitViewController {
             
             // YES, adjust the panafall center frequency (scroll the Panafall)
             _panadapter.center += incr
+
+            // redraw all the slices
+            _panadapterView?.redrawSliceLayers()
             
         } else {
             
             // NO, adjust the slice frequency (move the Slice)
             slice.frequency = slice.frequency + incr
+            
+            // redraw the slice
+            _panadapterView?.redrawSliceLayer(slice)
         }
-        // redraw Panadapter
-        _panadapterView?.redrawSliceLayer()
         
     }
     /// Load the selected Waterfall Gradient

@@ -43,9 +43,9 @@ final class PanadapterView : NSView, CALayerDelegate {
     
     fileprivate var _rootLayer: CALayer!                                // layers
     fileprivate var _spectrumLayer: PanadapterLayer!
-    fileprivate var _frequencyLayer: CALayer!
+    fileprivate var _frequencyLegendLayer: CALayer!
     fileprivate var _sliceLayer: CALayer!
-    fileprivate var _legendLayer: CALayer!
+    fileprivate var _dbLegendLayer: CALayer!
 
     fileprivate var _slices = [SliceLayer]()
     
@@ -168,11 +168,31 @@ final class PanadapterView : NSView, CALayerDelegate {
         
         redrawLayer(kLegendLayer)
     }
-    /// Redraw the Slice Layer
+    /// Redraw a Slice Layer
     ///
-    func redrawSliceLayer() {
+    func redrawSliceLayer(_ slice: xFlexAPI.Slice) {
+        var theLayer: SliceLayer? = nil
         
-        redrawLayer(kSliceLayer)
+        for layer in _slices where layer.slice == slice {
+            theLayer = layer
+        }
+        if let theLayer = theLayer {
+            // interact with the UI
+            DispatchQueue.main.async {
+                theLayer.setNeedsDisplay()
+            }
+        }
+    }
+    /// Redraw all the Slice Layers
+    ///
+    func redrawSliceLayers() {
+        
+        // interact with the UI
+        DispatchQueue.main.async {
+            for layer in self._slices {
+                layer.setNeedsDisplay()
+            }
+        }
     }
     /// Redraw all of the layers
     ///
@@ -227,28 +247,28 @@ final class PanadapterView : NSView, CALayerDelegate {
         _spectrumLayer.addConstraint(maxY)
         _spectrumLayer.delegate = _spectrumLayer                    // delegate
         
-        _legendLayer = CALayer()                                    // ***** Db Legend layer *****
-        _legendLayer.name = kLegendLayer
-        _legendLayer.addConstraint(minX)                            // constraints
-        _legendLayer.addConstraint(maxX)
-        _legendLayer.addConstraint(aboveFrequencyLegendY)
-        _legendLayer.addConstraint(maxY)
-        _legendLayer.delegate = self                                // delegate
-        _legendLayer.compositingFilter = compositingFilter
+        _dbLegendLayer = CALayer()                                  // ***** Db Legend layer *****
+        _dbLegendLayer.name = kLegendLayer
+        _dbLegendLayer.addConstraint(minX)                          // constraints
+        _dbLegendLayer.addConstraint(maxX)
+        _dbLegendLayer.addConstraint(aboveFrequencyLegendY)
+        _dbLegendLayer.addConstraint(maxY)
+        _dbLegendLayer.delegate = self                              // delegate
+        _dbLegendLayer.compositingFilter = compositingFilter
         
-        _frequencyLayer = CALayer()                                 // ***** Frequency Legend layer *****
-        _frequencyLayer.name = kFrequencyLayer
-        _frequencyLayer.addConstraint(minX)                         // constraints
-        _frequencyLayer.addConstraint(maxX)
-        _frequencyLayer.addConstraint(minY)
-        _frequencyLayer.addConstraint(maxY)
-        _frequencyLayer.delegate = self                             // delegate
-        _frequencyLayer.compositingFilter = compositingFilter
+        _frequencyLegendLayer = CALayer()                           // ***** Frequency Legend layer *****
+        _frequencyLegendLayer.name = kFrequencyLayer
+        _frequencyLegendLayer.addConstraint(minX)                   // constraints
+        _frequencyLegendLayer.addConstraint(maxX)
+        _frequencyLegendLayer.addConstraint(minY)
+        _frequencyLegendLayer.addConstraint(maxY)
+        _frequencyLegendLayer.delegate = self                       // delegate
+        _frequencyLegendLayer.compositingFilter = compositingFilter
         
         // setup the layer hierarchy
         _rootLayer.addSublayer(_spectrumLayer)
-        _rootLayer.addSublayer(_legendLayer)
-        _rootLayer.addSublayer(_frequencyLayer)
+        _rootLayer.addSublayer(_dbLegendLayer)
+        _rootLayer.addSublayer(_frequencyLegendLayer)
         
         // get a list of Slices on this Panadapter
         let sliceArray = _radio.findSlicesOn(_panadapter.id)
@@ -278,7 +298,9 @@ final class PanadapterView : NSView, CALayerDelegate {
     }
     /// Draw the Db Legend Layer
     ///
-    fileprivate func drawLegendLayer(_ layer: CALayer) {
+    ///     layer includes the Db Legends and the horizontal Db lines
+    ///
+    fileprivate func drawDbLegendLayer(_ layer: CALayer) {
         
         // set the background color
         layer.backgroundColor = Defaults[.dbLegendBackground].cgColor
@@ -297,7 +319,7 @@ final class PanadapterView : NSView, CALayerDelegate {
 
         // calculate the spacings
         let dbRange = _panadapter.maxDbm - _panadapter.minDbm
-        let yIncrPerDb = _legendLayer.frame.height / dbRange
+        let yIncrPerDb = _dbLegendLayer.frame.height / dbRange
         let lineSpacing = CGFloat(Defaults[.dbLegendSpacing])
         let yIncrPerMark = yIncrPerDb * lineSpacing
         
@@ -322,7 +344,9 @@ final class PanadapterView : NSView, CALayerDelegate {
     }
     /// Draw the Frequency Legend Layer
     ///
-    fileprivate func drawFrequencyLayer(_ layer: CALayer) {
+    ///     Layer includes the frequency legends and the vertical frequency lines
+    ///
+    fileprivate func drawFrequencyLegendLayer(_ layer: CALayer) {
         
         // set the background color
         layer.backgroundColor = Defaults[.frequencyLegendBackground].cgColor
@@ -379,7 +403,7 @@ final class PanadapterView : NSView, CALayerDelegate {
         
         // draw band markers (if enabled)
         if Defaults[.showMarkers] {
-            drawMarkers() }
+            drawBandMarkers() }
 
     }
     /// Draw the outline of the Tnf's
@@ -403,9 +427,9 @@ final class PanadapterView : NSView, CALayerDelegate {
         }
         _path.strokeRemove()
     }
-    /// Draw the Band Edge Markers
+    /// Draw the Band Markers
     ///
-    fileprivate func drawMarkers() {
+    fileprivate func drawBandMarkers() {
         // use solid lines
         _path.setLineDash( [2.0, 0.0], count: 2, phase: 0 )
         
@@ -525,10 +549,13 @@ final class PanadapterView : NSView, CALayerDelegate {
             layer = _spectrumLayer
             
         case kFrequencyLayer:
-            layer = _frequencyLayer
+            layer = _frequencyLegendLayer
             
         case kLegendLayer:
-            layer = _legendLayer
+            layer = _dbLegendLayer
+            
+        case kSliceLayer:
+            Swift.print("Slice layer redraw")
             
         default:
             assert(true, "PanadapterView, redraw - unknown layer name, \(layerName)")
@@ -607,23 +634,23 @@ final class PanadapterView : NSView, CALayerDelegate {
         switch keyPath! {
             
         case "bandEdge", "bandMarker", "bandMarkerOpacity", "segmentEdge", "showMarkers":   // Marker related
-            _frequencyLayer.setNeedsDisplay()
+            _frequencyLegendLayer.setNeedsDisplay()
             
         case "dbLegend", "dbLegendBackground", "dbLegendSpacing":                           // dbLegend related
-            _legendLayer.setNeedsDisplay()
+            _dbLegendLayer.setNeedsDisplay()
             
         case "frequencyLegend", "frequencyLegendBackground":                                // FrequencyLegend related
-            _frequencyLayer.setNeedsDisplay()
+            _frequencyLegendLayer.setNeedsDisplay()
             
         case "gridLines", "gridLineWidth", "gridLinesDashed", "spectrumBackground":         // Grid related
-            _legendLayer.setNeedsDisplay()
-            _frequencyLayer.setNeedsDisplay()
+            _dbLegendLayer.setNeedsDisplay()
+            _frequencyLegendLayer.setNeedsDisplay()
             
         case "sliceActive", "sliceFilter", "sliceFilterOpacity", "sliceInactive":           // Slice related
             _sliceLayer.setNeedsDisplay()
         
         case "tnfActive", "tnfEnabled", "tnfInactive":                                      // Tnf related
-            _frequencyLayer.setNeedsDisplay()
+            _frequencyLegendLayer.setNeedsDisplay()
         
         default:
             assert( true, "Invalid observation - \(keyPath!) in " + kModule)
@@ -657,10 +684,10 @@ final class PanadapterView : NSView, CALayerDelegate {
         switch layerName {
             
         case kLegendLayer:
-            drawLegendLayer(layer)
+            drawDbLegendLayer(layer)
             
         case kFrequencyLayer:
-            drawFrequencyLayer(layer)
+            drawFrequencyLegendLayer(layer)
             drawTnfOutlines()
             
         default:
