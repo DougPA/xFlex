@@ -47,8 +47,12 @@ final class PanadapterView : NSView, CALayerDelegate {
     fileprivate var _sliceLayer: CALayer!
     fileprivate var _dbLegendLayer: CALayer!
 
-    fileprivate var _slices = [SliceLayer]()
-    
+    fileprivate var _sliceLayers = [SliceLayer]()
+    fileprivate var _minY: CAConstraint!
+    fileprivate var _minX: CAConstraint!
+    fileprivate var _maxY: CAConstraint!
+    fileprivate var _maxX: CAConstraint!
+    fileprivate var _aboveFrequencyLegendY: CAConstraint!
     fileprivate var _numberOfLegends: CGFloat!                          // number of legend values
     fileprivate var _dbLegendAttributes = [String:AnyObject]()          // Font & Size for the db Legend
     fileprivate var _frequencyLegendAttributes = [String:AnyObject]()   // Font & Size for the Frequency Legend
@@ -74,9 +78,9 @@ final class PanadapterView : NSView, CALayerDelegate {
 //    fileprivate let _xPosition: CGFloat = 4                             // x-position of legend
     fileprivate let kRootLayer = "root"                                 // layer names
     fileprivate let kSpectrumLayer = "spectrum"
-    fileprivate let kFrequencyLayer = "frequency"
+    fileprivate let kFrequencyLegendLayer = "frequency"
     fileprivate let kSliceLayer = "slice"
-    fileprivate let kLegendLayer = "legend"
+    fileprivate let kDbLegendLayer = "legend"
     
     fileprivate let kFrequencyParamTuples: [FrequencyParamTuple] =      // incr & format vs Bandwidth
         [   //      Bandwidth               Legend
@@ -110,7 +114,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     override func awakeFromNib() {
 
-        // create the Frequency Legend, Db Legend and Panadapter layers
+        // create the Frequency Legend, Db Legend, Panadapter and Slice layers
         setupLayers()
         
         // setup observations of Defaults
@@ -121,10 +125,9 @@ final class PanadapterView : NSView, CALayerDelegate {
         redrawDbLegendLayer()
         
         
-        for i in 0..<_slices.count {
-            _slices[i].params = params
-            _slices[i].start()
-        }
+//        for i in 0..<_sliceLayers.count {
+//            _sliceLayers[i].params = params
+//        }
     }
     /// The view is about to begin resizing
     ///
@@ -160,20 +163,28 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     func redrawFrequencyLegendLayer() {
         
-        redrawLayer(kFrequencyLayer)
+        redrawLayer(kFrequencyLegendLayer)
     }
     /// Redraw the DbLegend Layer
     ///
     func redrawDbLegendLayer() {
         
-        redrawLayer(kLegendLayer)
+        redrawLayer(kDbLegendLayer)
+    }
+    /// Redraw all of the layers
+    ///
+    func redrawAllLayers() {
+        
+        redrawLayer(kFrequencyLegendLayer)
+        redrawLayer(kDbLegendLayer)
+        redrawSliceLayers()
     }
     /// Redraw a Slice Layer
     ///
     func redrawSliceLayer(_ slice: xFlexAPI.Slice) {
         var theLayer: SliceLayer? = nil
         
-        for layer in _slices where layer.slice == slice {
+        for layer in _sliceLayers where layer.slice == slice {
             theLayer = layer
         }
         if let theLayer = theLayer {
@@ -189,20 +200,11 @@ final class PanadapterView : NSView, CALayerDelegate {
         
         // interact with the UI
         DispatchQueue.main.async {
-            for layer in self._slices {
+            for layer in self._sliceLayers {
                 layer.setNeedsDisplay()
             }
         }
     }
-    /// Redraw all of the layers
-    ///
-    func redrawAllLayers() {
-        
-        redrawLayer(kFrequencyLayer)
-        redrawLayer(kLegendLayer)
-        redrawLayer(kSliceLayer)
-    }
-
     
     // ----------------------------------------------------------------------------
     // MARK: - Action methods
@@ -215,11 +217,11 @@ final class PanadapterView : NSView, CALayerDelegate {
     fileprivate func setupLayers() {
         
         // create layer constraints
-        let minY = CAConstraint(attribute: .minY, relativeTo: "superlayer", attribute: .minY)
-        let maxY = CAConstraint(attribute: .maxY, relativeTo: "superlayer", attribute: .maxY)
-        let minX = CAConstraint(attribute: .minX, relativeTo: "superlayer", attribute: .minX)
-        let maxX = CAConstraint(attribute: .maxX, relativeTo: "superlayer", attribute: .maxX)
-        let aboveFrequencyLegendY = CAConstraint(attribute: .minY, relativeTo: "superlayer", attribute: .minY, offset: frequencyLegendHeight)
+        _minY = CAConstraint(attribute: .minY, relativeTo: "superlayer", attribute: .minY)
+        _maxY = CAConstraint(attribute: .maxY, relativeTo: "superlayer", attribute: .maxY)
+        _minX = CAConstraint(attribute: .minX, relativeTo: "superlayer", attribute: .minX)
+        _maxX = CAConstraint(attribute: .maxX, relativeTo: "superlayer", attribute: .maxX)
+        _aboveFrequencyLegendY = CAConstraint(attribute: .minY, relativeTo: "superlayer", attribute: .minY, offset: frequencyLegendHeight)
         
         // create layers
         _rootLayer = CALayer()                                      // ***** Root layer *****
@@ -241,27 +243,27 @@ final class PanadapterView : NSView, CALayerDelegate {
         _spectrumLayer = PanadapterLayer()                          // ***** Panadapter layer *****
         _spectrumLayer.name = kSpectrumLayer
         _spectrumLayer.frame = CGRect(x: 0, y: frequencyLegendHeight, width: _rootLayer.frame.width, height: _rootLayer.frame.height - frequencyLegendHeight)
-        _spectrumLayer.addConstraint(minX)                          // constraints
-        _spectrumLayer.addConstraint(maxX)
-        _spectrumLayer.addConstraint(aboveFrequencyLegendY)
-        _spectrumLayer.addConstraint(maxY)
+        _spectrumLayer.addConstraint(_minX)                          // constraints
+        _spectrumLayer.addConstraint(_maxX)
+        _spectrumLayer.addConstraint(_aboveFrequencyLegendY)
+        _spectrumLayer.addConstraint(_maxY)
         _spectrumLayer.delegate = _spectrumLayer                    // delegate
         
         _dbLegendLayer = CALayer()                                  // ***** Db Legend layer *****
-        _dbLegendLayer.name = kLegendLayer
-        _dbLegendLayer.addConstraint(minX)                          // constraints
-        _dbLegendLayer.addConstraint(maxX)
-        _dbLegendLayer.addConstraint(aboveFrequencyLegendY)
-        _dbLegendLayer.addConstraint(maxY)
+        _dbLegendLayer.name = kDbLegendLayer
+        _dbLegendLayer.addConstraint(_minX)                          // constraints
+        _dbLegendLayer.addConstraint(_maxX)
+        _dbLegendLayer.addConstraint(_aboveFrequencyLegendY)
+        _dbLegendLayer.addConstraint(_maxY)
         _dbLegendLayer.delegate = self                              // delegate
         _dbLegendLayer.compositingFilter = compositingFilter
         
         _frequencyLegendLayer = CALayer()                           // ***** Frequency Legend layer *****
-        _frequencyLegendLayer.name = kFrequencyLayer
-        _frequencyLegendLayer.addConstraint(minX)                   // constraints
-        _frequencyLegendLayer.addConstraint(maxX)
-        _frequencyLegendLayer.addConstraint(minY)
-        _frequencyLegendLayer.addConstraint(maxY)
+        _frequencyLegendLayer.name = kFrequencyLegendLayer
+        _frequencyLegendLayer.addConstraint(_minX)                   // constraints
+        _frequencyLegendLayer.addConstraint(_maxX)
+        _frequencyLegendLayer.addConstraint(_minY)
+        _frequencyLegendLayer.addConstraint(_maxY)
         _frequencyLegendLayer.delegate = self                       // delegate
         _frequencyLegendLayer.compositingFilter = compositingFilter
         
@@ -270,32 +272,72 @@ final class PanadapterView : NSView, CALayerDelegate {
         _rootLayer.addSublayer(_dbLegendLayer)
         _rootLayer.addSublayer(_frequencyLegendLayer)
         
-        // get a list of Slices on this Panadapter
-        let sliceArray = _radio.findSlicesOn(_panadapter.id)
-
-        for i in 0..<sliceArray.count {                             // ***** Slice layer(s) *****
-            let sliceLayer = SliceLayer()
-            // name it & give it a reference to its Slice
-            sliceLayer.name = kSliceLayer
-            sliceLayer.slice = sliceArray[i]
-            // position it
-            sliceLayer.frame = CGRect(x: 0, y: frequencyLegendHeight, width: _rootLayer.frame.width, height: _rootLayer.frame.height - frequencyLegendHeight)
-            sliceLayer.addConstraint(minX)                          // constraints
-            sliceLayer.addConstraint(maxX)
-            sliceLayer.addConstraint(aboveFrequencyLegendY)
-            sliceLayer.addConstraint(maxY)
-            sliceLayer.delegate = sliceLayer                        // delegate
-            sliceLayer.compositingFilter = compositingFilter
-            
-            _slices.append(sliceLayer)
-            
-            // add it to the hierarchy
-            _rootLayer.addSublayer(sliceLayer)
-            
-            sliceLayer.setNeedsDisplay()
-        }
+        // add notification subscriptions
+        addNotifications()
         
     }
+    /// Create a new Slice layer
+    ///
+    /// - Parameter slice:      a Slice reference
+    ///
+    public func addSlice(_ slice: xFlexAPI.Slice) {
+        
+        DispatchQueue.main.async { [unowned self] in
+            
+            let sliceLayer = SliceLayer()
+            
+            sliceLayer.params = self.params
+            // a reference to its Slice & name it
+            sliceLayer.slice = slice
+            sliceLayer.name = self.kSliceLayer + sliceLayer.slice.id
+
+            // position it
+            sliceLayer.frame = CGRect(x: 0, y: self.frequencyLegendHeight, width: self._rootLayer.frame.width, height: self._rootLayer.frame.height - self.frequencyLegendHeight)
+            sliceLayer.addConstraint(self._minX)                          // constraints
+            sliceLayer.addConstraint(self._maxX)
+            sliceLayer.addConstraint(self._aboveFrequencyLegendY)
+            sliceLayer.addConstraint(self._maxY)
+            
+            // set its delegate
+            sliceLayer.delegate = sliceLayer
+            
+            // select the way it will be composited with the other layers
+            sliceLayer.compositingFilter = self.compositingFilter
+            
+            self._sliceLayers.append(sliceLayer)
+            
+            // add it to the hierarchy
+            self._rootLayer.addSublayer(sliceLayer)
+            
+            // cause it to be drawn
+            sliceLayer.setNeedsDisplay()
+        }
+    }
+    /// Remove an existing Slice layer
+    ///
+    /// - Parameter slice:      a Slice reference
+    ///
+    func removeSlice(_ slice: xFlexAPI.Slice) {
+        
+        DispatchQueue.main.async { [unowned self] in
+            var layerIndex: Int? = nil
+            
+            // find the specified Slice's layer
+            for i in 0..<self._sliceLayers.count {
+                if self._sliceLayers[i].slice == slice { layerIndex = i ; break }
+            }
+            // if found, remove the layer
+            if let index = layerIndex {
+                
+                /// from the layer hierarchy
+                self._sliceLayers[index].removeFromSuperlayer()
+                
+                // from the array of layers
+                self._sliceLayers.remove(at: index)
+            }
+        }
+    }
+    
     /// Draw the Db Legend Layer
     ///
     ///     layer includes the Db Legends and the horizontal Db lines
@@ -548,14 +590,11 @@ final class PanadapterView : NSView, CALayerDelegate {
         case kSpectrumLayer:
             layer = _spectrumLayer
             
-        case kFrequencyLayer:
+        case kFrequencyLegendLayer:
             layer = _frequencyLegendLayer
             
-        case kLegendLayer:
+        case kDbLegendLayer:
             layer = _dbLegendLayer
-            
-        case kSliceLayer:
-            Swift.print("Slice layer redraw")
             
         default:
             assert(true, "PanadapterView, redraw - unknown layer name, \(layerName)")
@@ -598,13 +637,19 @@ final class PanadapterView : NSView, CALayerDelegate {
             "sliceFilterOpacity",
             "sliceInactive",
             
-//            "spectrum",                               // Spectrum related
+            //            "spectrum",                               // Spectrum related
             "spectrumBackground",
             
             "tnfActive",                              // Tnf related
             "tnfEnabled",
             "tnfInactive"
         ]
+    
+    fileprivate let _sliceKeyPaths =
+        [
+            #keyPath(xFlexAPI.Slice.frequency)
+        ]
+    
     /// Add / Remove property observations
     ///
     /// - Parameters:
@@ -634,23 +679,23 @@ final class PanadapterView : NSView, CALayerDelegate {
         switch keyPath! {
             
         case "bandEdge", "bandMarker", "bandMarkerOpacity", "segmentEdge", "showMarkers":   // Marker related
-            _frequencyLegendLayer.setNeedsDisplay()
+            redrawLayer(kFrequencyLegendLayer)
             
         case "dbLegend", "dbLegendBackground", "dbLegendSpacing":                           // dbLegend related
-            _dbLegendLayer.setNeedsDisplay()
+            redrawLayer(kDbLegendLayer)
             
         case "frequencyLegend", "frequencyLegendBackground":                                // FrequencyLegend related
-            _frequencyLegendLayer.setNeedsDisplay()
+            redrawLayer(kFrequencyLegendLayer)
             
         case "gridLines", "gridLineWidth", "gridLinesDashed", "spectrumBackground":         // Grid related
-            _dbLegendLayer.setNeedsDisplay()
-            _frequencyLegendLayer.setNeedsDisplay()
+            redrawLayer(kDbLegendLayer)
+            redrawLayer(kFrequencyLegendLayer)
             
         case "sliceActive", "sliceFilter", "sliceFilterOpacity", "sliceInactive":           // Slice related
-            _sliceLayer.setNeedsDisplay()
+            redrawSliceLayers()
         
         case "tnfActive", "tnfEnabled", "tnfInactive":                                      // Tnf related
-            _frequencyLegendLayer.setNeedsDisplay()
+            redrawLayer(kFrequencyLegendLayer)
         
         default:
             assert( true, "Invalid observation - \(keyPath!) in " + kModule)
@@ -660,6 +705,43 @@ final class PanadapterView : NSView, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Notification Methods
     
+    /// Add subsciptions to Notifications
+    ///     (as of 10.11, subscriptions are automatically removed on deinit when using the Selector-based approach)
+    ///
+    fileprivate func addNotifications() {
+        
+        // Slice initialized
+        NC.makeObserver(self, with: #selector(sliceInitialized(_:)), of: .sliceInitialized, object: nil)
+        
+        // Slice should be removed
+        NC.makeObserver(self, with: #selector(sliceShouldBeRemoved(_:)), of: .sliceShouldBeRemoved, object: nil)
+        
+    }
+    /// Process .sliceInitialized Notification
+    ///
+    /// - Parameter note: a Notification instance
+    ///
+    @objc fileprivate func sliceInitialized(_ note: Notification) {
+        
+        // does the Notification contain a Slice object?
+        if let slice = note.object as? xFlexAPI.Slice {
+            
+            addSlice(slice)
+        }
+    }
+    /// Process .sliceShouldBeRemoved Notification
+    ///
+    /// - Parameter note: a Notification instance
+    ///
+    @objc fileprivate func sliceShouldBeRemoved(_ note: Notification) {
+        
+        // does the Notification contain a Slice object?
+        if let slice = note.object as? xFlexAPI.Slice {
+            
+            removeSlice(slice)
+        }
+    }
+
     // ----------------------------------------------------------------------------
     // MARK: - CALayerDelegate methods
     
@@ -683,10 +765,10 @@ final class PanadapterView : NSView, CALayerDelegate {
         // draw a layer
         switch layerName {
             
-        case kLegendLayer:
+        case kDbLegendLayer:
             drawDbLegendLayer(layer)
             
-        case kFrequencyLayer:
+        case kFrequencyLegendLayer:
             drawFrequencyLegendLayer(layer)
             drawTnfOutlines()
             

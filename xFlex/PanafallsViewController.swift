@@ -124,10 +124,10 @@ class PanafallsViewController: NSSplitViewController {
     ]
     fileprivate let _sliceKeyPaths =                        // Slice keypaths to observe
         [
-            "active",
-            "frequency",
-            "filterHigh",
-            "filterLow"
+            #keyPath(xFlexAPI.Slice.active),
+            #keyPath(xFlexAPI.Slice.frequency),
+            #keyPath(xFlexAPI.Slice.filterHigh),
+            #keyPath(xFlexAPI.Slice.filterLow)
         ]
     fileprivate let _tnfKeyPaths =                          // Tnf keypaths to observe
         [

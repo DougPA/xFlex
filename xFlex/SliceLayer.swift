@@ -21,6 +21,7 @@ class SliceLayer: CALayer, CALayerDelegate {
     
     var slice: xFlexAPI.Slice!
     var params: Params!                                             // Radio & Panadapter references
+    var frequencyLineWidth: CGFloat = 3.0
     var markerHeight: CGFloat = 0.6                                 // height % for band markers
     
     var legendFont = NSFont(name: "Monaco", size: 12.0)
@@ -40,29 +41,9 @@ class SliceLayer: CALayer, CALayerDelegate {
 
     fileprivate var _path = NSBezierPath()
 
-    // constants
-    fileprivate let kModule = "SliceLayer"                         // Module Name reported in log messages
-    fileprivate let kSliceLayer = "slice"
-    fileprivate let kFrequencyLineWidth: CGFloat = 3.0
-    
-    deinit {
-        observations(slice, paths: _sliceKeyPaths, remove: true)
-    }
-    
     // ----------------------------------------------------------------------------
     // MARK: - Public methods
     
-    func start() {
-        
-        observations(slice, paths: _sliceKeyPaths)
-    }
-    
-    /// Force a refresh of the display
-    ///
-    func redraw() {
-        
-        setNeedsDisplay()
-    }
     
     /// Draw Layers
     ///
@@ -72,27 +53,15 @@ class SliceLayer: CALayer, CALayerDelegate {
     ///
     func draw(_ layer: CALayer, in ctx: CGContext) {
         
-        guard let layerName = layer.name else {
-            return
-        }
-        
         // setup the graphics context
         let context = NSGraphicsContext(cgContext: ctx, flipped: false)
         NSGraphicsContext.saveGraphicsState()
         NSGraphicsContext.setCurrent(context)
         
-        // draw a layer
-        switch layerName {
-            
-        case kSliceLayer:
-
-            drawFilterOutlines(slice)
-            
-            drawFrequencyLines(slice)
-            
-        default:
-            assert(true, "SliceLayer, draw - unknown layer name")
-        }
+        drawFilterOutlines(slice)
+        
+        drawFrequencyLines(slice)
+        
         // restore the graphics context
         NSGraphicsContext.restoreGraphicsState()
     }
@@ -123,11 +92,13 @@ class SliceLayer: CALayer, CALayerDelegate {
     fileprivate func drawFrequencyLines(_ slice: xFlexAPI.Slice) {
         
         // set the width & color
-        _path.lineWidth = kFrequencyLineWidth
+        _path.lineWidth = frequencyLineWidth
         if slice.active { Defaults[.sliceActive].set() } else { Defaults[.sliceInactive].set() }
         
         // calculate the position
         let _freqPosition = ( CGFloat(slice.frequency - _start) / _hzPerUnit)
+        
+        print("slice \(slice.id), freq = \(slice.frequency)")
         
         // create the Frequency line
         _path.move(to: NSPoint(x: _freqPosition, y: frame.height))
@@ -137,51 +108,5 @@ class SliceLayer: CALayer, CALayerDelegate {
         if slice.active { _path.drawTriangle(at: _freqPosition, topWidth: 15, triangleHeight: 15, topPosition: frame.height) }
         
         _path.strokeRemove()
-    }
-    fileprivate let _sliceKeyPaths =                  // Slice keypaths to observe
-        [
-            "frequency"
-        ]
-    /// Add / Remove property observations
-    ///
-    /// - Parameters:
-    ///   - object: the object of the observations
-    ///   - paths: an array of KeyPaths
-    ///   - add: add / remove (defaults to add)
-    ///
-    fileprivate func observations<T: NSObject>(_ object: T, paths: [String], remove: Bool = false) {
-        
-        // for each KeyPath Add / Remove observations
-        for keyPath in paths {
-            
-            //            print("\(remove ? "Remove" : "Add   ") \(object.className):\(keyPath) in " + kModule)
-            
-            if remove { object.removeObserver(self, forKeyPath: keyPath, context: nil) }
-            else { object.addObserver(self, forKeyPath: keyPath, options: [.initial, .new], context: nil) }
-        }
-    }
-    /// Observe properties
-    ///
-    /// - Parameters:
-    ///   - keyPath: the registered KeyPath
-    ///   - object: object containing the KeyPath
-    ///   - change: dictionary of values
-    ///   - context: context (if any)
-    ///
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        
-        switch keyPath! {
-            
-        case "frequency":
-            DispatchQueue.main.async { [unowned self] in
-                self.setNeedsDisplay()
-            }
-            
-//            print("frequency = \((object as! xFlexAPI.Slice).frequency)" )
-            
-        default:
-            assert( true, "Invalid observation - \(keyPath!) in " + kModule)
-            
-        }
     }
 }
