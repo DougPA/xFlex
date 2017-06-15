@@ -35,17 +35,6 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
     fileprivate var _delta: GLfloat = 0                         // delta x
     fileprivate var _previousNumberOfBins: Int = 0              // number of bins on last draw
 
-    fileprivate var _glAttributes: [NSOpenGLPixelFormatAttribute] = // Pixel format attributes
-        [
-            UInt32(NSOpenGLPFAScreenMask),
-            0,
-            UInt32(NSOpenGLPFAAccelerated),
-            UInt32(NSOpenGLPFAColorSize), UInt32(32),
-            UInt32(NSOpenGLPFAOpenGLProfile), UInt32(NSOpenGLProfileVersion3_2Core),
-            UInt32(0)
-        ]
-    fileprivate var _openGLPixelFormat: NSOpenGLPixelFormat!
-
     fileprivate var _shaders =                                   // array of Shader structs
         [
             ShaderStruct(name: "Panadapter", type: .Vertex),
@@ -66,6 +55,13 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
     // ----------------------------------------------------------------------------
     // MARK: - Overridden methods
     
+//    deinit {
+//        
+//        glDeleteProgram(_shaders[0].program!)
+//        glDeleteVertexArrays(1, &_vaoHandle)
+//        glDeleteBuffers(GLsizei(2), &_vboHandle)        //  All objects must be deleted manually
+//        
+//    }
     /// Create the Pixel Format
     ///
     /// - Parameter mask: display mask
@@ -73,11 +69,23 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
     ///
     override func copyCGLPixelFormat(forDisplayMask mask: UInt32) -> CGLPixelFormatObj {
         
-        _glAttributes[1] = mask
+        let attribs: [CGLPixelFormatAttribute] = // Pixel format attributes
+            [
+                kCGLPFADisplayMask, _CGLPixelFormatAttribute(rawValue: mask),
+                kCGLPFAColorSize, _CGLPixelFormatAttribute(rawValue: 24),
+                kCGLPFAAlphaSize, _CGLPixelFormatAttribute(rawValue: 8),
+                kCGLPFAAccelerated,
+                kCGLPFADoubleBuffer,
+                _CGLPixelFormatAttribute(rawValue: UInt32(NSOpenGLPFAOpenGLProfile)), _CGLPixelFormatAttribute(rawValue: UInt32(NSOpenGLProfileVersion3_2Core)),
+                _CGLPixelFormatAttribute(rawValue: 0)
+            ]
+
+        var pixelFormatObj: CGLPixelFormatObj? = nil
+        var numberOfPixelFormats: GLint = 0
         
-        let _openGLPixelFormat = NSOpenGLPixelFormat(attributes: _glAttributes)
+        CGLChoosePixelFormat(attribs, &pixelFormatObj, &numberOfPixelFormats)
         
-        return (_openGLPixelFormat?.cglPixelFormatObj)!
+        return pixelFormatObj!
     }
     /// Draw the layer
     ///
@@ -287,7 +295,7 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
     func panadapterStreamHandler(_ dataFrame: PanadapterFrame) {
         
         // interact with the UI
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [unowned self] in
         
             self._dataFrame = dataFrame
             

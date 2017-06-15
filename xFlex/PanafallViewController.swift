@@ -22,13 +22,15 @@ final class PanafallViewController: NSSplitViewController {
     // MARK: - Private properties
     
     @IBOutlet weak var _panadapterSplitViewItem: NSSplitViewItem!    
-    
-    fileprivate var _radio: Radio { return (representedObject as! Params).radio }
-    fileprivate var _panadapterId: Radio.PanadapterId { return (representedObject as! Params).panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
 
-    fileprivate var _center: Int {return _radio.panadapters[_panadapterId]!.center }
-    fileprivate var _bandwidth: Int { return _radio.panadapters[_panadapterId]!.bandwidth }
+    fileprivate var _params: Params { return representedObject as! Params }
+
+    fileprivate var _radio: Radio { return _params.radio }
+    fileprivate var _panadapter: Panadapter? { return _params.panadapter }
+//    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
+
+    fileprivate var _center: Int {return _panadapter!.center }
+    fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
     fileprivate var _start: Int { return _center - (_bandwidth/2) }
     fileprivate var _end: Int { return _center + (_bandwidth/2) }
     fileprivate var _hzPerUnit: CGFloat { return CGFloat(_end - _start) / view.frame.width }
@@ -105,7 +107,7 @@ final class PanafallViewController: NSSplitViewController {
         if theEvent.deltaY != 0 {
             
             // find the Active Slice
-            if let slice = _panadapter.radio!.findActiveSliceOn(_panadapter.id) {
+            if let slice = _panadapter!.radio!.findActiveSliceOn(_panadapter!.id) {
                 
                 // Increase or Decrease?
                 let incr = theEvent.deltaY < 0 ? slice.step : -slice.step
@@ -118,16 +120,16 @@ final class PanafallViewController: NSSplitViewController {
     
     deinit {
 
-        // get the Waterfall Id before removing the Panadapter
-        let waterfallId = _radio.panadapters[_panadapterId]!.waterfallId
+//        // get the Waterfall Id before removing the Panadapter
+//        let waterfallId = _radio.panadapters[_panadapterId]!.waterfallId
+//        
+//        // remove the Waterfall from its collection
+//        _radio.waterfalls[waterfallId] = nil
+//
+//        // remove the Panadapter from its collection
+//        _radio.panadapters[_panadapterId] = nil
         
-        // remove the Waterfall from its collection
-        _radio.waterfalls[waterfallId] = nil
-
-        // remove the Panadapter from its collection
-        _radio.panadapters[_panadapterId] = nil
-        
-//        print( kModule + " " + #function)
+//        print( #function + " - " + kModule)
     }
     
     // ----------------------------------------------------------------------------
@@ -178,13 +180,13 @@ final class PanafallViewController: NSSplitViewController {
         let mouseFrequency = Int(mouseLocation.x * _hzPerUnit) + _start
         
         // is the click "in a Slice"?
-        if let slice = _panadapter.radio?.findSliceOn(_panadapter.id, byFrequency: mouseFrequency, panafallBandwidth: _bandwidth) {
+        if let slice = _radio.findSliceOn(_panadapter!.id, byFrequency: mouseFrequency, panafallBandwidth: _bandwidth) {
             
             // YES, make the Slice active
             slice.active = true
             _panadapterView?.redrawSliceLayer(slice)
             
-        } else if let slice = _panadapter.radio!.findActiveSliceOn(_panadapter.id) {
+        } else if let slice = _radio.findActiveSliceOn(_panadapter!.id) {
             
             // move the Slice
             slice.frequency = mouseFrequency
@@ -208,7 +210,7 @@ final class PanafallViewController: NSSplitViewController {
         let mouseFrequency = Int(mouseLocation.x * _hzPerUnit) + _start
         
         // is the Frequency inside a Slice?
-        let slice = _radio.findSliceOn(_panadapter.id, byFrequency: mouseFrequency, panafallBandwidth: _bandwidth)
+        let slice = _radio.findSliceOn(_panadapter!.id, byFrequency: mouseFrequency, panafallBandwidth: _bandwidth)
         if let slice = slice {
             
             // YES, mouse is in a Slice
@@ -276,14 +278,14 @@ final class PanafallViewController: NSSplitViewController {
             
         case kCreateSlice:        // tell the Radio to create a new Slice
             let freq = (sender.representedObject! as! NSNumber).intValue
-            _radio.createSlice(panadapter: _panadapter, frequency: freq)
+            _radio.createSlice(panadapter: _panadapter!, frequency: freq)
             
         case kRemoveSlice:        // tell the Radio to remove the Slice
             _radio.removeSlice((sender.representedObject as! xFlexAPI.Slice).id)
             
         case kCreateTnf:          // tell the Radio to create a new Tnf
             let freq = (sender.representedObject! as! NSNumber).intValue
-            _radio.createTnf(frequency: freq, panadapter: _panadapter)
+            _radio.createTnf(frequency: freq, panadapter: _panadapter!)
             
         case kRemoveTnf:          // tell the Radio to remove the Tnf
             _radio.removeTnf(tnf: sender.representedObject as! Tnf)
@@ -316,14 +318,23 @@ final class PanafallViewController: NSSplitViewController {
         let isUp = (incr > 0)
         
         // calculate the edge and the delta to it
-        let edge = (isUp ? _panadapter.center + _panadapter.bandwidth/2 : _panadapter.center - _panadapter.bandwidth/2)
+        let edge = (isUp ? _center + _bandwidth/2 : _center - _bandwidth/2)
         let delta = (isUp ? edge - slice.frequency : slice.frequency - edge)
         
         // is the delta too close to the edge?
-        if delta <= _panadapter.bandwidth / kEdgeTolerance {
+        if delta <= _bandwidth / kEdgeTolerance {
             
+            Swift.print("BEFORE slice = \(slice.frequency), center = \(_panadapter!.center), incr = \(incr)")
+
             // YES, adjust the panafall center frequency (scroll the Panafall)
-            _panadapter.center += incr
+            _panadapter!.center += incr
+
+            _panadapterView?.redrawFrequencyLegendLayer()
+            
+            // adjust the slice frequency (move the Slice)
+            slice.frequency = slice.frequency + incr
+            
+            Swift.print("AFTER  slice = \(slice.frequency), center = \(_panadapter!.center), incr = \(incr)\n")
 
             // redraw all the slices
             _panadapterView?.redrawSliceLayers()

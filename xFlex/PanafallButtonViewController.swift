@@ -17,62 +17,63 @@ final class PanafallButtonViewController: NSViewController {
     
     // ----------------------------------------------------------------------------
     // MARK: - Internal properties
+    @IBOutlet weak var buttonView: PanafallButtonView!
     
     // used by bindings in Popovers
     //Panafall
     var antList: [Radio.AntennaPort] { return _radio.antennaList }
     var average: Int {
-        get { return _radio.panadapters[_panadapterId]!.average }
-        set { _radio.panadapters[_panadapterId]!.average = newValue } }
+        get { return _panadapter!.average }
+        set { _panadapter!.average = newValue } }
 
     var daxIqChannel: Int {
-        get { return _radio.panadapters[_panadapterId]!.daxIqChannel }
-        set { _radio.panadapters[_panadapterId]!.daxIqChannel = newValue } }
+        get { return _panadapter!.daxIqChannel }
+        set { _panadapter!.daxIqChannel = newValue } }
 
     var fps: Int {
-        get { return _radio.panadapters[_panadapterId]!.fps }
-        set { _radio.panadapters[_panadapterId]!.fps = newValue } }
+        get { return _panadapter!.fps }
+        set { _panadapter!.fps = newValue } }
 
     var loopA: Bool {
-        get { return _radio.panadapters[_panadapterId]!.loopAEnabled }
-        set { _radio.panadapters[_panadapterId]!.loopAEnabled = newValue } }
+        get { return _panadapter!.loopAEnabled }
+        set { _panadapter!.loopAEnabled = newValue } }
 
     var rfGain: Int {
-        get { return _radio.panadapters[_panadapterId]!.rfGain }
-        set { _radio.panadapters[_panadapterId]!.rfGain = newValue } }
+        get { return _panadapter!.rfGain }
+        set { _panadapter!.rfGain = newValue } }
 
     var rxAnt: String {
-        get { return _radio.panadapters[_panadapterId]!.rxAnt }
-        set { _radio.panadapters[_panadapterId]!.rxAnt = newValue } }
+        get { return _panadapter!.rxAnt }
+        set { _panadapter!.rxAnt = newValue } }
 
     var weightedAverage: Bool {
-        get { return _radio.panadapters[_panadapterId]!.weightedAverageEnabled }
-        set { _radio.panadapters[_panadapterId]!.weightedAverageEnabled = newValue } }
+        get { return _panadapter!.weightedAverageEnabled }
+        set { _panadapter!.weightedAverageEnabled = newValue } }
 
     // Waterfall
     var autoBlackEnabled: Bool {
-        get { return _radio.waterfalls[_panadapter.waterfallId]!.autoBlackEnabled }
-        set { _radio.waterfalls[_panadapter.waterfallId]!.autoBlackEnabled = newValue } }
+        get { return _waterfall!.autoBlackEnabled }
+        set { _waterfall!.autoBlackEnabled = newValue } }
 
     var blackLevel: Int {
-        get { return _radio.waterfalls[_panadapter.waterfallId]!.blackLevel }
-        set { _radio.waterfalls[_panadapter.waterfallId]!.blackLevel = newValue } }
+        get { return _waterfall!.blackLevel }
+        set { _waterfall!.blackLevel = newValue } }
 
     var colorGain: Int {
-        get { return _radio.waterfalls[_panadapter.waterfallId]!.colorGain }
-        set { _radio.waterfalls[_panadapter.waterfallId]!.colorGain = newValue } }
+        get { return _waterfall!.colorGain }
+        set { _waterfall!.colorGain = newValue } }
 
     var gradientIndex: Int {
-        get { return _radio.waterfalls[_panadapter.waterfallId]!.gradientIndex }
-        set { _radio.waterfalls[_panadapter.waterfallId]!.gradientIndex = newValue } }
+        get { return _waterfall!.gradientIndex }
+        set { _waterfall!.gradientIndex = newValue } }
 
-    var gradientName: String { return gradientNames[_radio.waterfalls[_panadapter.waterfallId]!.gradientIndex] }
+    var gradientName: String { return gradientNames[_waterfall!.gradientIndex] }
 
     var gradientNames: [String] { return WaterfallGradient.sharedInstance.gradientNames }
 
     var lineDuration: Int {
-        get { return _radio.waterfalls[_panadapter.waterfallId]!.lineDuration }
-        set { _radio.waterfalls[_panadapter.waterfallId]!.lineDuration = newValue } }
+        get { return _waterfall!.lineDuration }
+        set { _waterfall!.lineDuration = newValue } }
     
     let daxChoices = ["None", "1", "2", "3", "4"]
 
@@ -81,14 +82,16 @@ final class PanafallButtonViewController: NSViewController {
     
     fileprivate var _panafallViewController: PanafallViewController!
     
-    fileprivate var _radio: Radio { return (representedObject as! Params).radio }
-    fileprivate var _panadapterId: Radio.PanadapterId { return (representedObject as! Params).panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
+    fileprivate var _params: Params { return representedObject as! Params }
+    
+    fileprivate var _radio: Radio { return _params.radio }
+    fileprivate var _panadapter: Panadapter? { return _params.panadapter }
+    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
 
-    fileprivate var _center: Int {return _radio.panadapters[_panadapterId]!.center }
-    fileprivate var _bandwidth: Int { return _radio.panadapters[_panadapterId]!.bandwidth }
-    fileprivate var _minDbm: CGFloat { return _radio.panadapters[_panadapterId]!.minDbm }
-    fileprivate var _maxDbm: CGFloat { return _radio.panadapters[_panadapterId]!.maxDbm }
+    fileprivate var _center: Int {return _panadapter!.center }
+    fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
+    fileprivate var _minDbm: CGFloat { return _panadapter!.minDbm }
+    fileprivate var _maxDbm: CGFloat { return _panadapter!.maxDbm }
 
     // constants
     fileprivate let kModule = "PanafallButtonViewController" // Module Name reported in log messages
@@ -144,7 +147,7 @@ final class PanafallButtonViewController: NSViewController {
     ///
     deinit {
         
-//        print( kModule + " " + #function)
+//        print( #function + " - " + kModule)
     }
     
     // ----------------------------------------------------------------------------
@@ -184,15 +187,15 @@ final class PanafallButtonViewController: NSViewController {
     @IBAction func zoomPlus(_ sender: NSButton) {
         
         // are we near the minimum?
-        if _bandwidth / 2 > _panadapter.minBw {
+        if _bandwidth / 2 > _panadapter!.minBw {
             
             // NO, make the bandwidth half of its current value
-            _panadapter.bandwidth = _bandwidth / 2
+            _panadapter!.bandwidth = _bandwidth / 2
             
         } else {
             
             // YES, make the bandwidth the minimum value
-            _panadapter.bandwidth = _panadapter.minBw
+            _panadapter!.bandwidth = _panadapter!.minBw
         }
     }
     /// Zoom - (increase the bandwidth)
@@ -201,15 +204,15 @@ final class PanafallButtonViewController: NSViewController {
     ///
     @IBAction func zoomMinus(_ sender: NSButton) {
         // are we near the maximum?
-        if _bandwidth * 2 > _panadapter.maxBw {
+        if _bandwidth * 2 > _panadapter!.maxBw {
             
             // YES, make the bandwidth maximum value
-            _panadapter.bandwidth = _panadapter.maxBw
+            _panadapter!.bandwidth = _panadapter!.maxBw
             
         } else {
             
             // NO, make the bandwidth twice its current value
-            _panadapter.bandwidth = _bandwidth * 2
+            _panadapter!.bandwidth = _bandwidth * 2
         }
     }
     /// Close this Panafall
@@ -218,8 +221,10 @@ final class PanafallButtonViewController: NSViewController {
     ///
     @IBAction func close(_ sender: NSButton) {
         
+        buttonView.removeTrackingArea()
+        
         // tell the Radio to remove this Panafall
-        _radio.removePanafall(_panadapter.id)
+        _radio.removePanafall(_panadapter!.id)
     }
     /// Create a new Slice (if possible)
     ///
@@ -228,7 +233,7 @@ final class PanafallButtonViewController: NSViewController {
     @IBAction func rx(_ sender: NSButton) {
         
         // tell the Radio (hardware) to add a Slice on this Panadapter
-        _radio.createSlice(panadapter: _panadapter)
+        _radio.createSlice(panadapter: _panadapter!)
     }
     /// Create a new Tnf
     ///
@@ -237,7 +242,7 @@ final class PanafallButtonViewController: NSViewController {
     @IBAction func tnf(_ sender: NSButton) {
         
         // tell the Radio (hardware) to add a Tnf on this Panadapter
-        _radio.createTnf(frequency: 0, panadapter: _panadapter)
+        _radio.createTnf(frequency: 0, panadapter: _panadapter!)
     }
     
     // ----------------------------------------------------------------------------

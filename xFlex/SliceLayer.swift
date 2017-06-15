@@ -29,12 +29,12 @@ class SliceLayer: CALayer, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Private properties
     
-    fileprivate var _radio: Radio { return params.radio }
-    fileprivate var _panadapterId: Radio.PanadapterId { return params.panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
+//    fileprivate var _radio: Radio { return params.radio }       // values derived from Params
+    fileprivate var _panadapter: Panadapter? { return params.panadapter }
+//    fileprivate var _waterfall: Waterfall? { return params.waterfall }
     
-    fileprivate var _center: Int {return _radio.panadapters[_panadapterId]!.center }
-    fileprivate var _bandwidth: Int { return _radio.panadapters[_panadapterId]!.bandwidth }
+    fileprivate var _center: Int {return _panadapter!.center }
+    fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
     fileprivate var _start: Int { return _center - (_bandwidth/2) }
     fileprivate var _end: Int  { return _center + (_bandwidth/2) }
     fileprivate var _hzPerUnit: CGFloat { return CGFloat(_end - _start) / bounds.width }
@@ -43,7 +43,6 @@ class SliceLayer: CALayer, CALayerDelegate {
 
     // ----------------------------------------------------------------------------
     // MARK: - Public methods
-    
     
     /// Draw Layers
     ///
@@ -64,6 +63,16 @@ class SliceLayer: CALayer, CALayerDelegate {
         
         // restore the graphics context
         NSGraphicsContext.restoreGraphicsState()
+    }
+    /// Begin observing Slice properties
+    ///
+    public func beginObservations() {
+        observations(slice, paths: _sliceKeyPaths)
+    }
+    /// Stop observing Slice properties
+    ///
+    public func stopObservations() {
+        observations(slice, paths: _sliceKeyPaths, remove: true)
     }
     
     // ----------------------------------------------------------------------------
@@ -98,8 +107,6 @@ class SliceLayer: CALayer, CALayerDelegate {
         // calculate the position
         let _freqPosition = ( CGFloat(slice.frequency - _start) / _hzPerUnit)
         
-        print("slice \(slice.id), freq = \(slice.frequency)")
-        
         // create the Frequency line
         _path.move(to: NSPoint(x: _freqPosition, y: frame.height))
         _path.line(to: NSPoint(x: _freqPosition, y: 0))
@@ -108,5 +115,72 @@ class SliceLayer: CALayer, CALayerDelegate {
         if slice.active { _path.drawTriangle(at: _freqPosition, topWidth: 15, triangleHeight: 15, topPosition: frame.height) }
         
         _path.strokeRemove()
+    }
+    
+    /// Fore a redraw
+    ///
+    fileprivate func redraw() {
+        
+        // interact with the UI
+        DispatchQueue.main.async { [unowned self] in
+            // force a redraw
+            self.setNeedsDisplay()
+        }
+    }
+    
+    // ----------------------------------------------------------------------------
+    // MARK: - Observation Methods
+    
+    fileprivate let _sliceKeyPaths =
+        [
+            #keyPath(xFlexAPI.Slice.active),
+            #keyPath(xFlexAPI.Slice.frequency),
+            #keyPath(xFlexAPI.Slice.filterHigh),
+            #keyPath(xFlexAPI.Slice.filterLow)
+    ]
+    
+    /// Add / Remove property observations
+    ///
+    /// - Parameters:
+    ///   - object: the object of the observations
+    ///   - paths: an array of KeyPaths
+    ///   - add: add / remove (defaults to add)
+    ///
+    fileprivate func observations<T: NSObject>(_ object: T, paths: [String], remove: Bool = false) {
+        
+        // for each KeyPath Add / Remove observations
+        for keyPath in paths {
+            
+            if remove { object.removeObserver(self, forKeyPath: keyPath, context: nil) }
+            else { object.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil) }
+        }
+    }
+    /// Observe properties
+    ///
+    /// - Parameters:
+    ///   - keyPath: the registered KeyPath
+    ///   - object: object containing the KeyPath
+    ///   - change: dictionary of values
+    ///   - context: context (if any)
+    ///
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        switch keyPath! {
+            
+        case #keyPath(xFlexAPI.Slice.active):
+            redraw()
+            
+        case #keyPath(xFlexAPI.Slice.frequency):
+            redraw()
+            
+        case #keyPath(xFlexAPI.Slice.filterHigh):
+            redraw()
+            
+        case #keyPath(xFlexAPI.Slice.filterLow):
+            redraw()
+            
+        default:
+            assert( true, "Invalid observation - \(keyPath!) in " + #file)
+        }
     }
 }

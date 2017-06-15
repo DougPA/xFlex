@@ -25,12 +25,13 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     @IBOutlet fileprivate var panadapterView: PanadapterView!
     
     fileprivate var _params: Params { return representedObject as! Params }
-    fileprivate var _radio: Radio { return _params.radio }
-    fileprivate var _panadapterId: Radio.PanadapterId { return _params.panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
 
-    fileprivate var _start: Int { return _panadapter.center - (_panadapter.bandwidth/2) }
-    fileprivate var _end: Int  { return _panadapter.center + (_panadapter.bandwidth/2) }
+//    fileprivate var _radio: Radio { return params.radio }       // values derived from Params
+    fileprivate var _panadapter: Panadapter? { return _params.panadapter }
+//    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
+
+    fileprivate var _start: Int { return _panadapter!.center - (_panadapter!.bandwidth/2) }
+    fileprivate var _end: Int  { return _panadapter!.center + (_panadapter!.bandwidth/2) }
     fileprivate var _hzPerUnit: CGFloat { return CGFloat(_end - _start) / view.frame.width }
 
     // gesture recognizer related
@@ -80,10 +81,10 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
         _panLeftButton.buttonMask = kLeftButton
         panadapterView.addGestureRecognizer(_panLeftButton)
         
-        // Pan (Right Button)
-        _panRightButton = NSPanGestureRecognizer(target: self, action: #selector(panRightButton(_:)))
-        _panRightButton.buttonMask = kRightButton
-        panadapterView.addGestureRecognizer(_panRightButton)
+//        // Pan (Right Button)
+//        _panRightButton = NSPanGestureRecognizer(target: self, action: #selector(panRightButton(_:)))
+//        _panRightButton.buttonMask = kRightButton
+//        panadapterView.addGestureRecognizer(_panRightButton)
         
 //        // get the Storyboard containing a Flag View Controller
 //        let sb = NSStoryboard(name: kPanafallStoryboard, bundle: nil)
@@ -110,9 +111,12 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     override func viewDidLayout() {
         
         // tell the Panadapter to tell the Radio the current dimensions
-        _panadapter.panDimensions = CGSize(width: view.frame.width, height: view.frame.height - panadapterView.frequencyLegendHeight)
+        _panadapter?.panDimensions = CGSize(width: view.frame.width, height: view.frame.height - panadapterView.frequencyLegendHeight)
     }
     
+    deinit {
+//        Swift.print("deinit - PanadapterViewController")
+    }
     // ----------------------------------------------------------------------------
     // MARK: - Public methods
     
@@ -176,29 +180,29 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     ///   - slice: the Slice
     ///   - incr: frequency step
     ///
-    fileprivate func adjustSliceFrequency(_ slice: xFlexAPI.Slice, incr: Int) {
-        
-        // moving Up in frequency?
-        let isUp = (incr > 0)
-        
-        // calculate the edge and the delta to it
-        let edge = (isUp ? _panadapter.center + _panadapter.bandwidth/2 : _panadapter.center - _panadapter.bandwidth/2)
-        let delta = (isUp ? edge - slice.frequency : slice.frequency - edge)
-        
-        // is the delta too close to the edge?
-        if delta <= _panadapter.bandwidth / kEdgeTolerance {
-            
-            // YES, adjust the Panadapter center frequency (scroll the Panafall)
-            _panadapter.center += incr
-
-        } else {
-            
-            // NO, adjust the slice frequency (move the Slice)
-            slice.frequency += incr
-            
-            redrawSlice(slice)
-        }
-    }
+//    fileprivate func adjustSliceFrequency(_ slice: xFlexAPI.Slice, incr: Int) {
+//        
+//        // moving Up in frequency?
+//        let isUp = (incr > 0)
+//        
+//        // calculate the edge and the delta to it
+//        let edge = (isUp ? _panadapter.center + _panadapter.bandwidth/2 : _panadapter.center - _panadapter.bandwidth/2)
+//        let delta = (isUp ? edge - slice.frequency : slice.frequency - edge)
+//        
+//        // is the delta too close to the edge?
+//        if delta <= _panadapter.bandwidth / kEdgeTolerance {
+//            
+//            // YES, adjust the Panadapter center frequency (scroll the Panafall)
+//            _panadapter.center += incr
+//
+//        } else {
+//            
+//            // NO, adjust the slice frequency (move the Slice)
+//            slice.frequency += incr
+//            
+//            redrawSlice(slice)
+//        }
+//    }
     
     // ----------------------------------------------------------------------------
     // MARK: - Observation Methods
@@ -278,11 +282,11 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
                 // Up/Down, update the dbM Legend
                 if _dbmTop {
                     
-                    _panadapter.maxDbm += (_panStart!.y - location.y)
+                    _panadapter!.maxDbm += (_panStart!.y - location.y)
                     
                 } else {
                     
-                    _panadapter.minDbm += (_panStart!.y - location.y)
+                    _panadapter!.minDbm += (_panStart!.y - location.y)
                 }
                 // only rn|0| is returned for dbm changes so must refresh
                 // redraw the changed components
@@ -292,7 +296,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
             } else {
                 
                 // Left/Right, update the panafall center
-                _panadapter.center += Int( (_panStart!.x - location.x) * _hzPerUnit )
+                _panadapter!.center += Int( (_panStart!.x - location.x) * _hzPerUnit )
                 redrawFrequencyLegend()
             }
 
@@ -307,11 +311,11 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
                 // Up/Down, update the dbM Legend
                 if _dbmTop {
                     
-                    _panadapter.maxDbm += (_panStart!.y - location.y)
+                    _panadapter!.maxDbm += (_panStart!.y - location.y)
                     
                 } else {
                     
-                    _panadapter.minDbm += (_panStart!.y - location.y)
+                    _panadapter!.minDbm += (_panStart!.y - location.y)
                 }
                 // redraw the changed components
 //                redrawGrid()
@@ -320,7 +324,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
             } else {
                 
                 // Left/Right, update the panafall center
-                _panadapter.center += Int( (_panStart!.x - location.x) * _hzPerUnit )
+                _panadapter!.center += Int( (_panStart!.x - location.x) * _hzPerUnit )
                 redrawFrequencyLegend()
             }
             _newCursor!.pop()
@@ -339,96 +343,96 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     ///
     /// - Parameter gr: the Pan Gesture Recognizer
     ///
-    @objc fileprivate func panRightButton(_ gr: NSPanGestureRecognizer) {
-        
-        // common routine for position update
-        func updatePosition(_ location: NSPoint) {
-            
-            // calculate the offset
-            let xOffset = Int( floor((location.x - _panStart!.x) * _hzPerUnit) )
-            let yOffset = Int( floor((location.y - _panStart!.y) * _hzPerUnit) )
-            
-            // what are we panning?
-            if let tnf = _panTnf {
-                
-                // TNF, frequency or width?
-                if yOffset != 0 {
-                    
-                    // width (widen the Thf)
-                    tnf.width += yOffset
-                    
-                } else {
-                    
-                    // frequency (move the Tnf)
-                    tnf.frequency += xOffset
-                }
-                
-            } else {
-                
-                // Slice, adjust the Slice frequency
-                if let slice = _panSlice { adjustSliceFrequency(slice, incr: xOffset) }
-                
-                
-            }
-        }
-        
-        // get the mouse location
-        let location = gr.location(in: panadapterView)
-        
-        // identify the state
-        switch gr.state {
-            
-        case .began:
-            
-            // save the start location
-            _panStart = location                    // save the start location
-            
-            // calculate the frequency
-            let frequency = Int(location.x * _hzPerUnit) + _start
-            
-            // where is the click?
-            if let tnf = _radio.findTnfBy(frequency: frequency, panafallBandwidth: _panadapter.bandwidth) {
-                
-                // in a Tnf
-                _panTnf = tnf
-                
-                _newCursor = NSCursor.crosshair()
-                
-            } else if let slice = _radio.findSliceOn(_panadapter.id, byFrequency: frequency, panafallBandwidth: _panadapter.bandwidth) {
-                
-                // in a Slice
-                _panSlice = slice
-                
-                _newCursor = NSCursor.resizeLeftRight()
-                
-            } else {
-                
-                // in an open part of the Panadapter (use the Active Slice)
-                _panSlice = _radio.findActiveSliceOn(_panadapterId)
-                
-                _newCursor = NSCursor.closedHand()
-            }
-            _newCursor!.push()
-            
-        case .changed:
-            
-            updatePosition(location)
-            
-            // use the current (intermediate) location as the start
-            _panStart = location
-            
-        case .ended:
-            
-            updatePosition(location)
-            
-            _newCursor!.pop()
-            _panStart = nil
-            _panTnf = nil
-            _panSlice = nil
-            
-        default:
-            break
-        }
-    }
+//    @objc fileprivate func panRightButton(_ gr: NSPanGestureRecognizer) {
+//        
+//        // common routine for position update
+//        func updatePosition(_ location: NSPoint) {
+//            
+//            // calculate the offset
+//            let xOffset = Int( floor((location.x - _panStart!.x) * _hzPerUnit) )
+//            let yOffset = Int( floor((location.y - _panStart!.y) * _hzPerUnit) )
+//            
+//            // what are we panning?
+//            if let tnf = _panTnf {
+//                
+//                // TNF, frequency or width?
+//                if yOffset != 0 {
+//                    
+//                    // width (widen the Thf)
+//                    tnf.width += yOffset
+//                    
+//                } else {
+//                    
+//                    // frequency (move the Tnf)
+//                    tnf.frequency += xOffset
+//                }
+//                
+//            } else {
+//                
+//                // Slice, adjust the Slice frequency
+//                if let slice = _panSlice { adjustSliceFrequency(slice, incr: xOffset) }
+//                
+//                
+//            }
+//        }
+//        
+//        // get the mouse location
+//        let location = gr.location(in: panadapterView)
+//        
+//        // identify the state
+//        switch gr.state {
+//            
+//        case .began:
+//            
+//            // save the start location
+//            _panStart = location                    // save the start location
+//            
+//            // calculate the frequency
+//            let frequency = Int(location.x * _hzPerUnit) + _start
+//            
+//            // where is the click?
+//            if let tnf = _radio.findTnfBy(frequency: frequency, panafallBandwidth: _panadapter.bandwidth) {
+//                
+//                // in a Tnf
+//                _panTnf = tnf
+//                
+//                _newCursor = NSCursor.crosshair()
+//                
+//            } else if let slice = _radio.findSliceOn(_panadapter.id, byFrequency: frequency, panafallBandwidth: _panadapter.bandwidth) {
+//                
+//                // in a Slice
+//                _panSlice = slice
+//                
+//                _newCursor = NSCursor.resizeLeftRight()
+//                
+//            } else {
+//                
+//                // in an open part of the Panadapter (use the Active Slice)
+//                _panSlice = _radio.findActiveSliceOn(_panadapterId)
+//                
+//                _newCursor = NSCursor.closedHand()
+//            }
+//            _newCursor!.push()
+//            
+//        case .changed:
+//            
+//            updatePosition(location)
+//            
+//            // use the current (intermediate) location as the start
+//            _panStart = location
+//            
+//        case .ended:
+//            
+//            updatePosition(location)
+//            
+//            _newCursor!.pop()
+//            _panStart = nil
+//            _panTnf = nil
+//            _panSlice = nil
+//            
+//        default:
+//            break
+//        }
+//    }
 
 }

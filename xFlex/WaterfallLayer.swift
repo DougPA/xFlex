@@ -31,14 +31,12 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     // ----------------------------------------------------------------------------
     // MARK: - Private properties
     
-    fileprivate var _radio: Radio { return params.radio }
-    fileprivate var _panadapterId: Radio.PanadapterId { return params.panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
-    fileprivate var _waterfallId: Radio.WaterfallId { return _panadapter.waterfallId }
-    fileprivate var _waterfall: Waterfall? { return _radio.waterfalls[_waterfallId] }
+    fileprivate var _radio: Radio { return params.radio }       // values derived from Params
+    fileprivate var _panadapter: Panadapter? { return params.panadapter }
+    fileprivate var _waterfall: Waterfall? { return _radio.waterfalls[_panadapter!.waterfallId] }
 
-    fileprivate var _center: Int {return _radio.panadapters[_panadapterId]!.center }
-    fileprivate var _bandwidth: Int { return _radio.panadapters[_panadapterId]!.bandwidth }
+    fileprivate var _center: Int {return _panadapter!.center }
+    fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
     fileprivate var _start: Int { return _center - (_bandwidth/2) }
     fileprivate var _end: Int { return _center + (_bandwidth/2) }
 
@@ -46,6 +44,7 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     fileprivate var _waterfallTime: [Date?]!
 
     // OpenGL
+
     fileprivate var _tools = OpenGLTools()                              // OpenGL support class
     fileprivate var _vaoHandle: GLuint = 0                              // Vertex Array Object handle
     fileprivate var _verticesVboHandle: GLuint = 0                      // Vertex Buffer Object handle (vertices)
@@ -53,17 +52,6 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     fileprivate var _tboHandle: GLuint = 0                              // Texture Buffer Object handle
     fileprivate var _texValuesLocation: GLint = 0                       // texValues uniform location
 
-    fileprivate var _glAttributes: [NSOpenGLPixelFormatAttribute] =     // Pixel format attributes
-        [
-            UInt32(NSOpenGLPFAScreenMask),
-            0,
-            UInt32(NSOpenGLPFAAccelerated),
-            UInt32(NSOpenGLPFAColorSize), UInt32(32),
-            UInt32(NSOpenGLPFAOpenGLProfile), UInt32(NSOpenGLProfileVersion3_2Core),
-            UInt32(0)
-        ]
-    fileprivate var _openGLPixelFormat: NSOpenGLPixelFormat!
-    
     fileprivate var _shaders =                                          // array of Shader structs
         [
             ShaderStruct(name: "Waterfall", type: .Vertex),
@@ -134,13 +122,35 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     // ----------------------------------------------------------------------------
     // MARK: - Overridden methods
     
+//    deinit {
+//
+//        glDeleteProgram(_shaders[0].program!)
+//
+//        glDeleteVertexArrays(1, &_vaoHandle)
+//        glDeleteBuffers(1, &_verticesVboHandle)        //  All objects must be deleted manually
+//        glDeleteBuffers(1, &_texCoordsVboHandle)
+//        glDeleteBuffers(1, &_tboHandle)
+//        
+//    }
     override func copyCGLPixelFormat(forDisplayMask mask: UInt32) -> CGLPixelFormatObj {
         
-        _glAttributes[1] = mask
+        let attribs: [CGLPixelFormatAttribute] = // Pixel format attributes
+            [
+                kCGLPFADisplayMask, _CGLPixelFormatAttribute(rawValue: mask),
+                kCGLPFAColorSize, _CGLPixelFormatAttribute(rawValue: 24),
+                kCGLPFAAlphaSize, _CGLPixelFormatAttribute(rawValue: 8),
+                kCGLPFAAccelerated,
+                kCGLPFADoubleBuffer,
+                _CGLPixelFormatAttribute(rawValue: UInt32(NSOpenGLPFAOpenGLProfile)), _CGLPixelFormatAttribute(rawValue: UInt32(NSOpenGLProfileVersion3_2Core)),
+                _CGLPixelFormatAttribute(rawValue: 0)
+        ]
         
-        let _openGLPixelFormat = NSOpenGLPixelFormat(attributes: _glAttributes)
+        var pixelFormatObj: CGLPixelFormatObj? = nil
+        var numberOfPixelFormats: GLint = 0
         
-        return (_openGLPixelFormat?.cglPixelFormatObj)!
+        CGLChoosePixelFormat(attribs, &pixelFormatObj, &numberOfPixelFormats)
+        
+        return pixelFormatObj!
     }
     
     override func draw(inCGLContext ctx: CGLContextObj, pixelFormat pf: CGLPixelFormatObj, forLayerTime t: CFTimeInterval, displayTime ts: UnsafePointer<CVTimeStamp>?) {

@@ -9,7 +9,8 @@
 import Cocoa
 import xFlexAPI
 
-typealias Params = (radio: Radio, panadapterId: Radio.PanadapterId)     // Radio & Panadapter references
+//typealias Params = (radio: Radio, panadapterId: Radio.PanadapterId)     // Radio & Panadapter references
+typealias Params = (radio: Radio, panadapter: Panadapter?, waterfall: Waterfall?)     // Radio & Panadapter references
 
 class PanafallsViewController: NSSplitViewController {
     
@@ -73,10 +74,10 @@ class PanafallsViewController: NSSplitViewController {
     }
     /// Redraw the Slices on all Panadapters
     ///
-    func redrawAllSlices() {
-        
-        childViewControllers.forEach{ controller in (controller as! PanafallButtonViewController).redrawSlices() }
-    }
+//    func redrawAllSlices() {
+//        
+//        childViewControllers.forEach{ controller in (controller as! PanafallButtonViewController).redrawSlices() }
+//    }
     /// Redraw all Panadapters (all components)
     ///
     open func redrawAll() {
@@ -91,19 +92,19 @@ class PanafallsViewController: NSSplitViewController {
     // ----------------------------------------------------------------------------
     // MARK: - Private methods
     
-    /// Redraw SLice on a Panadapter (if any)
+    /// Redraw Slices on a Panadapter (if any)
     ///
     /// - Parameter id: the Panadapter ID
     ///
-    fileprivate func redrawSlices(on id: Radio.PanadapterId) {
-        
-        // find the containing PanafallButtonViewControllers
-        for controller in childViewControllers where (controller.representedObject as! Params).panadapterId == id {
-            
-            // redraw its Slices
-            (controller as! PanafallButtonViewController).redrawSlices()
-        }
-    }
+//    fileprivate func redrawSlices(on id: Radio.PanadapterId) {
+//        
+//        // find the containing PanafallButtonViewControllers
+//        for controller in childViewControllers where (controller.representedObject as! Params).panadapterId == id {
+//            
+//            // redraw its Slices
+//            (controller as! PanafallButtonViewController).redrawSlices()
+//        }
+//    }
 
     // ----------------------------------------------------------------------------
     // MARK: - Observation methods
@@ -122,20 +123,6 @@ class PanafallsViewController: NSSplitViewController {
             #keyPath(Waterfall.colorGain),
             #keyPath(Waterfall.gradientIndex)
     ]
-    fileprivate let _sliceKeyPaths =                        // Slice keypaths to observe
-        [
-            #keyPath(xFlexAPI.Slice.active),
-            #keyPath(xFlexAPI.Slice.frequency),
-            #keyPath(xFlexAPI.Slice.filterHigh),
-            #keyPath(xFlexAPI.Slice.filterLow)
-        ]
-    fileprivate let _tnfKeyPaths =                          // Tnf keypaths to observe
-        [
-            #keyPath(Tnf.depth),
-            #keyPath(Tnf.frequency),
-            #keyPath(Tnf.permanent),
-            #keyPath(Tnf.width)
-        ]
     /// Add / Remove property observations
     ///
     /// - Parameters:
@@ -173,23 +160,21 @@ class PanafallsViewController: NSSplitViewController {
             let pan = object as! Panadapter
             
             // find the viewController
-            var x: PanafallButtonViewController?
+            var panafallButtonVc: PanafallButtonViewController?
             for vc in childViewControllers {
-                if ((vc as! PanafallButtonViewController).representedObject as! Params).panadapterId == pan.id {
-                    x = vc as? PanafallButtonViewController
+                if ((vc as! PanafallButtonViewController).representedObject as! Params).panadapter == pan {
+                    panafallButtonVc = vc as? PanafallButtonViewController
                     break
                 }
             }
             
             switch keyPath! {
             case #keyPath(Panadapter.center), #keyPath(Panadapter.bandwidth):
-//                x?.redrawGrid()
-                x?.redrawFrequencyLegend()
-                x?.redrawSlices()
+                panafallButtonVc?.redrawFrequencyLegend()
+                panafallButtonVc?.redrawSlices()
                 
             case #keyPath(Panadapter.minDbm), #keyPath(Panadapter.maxDbm):
-//                x?.redrawGrid()
-                x?.redrawDbLegend()
+                panafallButtonVc?.redrawDbLegend()
                 
             default:
                 assert( true, "Invalid observation - \(keyPath!) in " + kModule)
@@ -201,31 +186,19 @@ class PanafallsViewController: NSSplitViewController {
             
             switch keyPath! {
                 
-            case #keyPath(Waterfall.autoBlackEnabled), #keyPath(Waterfall.blackLevel), #keyPath(Waterfall.colorGain):
-                // recalc the levels
-                _waterfallGradient.calcLevels(waterfall)
-                
             case #keyPath(Waterfall.gradientIndex):
-                
                 // load the new Gradient & recalc the levels
                 _waterfallGradient.loadGradient(waterfall)
+                fallthrough
+                
+            case #keyPath(Waterfall.autoBlackEnabled), #keyPath(Waterfall.blackLevel), #keyPath(Waterfall.colorGain):
+                // recalc the levels
                 _waterfallGradient.calcLevels(waterfall)
                 
             default:
                 assert( true, "Invalid observation - \(keyPath!) in " + kModule)
             }
             
-        case is xFlexAPI.Slice:
-            
-            let slice = object as! xFlexAPI.Slice
-                
-            // redraw it
-            redrawSlices(on: slice.panadapterId)
-                
-        case is Tnf:
-
-            self.redrawAllSlices()
-           
         default:
             break
         }
@@ -243,25 +216,13 @@ class PanafallsViewController: NSSplitViewController {
         NC.makeObserver(self, with: #selector(panadapterInitialized(_:)), of: .panadapterInitialized, object: nil)
 
         // Panadapter will be removed
-        NC.makeObserver(self, with: #selector(panadapterShouldBeRemoved(_:)), of: .panadapterShouldBeRemoved, object: nil)
+        NC.makeObserver(self, with: #selector(panadapterWillBeRemoved(_:)), of: .panadapterWillBeRemoved, object: nil)
 
         // Waterfall initialized
         NC.makeObserver(self, with: #selector(waterfallInitialized(_:)), of: .waterfallInitialized, object: nil)
 
         // Waterfall will be removed
-        NC.makeObserver(self, with: #selector(waterfallShouldBeRemoved(_:)), of: .waterfallShouldBeRemoved, object: nil)
-
-        // Slice initialized
-        NC.makeObserver(self, with: #selector(sliceInitialized(_:)), of: .sliceInitialized, object: nil)
-
-        // Slice should be removed
-        NC.makeObserver(self, with: #selector(sliceShouldBeRemoved(_:)), of: .sliceShouldBeRemoved, object: nil)
-
-        // Tnf initialized
-        NC.makeObserver(self, with: #selector(tnfInitialized(_:)), of: .tnfInitialized, object: nil)
-
-        // Tnf should be removed
-        NC.makeObserver(self, with: #selector(tnfShouldBeRemoved(_:)), of: .tnfShouldBeRemoved, object: nil)
+        NC.makeObserver(self, with: #selector(waterfallWillBeRemoved(_:)), of: .waterfallWillBeRemoved, object: nil)
     }
     //
     //  Panafall creation:
@@ -295,7 +256,7 @@ class PanafallsViewController: NSSplitViewController {
                 let panafallButtonVc = sb.instantiateController(withIdentifier: self.kPanafallButtonIdentifier) as! PanafallButtonViewController
                 
                 // setup the Params tuple
-                panafallButtonVc.representedObject = Params(radio: self._radioViewController.radio!, panadapterId: panadapter.id)
+                panafallButtonVc.representedObject = Params(radio: self._radioViewController.radio!, panadapter: panadapter, waterfall: nil)
                 
                 // add PanafallButtonViewController to the PanafallsViewController
                 self.addChildViewController(panafallButtonVc)
@@ -325,48 +286,55 @@ class PanafallsViewController: NSSplitViewController {
     //
     //  Panafall removal:
     //
-    //      Step 1 .panadapterShouldBeRemoved
-    //      Step 2 .waterfallShouldBeRemoved
+    //      Step 1 .panadapterWillBeRemoved
+    //      Step 2 .waterfallWIllBeRemoved
     //
-    /// Process .panadapterShouldBeRemoved Notification
+    /// Process .panadapterWillBeRemoved Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func panadapterShouldBeRemoved(_ note: Notification) {
+    @objc fileprivate func panadapterWillBeRemoved(_ note: Notification) {
         // a Panadapter model has been marked for removal and will be removed from the Panadapters collection
         
         // does the Notification contain a Panadapter?
         if let panadapter = note.object as? Panadapter {
             
             // YES, log the event
-            _log.msg("Panadapter is being Removed, ID = \(panadapter.id)", level: .debug, function: #function, file: #file, line: #line)
+            _log.msg("Panadapter will be removed, ID = \(panadapter.id)", level: .debug, function: #function, file: #file, line: #line)
 
             // remove Panadapter property observers
             observations(panadapter, paths: _panadapterKeyPaths, remove: true)
+
+            panadapter.delegate = nil
         }
         
     }
-    /// Process .waterfallShouldBeRemoved Notification
+    /// Process .waterfallWillBeRemoved Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func waterfallShouldBeRemoved(_ note: Notification) {
+    @objc fileprivate func waterfallWillBeRemoved(_ note: Notification) {
         // a Waterfall model has been marked for removal and will be removed from the Waterfalls collection
         
         // does the Notification contain a Waterfall?
         if let waterfall = note.object as? Waterfall {
             
             // YES, log the event
-            _log.msg("Waterfall  Removed, ID = \(waterfall.id)", level: .debug, function: #function, file: #file, line: #line)
+            _log.msg("Waterfall will be removed, ID = \(waterfall.id)", level: .debug, function: #function, file: #file, line: #line)
             
             // remove Waterfall property observers
             observations(waterfall, paths: _waterfallKeyPaths, remove: true)
+            
+            waterfall.delegate = nil
 
             // interact with the UI
             DispatchQueue.main.async { [unowned self] in
                 
+                // get the Panadapter Id for this Waterfall
+                let panadapterId = waterfall.panadapterId
+                
                 // find the Panafall Button View Controller for the Panafall containing the Waterfall
-                for vc in self.childViewControllers where (((vc as! PanafallButtonViewController).representedObject) as! Params).panadapterId == waterfall.panadapterId {
+                for vc in self.childViewControllers where (((vc as! PanafallButtonViewController).representedObject) as! Params).panadapter!.id == panadapterId {
                     
                     let panafallButtonVc = vc as! PanafallButtonViewController
                     
@@ -374,91 +342,22 @@ class PanafallsViewController: NSSplitViewController {
                     panafallButtonVc.removeFromParentViewController()
                     panafallButtonVc.dismiss(self)
                 }
+                
+//                // remove the Waterfall from its collection
+//                self._radioViewController.radio?.waterfalls[waterfall.id] = nil
+//                
+//                // remove the Panadapter from its collection
+//                self._radioViewController.radio?.panadapters[waterfall.panadapterId] = nil
             }
-        }
-    }
-    /// Process .sliceInitialized Notification
-    ///
-    /// - Parameter note: a Notification instance
-    ///
-    @objc fileprivate func sliceInitialized(_ note: Notification) {
-        
-        // does the Notification contain a Slice object?
-        if let slice = note.object as? xFlexAPI.Slice {
-            
-            // log the event
-            _log.msg("Slice initialized, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, function: #function, file: #file, line: #line)
-            
-            // observe changes to Slice properties
-            observations(slice, paths: _sliceKeyPaths)
-            
-            // redraw all the slices on the affected Panadapter
-            redrawSlices(on: slice.panadapterId)
-        }
-    }
-    /// Process .sliceShouldBeRemoved Notification
-    ///
-    /// - Parameter note: a Notification instance
-    ///
-    @objc fileprivate func sliceShouldBeRemoved(_ note: Notification) {
-        
-        // does the Notification contain a Slice object?
-        if let slice = note.object as? xFlexAPI.Slice {
-            
-            // log the event
-            _log.msg("Slice removed, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, function: #function, file: #file, line: #line)
-            
-            // remove Slice property observers
-            self.observations(slice, paths: self._sliceKeyPaths, remove: true)
-            
-            let panadapterId = slice.panadapterId
-            
-            // remove the Slice
-            _radioViewController.radio?.slices[slice.id] = nil
-            
-            // redraw all the slices on the affected Panadapter
-            redrawSlices(on: panadapterId)
-        }
-    }
-    /// Process .tnfInitialized Notification
-    ///
-    /// - Parameter note: a Notification instance
-    ///
-    @objc fileprivate func tnfInitialized(_ note: Notification) {
-        
-        // does the Notification contain a Tnf object?
-        if let tnf = note.object as? xFlexAPI.Tnf {
-            
-            // YES, log the event
-            _log.msg("Tnf initialized, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)
-            
-            // observe changes to Tnf properties
-            observations(tnf, paths: _tnfKeyPaths)
-            
-            // force a redraw of the Slice layer
-            redrawAllSlices()
-        }
-    }
-    /// Process .tnfShouldBeRemoved Notification
-    ///
-    /// - Parameter note: a Notification instance
-    ///
-    @objc fileprivate func tnfShouldBeRemoved(_ note: Notification) {
-        
-        // does the Notification contain a Tnf object?
-        if let tnf = note.object as? xFlexAPI.Tnf {
-            
-            // YES, log the event
-            _log.msg("Tnf removed, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)
-
-            // remove Tnf property observers
-            observations(tnf, paths: _tnfKeyPaths, remove: true)
-            
-            // remove the Tnf
-            _radioViewController.radio?.tnfs[tnf.id] = nil
-            
-            // force a redraw of the Slice layer
-            redrawAllSlices()
+//            DispatchQueue.main.async { [unowned self] in 
+//            
+//                // remove the Waterfall from its collection
+//                self._radioViewController.radio?.waterfalls[waterfall.id] = nil
+//                
+//                // remove the Panadapter from its collection
+//                self._radioViewController.radio?.panadapters[waterfall.panadapterId] = nil
+//
+//            }
         }
     }
 

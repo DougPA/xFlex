@@ -19,9 +19,11 @@ class BandButtonViewController : NSViewController {
     
     @IBOutlet fileprivate weak var bandButtons: NSMatrix!
 
-    fileprivate var _radio: Radio { return (representedObject as! Params).radio }    
-    fileprivate var _panadapterId: Radio.PanadapterId { return (representedObject as! Params).panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
+    fileprivate var _params: Params { return representedObject as! Params }
+    
+//    fileprivate var _radio: Radio { return _params.radio }
+    fileprivate var _panadapter: Panadapter? { return _params.panadapter }
+//    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
 
     fileprivate var _b = Band.sharedInstance
     
@@ -86,7 +88,7 @@ class BandButtonViewController : NSViewController {
             break
         }
         // tell the Panadapter
-        _panadapter.band = band
+        _panadapter!.band = band
     }
 
 }

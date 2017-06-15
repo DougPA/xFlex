@@ -178,7 +178,7 @@ final class OpenGLTools {
         // attach each Shader to the Program handle
         for shader in shaders {
             
-            glAttachShader(shader.program!, shader.handle!)
+            glAttachShader(shaders[0].program!, shader.handle!)
         }
         
         // link ('shaders[0].program' is used since all program values are equal)
@@ -207,8 +207,8 @@ final class OpenGLTools {
         // delete the Shaders (they still exist linked into the Program)
         for shader in shaders {
             
-            glDetachShader(shaders[0].program!, shader.handle!)
             glDeleteShader(shader.handle!)
+            glDetachShader(shaders[0].program!, shader.handle!)
         }
         // return error status (link errors, if any, are in shaders[0].error)
         return (shaders[0].error == nil)

@@ -64,6 +64,10 @@ final class WaterfallViewController : NSViewController, NSGestureRecognizerDeleg
         _waterfallView.addGestureRecognizer(_rightClick)
     }
     
+    deinit {
+//        Swift.print("deinit - WaterfallViewController")
+    }
+    
     // ----------------------------------------------------------------------------
     // MARK: - Internal methods
     

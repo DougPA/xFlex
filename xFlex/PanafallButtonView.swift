@@ -48,7 +48,7 @@ final class PanafallButtonView: NSView {
         // remove the Tracking area (if any)
         removeTrackingArea()
 
-//        print( kModule + " " + #function)
+//        Swift.print( #function + " - " + kModule)
     }
 
     /// Mouse entered the Button area
@@ -101,7 +101,7 @@ final class PanafallButtonView: NSView {
     }
     /// Remove the Tracking Area (if any) for the Button view
     ///
-    fileprivate func removeTrackingArea() {
+    public func removeTrackingArea() {
         
         // remove the existing Button View Tracking Area (if any)
         if _buttonTracking != nil { removeTrackingArea(_buttonTracking!) ; _buttonTracking = nil }

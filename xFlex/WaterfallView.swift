@@ -1,4 +1,4 @@
-//
+
 //  WaterfallView.swift
 //  xFlex
 //
@@ -31,10 +31,8 @@ final class WaterfallView: NSView, CALayerDelegate {
     // MARK: - Private properties
 
     fileprivate var _radio: Radio { return params.radio }       // values derived from Params
-    fileprivate var _panadapterId: Radio.PanadapterId { return params.panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
-    fileprivate var _waterfallId: Radio.WaterfallId { return _panadapter.waterfallId }
-    fileprivate var _waterfall: Waterfall? { return _radio.waterfalls[_waterfallId] }
+    fileprivate var _panadapter: Panadapter? { return params.panadapter }
+    fileprivate var _waterfall: Waterfall? { return _radio.waterfalls[_panadapter!.waterfallId] }
 
     fileprivate var _lineDuration: Int { return (_waterfall?.lineDuration) ?? 100 }
     
@@ -96,8 +94,15 @@ final class WaterfallView: NSView, CALayerDelegate {
     /// Cleanup
     ///
     deinit {
+        
+//        Swift.print("deinit - WaterfallView")
+
         // remove observations of Waterfall
         observations(_waterfall!, paths: _waterfallKeyPaths, remove: true)
+        
+        // remove the Waterfall from its collection
+        _radio.waterfalls[_waterfall!.id] = nil
+        
     }
     
     // ----------------------------------------------------------------------------
@@ -173,6 +178,7 @@ final class WaterfallView: NSView, CALayerDelegate {
     private func calcLegendParams() {
 
         DispatchQueue.main.async { [unowned self] in
+            
             // calc the height in seconds of the waterfall
             let maxDuration = Int(self.frame.height * CGFloat(self._lineDuration) / 1_000.0)
             

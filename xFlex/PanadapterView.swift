@@ -31,12 +31,12 @@ final class PanadapterView : NSView, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Private properties
     
-    fileprivate var _radio: Radio { return params.radio }
-    fileprivate var _panadapterId: Radio.PanadapterId { return params.panadapterId }
-    fileprivate var _panadapter: Panadapter { return _radio.panadapters[_panadapterId]! }
+    fileprivate var _radio: Radio { return params.radio }       // values derived from Params
+    fileprivate var _panadapter: Panadapter? { return params.panadapter }
+//    fileprivate var _waterfall: Waterfall? { return params.waterfall }
 
-    fileprivate var _center: Int {return _radio.panadapters[_panadapterId]!.center }
-    fileprivate var _bandwidth: Int { return _radio.panadapters[_panadapterId]!.bandwidth }
+    fileprivate var _center: Int {return _panadapter!.center }
+    fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
     fileprivate var _start: Int { return _center - (_bandwidth/2) }
     fileprivate var _end: Int  { return _center + (_bandwidth/2) }
     fileprivate var _hzPerUnit: CGFloat { return CGFloat(_end - _start) / self.frame.width }
@@ -47,7 +47,6 @@ final class PanadapterView : NSView, CALayerDelegate {
     fileprivate var _sliceLayer: CALayer!
     fileprivate var _dbLegendLayer: CALayer!
 
-    fileprivate var _sliceLayers = [SliceLayer]()
     fileprivate var _minY: CAConstraint!
     fileprivate var _minX: CAConstraint!
     fileprivate var _maxY: CAConstraint!
@@ -71,11 +70,11 @@ final class PanadapterView : NSView, CALayerDelegate {
     fileprivate lazy var _segments = Band.sharedInstance.segments
 
     // constants
+    fileprivate let _log = (NSApp.delegate as! AppDelegate)
     fileprivate let kModule = "PanadapterView"                          // Module Name reported in log messages
     fileprivate let _dbLegendFormat = " %4.0f"
     fileprivate let _dbLegendWidth: CGFloat = 40                        // width of Db Legend layer
     fileprivate let _frequencyLineWidth: CGFloat = 3.0
-//    fileprivate let _xPosition: CGFloat = 4                             // x-position of legend
     fileprivate let kRootLayer = "root"                                 // layer names
     fileprivate let kSpectrumLayer = "spectrum"
     fileprivate let kFrequencyLegendLayer = "frequency"
@@ -103,13 +102,6 @@ final class PanadapterView : NSView, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Overridden methods
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-//        // create the Frequency Legend, Db Legend and Panadapter layers
-//        setupLayers()
-    }
-    
     /// Awake from Nib
     ///
     override func awakeFromNib() {
@@ -117,17 +109,12 @@ final class PanadapterView : NSView, CALayerDelegate {
         // create the Frequency Legend, Db Legend, Panadapter and Slice layers
         setupLayers()
         
-        // setup observations of Defaults
+        // begin observing Defaults
         observations(UserDefaults.standard, paths: _defaultsKeyPaths)
         
-        _panadapter.delegate = _spectrumLayer
+        _panadapter!.delegate = _spectrumLayer
         
         redrawDbLegendLayer()
-        
-        
-//        for i in 0..<_sliceLayers.count {
-//            _sliceLayers[i].params = params
-//        }
     }
     /// The view is about to begin resizing
     ///
@@ -146,14 +133,19 @@ final class PanadapterView : NSView, CALayerDelegate {
         _spectrumLayer.liveResize = false
         
         // tell the Panadapter to tell the Radio the new dimensions
-        _panadapter.panDimensions = CGSize(width: frame.width, height: frame.height - frequencyLegendHeight)
+        _panadapter!.panDimensions = CGSize(width: frame.width, height: frame.height - frequencyLegendHeight)
     }
     /// Cleanup
     ///
     deinit {
 
+//        Swift.print("deinit - PanadapterView")
+
         // remove observations of Defaults
         observations(UserDefaults.standard, paths: _defaultsKeyPaths, remove: true)
+        
+        // remove the Panadapter from its collection
+        self._radio.panadapters[_panadapter!.id] = nil
     }
     
     // ----------------------------------------------------------------------------
@@ -182,15 +174,18 @@ final class PanadapterView : NSView, CALayerDelegate {
     /// Redraw a Slice Layer
     ///
     func redrawSliceLayer(_ slice: xFlexAPI.Slice) {
-        var theLayer: SliceLayer? = nil
+        var sliceLayer: CALayer? = nil
         
-        for layer in _sliceLayers where layer.slice == slice {
-            theLayer = layer
+        // find the specified SliceLayer
+        for layer in self._rootLayer.sublayers! where layer is SliceLayer {
+            if (layer as! SliceLayer).slice == slice { sliceLayer = layer ; break }
         }
-        if let theLayer = theLayer {
+        // for the specified SliceLayer
+        if let layer = sliceLayer as? SliceLayer {
             // interact with the UI
             DispatchQueue.main.async {
-                theLayer.setNeedsDisplay()
+                // force a redraw
+                layer.setNeedsDisplay()
             }
         }
     }
@@ -200,7 +195,9 @@ final class PanadapterView : NSView, CALayerDelegate {
         
         // interact with the UI
         DispatchQueue.main.async {
-            for layer in self._sliceLayers {
+            // for each SliceLayer
+            for layer in self._rootLayer.sublayers! where layer is SliceLayer {
+                // force a redraw
                 layer.setNeedsDisplay()
             }
         }
@@ -304,10 +301,11 @@ final class PanadapterView : NSView, CALayerDelegate {
             // select the way it will be composited with the other layers
             sliceLayer.compositingFilter = self.compositingFilter
             
-            self._sliceLayers.append(sliceLayer)
-            
             // add it to the hierarchy
             self._rootLayer.addSublayer(sliceLayer)
+            
+            // cause the Layer to observe the Slice's properties
+            sliceLayer.beginObservations()
             
             // cause it to be drawn
             sliceLayer.setNeedsDisplay()
@@ -320,20 +318,20 @@ final class PanadapterView : NSView, CALayerDelegate {
     func removeSlice(_ slice: xFlexAPI.Slice) {
         
         DispatchQueue.main.async { [unowned self] in
-            var layerIndex: Int? = nil
+            var sliceLayer: CALayer? = nil
             
-            // find the specified Slice's layer
-            for i in 0..<self._sliceLayers.count {
-                if self._sliceLayers[i].slice == slice { layerIndex = i ; break }
+            // find the specified SliceLayer
+            for layer in self._rootLayer.sublayers! where layer is SliceLayer {
+                if (layer as! SliceLayer).slice == slice { sliceLayer = layer ; break }
             }
-            // if found, remove the layer
-            if let index = layerIndex {
+            // if found
+            if let layer = sliceLayer as? SliceLayer {
                 
-                /// from the layer hierarchy
-                self._sliceLayers[index].removeFromSuperlayer()
+                // stop the Layer from observing the Slices's properties
+                layer.stopObservations()
                 
-                // from the array of layers
-                self._sliceLayers.remove(at: index)
+                /// remove the layer from the layer hierarchy
+                layer.removeFromSuperlayer()
             }
         }
     }
@@ -360,15 +358,15 @@ final class PanadapterView : NSView, CALayerDelegate {
         _path.setLineDash( dash, count: 2, phase: 0 )
 
         // calculate the spacings
-        let dbRange = _panadapter.maxDbm - _panadapter.minDbm
+        let dbRange = _panadapter!.maxDbm - _panadapter!.minDbm
         let yIncrPerDb = _dbLegendLayer.frame.height / dbRange
         let lineSpacing = CGFloat(Defaults[.dbLegendSpacing])
         let yIncrPerMark = yIncrPerDb * lineSpacing
         
         // calculate the number & position of the legend marks
         let numberOfLegends = Int( dbRange / lineSpacing)
-        let firstMarkValue = _panadapter.minDbm - _panadapter.minDbm.truncatingRemainder(dividingBy:  lineSpacing)
-        let firstMarkPosition = -_panadapter.minDbm.truncatingRemainder(dividingBy:  lineSpacing) * yIncrPerDb
+        let firstMarkValue = _panadapter!.minDbm - _panadapter!.minDbm.truncatingRemainder(dividingBy:  lineSpacing)
+        let firstMarkPosition = -_panadapter!.minDbm.truncatingRemainder(dividingBy:  lineSpacing) * yIncrPerDb
         
         // draw the legend
         for i in 0...numberOfLegends {
@@ -547,7 +545,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     }
     /// Add a Tnf Tracking area
     ///
-    /// - Parameter tnf: the Tnf
+    /// - Parameter tnf:    a Tnf reference
     ///
     fileprivate func addTnfTrackingArea(_ tnf: Tnf) {
         
@@ -567,7 +565,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     }
     /// Remove a Tnf Tracking area
     ///
-    /// - Parameter tnf: the Tnf
+    /// - Parameter tnf:    a Tnf reference
     ///
     fileprivate func removeTnfTrackingArea(_ tnf: Tnf) {
         
@@ -580,7 +578,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     }
     /// Redraw a layer
     ///
-    /// - Parameter layerName: name of the layer
+    /// - Parameter layerName:  name of the layer
     ///
     fileprivate func redrawLayer(_ layerName: String) {
         var layer: CALayer?
@@ -605,6 +603,7 @@ final class PanadapterView : NSView, CALayerDelegate {
             
             // interact with the UI
             DispatchQueue.main.async {
+                // force a redraw
                 layer.setNeedsDisplay()
             }
         }
@@ -613,7 +612,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Observation Methods
 
-    fileprivate let _defaultsKeyPaths =                   // Defaults keypaths to observe
+    fileprivate let _defaultsKeyPaths =               // Defaults keypaths to observe
         [
             "bandEdge",                               // Marker related
             "bandMarker",
@@ -637,18 +636,19 @@ final class PanadapterView : NSView, CALayerDelegate {
             "sliceFilterOpacity",
             "sliceInactive",
             
-            //            "spectrum",                               // Spectrum related
-            "spectrumBackground",
+            "spectrumBackground",                     // Spectrum related
             
             "tnfActive",                              // Tnf related
             "tnfEnabled",
             "tnfInactive"
         ]
-    
-    fileprivate let _sliceKeyPaths =
+    fileprivate let _tnfKeyPaths =                    // Tnf keypaths to observe
         [
-            #keyPath(xFlexAPI.Slice.frequency)
-        ]
+            #keyPath(Tnf.depth),
+            #keyPath(Tnf.frequency),
+            #keyPath(Tnf.permanent),
+            #keyPath(Tnf.width)
+    ]
     
     /// Add / Remove property observations
     ///
@@ -716,6 +716,11 @@ final class PanadapterView : NSView, CALayerDelegate {
         // Slice should be removed
         NC.makeObserver(self, with: #selector(sliceShouldBeRemoved(_:)), of: .sliceShouldBeRemoved, object: nil)
         
+        // Tnf initialized
+        NC.makeObserver(self, with: #selector(tnfInitialized(_:)), of: .tnfInitialized, object: nil)
+        
+        // Tnf should be removed
+        NC.makeObserver(self, with: #selector(tnfShouldBeRemoved(_:)), of: .tnfShouldBeRemoved, object: nil)
     }
     /// Process .sliceInitialized Notification
     ///
@@ -726,7 +731,12 @@ final class PanadapterView : NSView, CALayerDelegate {
         // does the Notification contain a Slice object?
         if let slice = note.object as? xFlexAPI.Slice {
             
+            // YES, add a Slice Layer
             addSlice(slice)
+            
+            // log the event
+            _log.msg("Slice initialized, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, function: #function, file: #file, line: #line)
+
         }
     }
     /// Process .sliceShouldBeRemoved Notification
@@ -738,7 +748,56 @@ final class PanadapterView : NSView, CALayerDelegate {
         // does the Notification contain a Slice object?
         if let slice = note.object as? xFlexAPI.Slice {
             
+            // YES, log the event
+            _log.msg("Slice will be removed, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, function: #function, file: #file, line: #line)
+            
+            // remove the Slice Layer
             removeSlice(slice)
+            
+            // remove the Slice object
+            _radio.slices[slice.id] = nil
+
+        }
+    }
+    /// Process .tnfInitialized Notification
+    ///
+    /// - Parameter note: a Notification instance
+    ///
+    @objc fileprivate func tnfInitialized(_ note: Notification) {
+        
+        // does the Notification contain a Tnf object?
+        if let tnf = note.object as? xFlexAPI.Tnf {
+            
+            // YES, log the event
+            _log.msg("Tnf initialized, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)
+            
+            // observe changes to Tnf properties
+            observations(tnf, paths: _tnfKeyPaths)
+            
+            // force a redraw of the Layer containing the Tnf's
+            redrawLayer(kFrequencyLegendLayer)
+        }
+    }
+    /// Process .tnfShouldBeRemoved Notification
+    ///
+    /// - Parameter note: a Notification instance
+    ///
+    @objc fileprivate func tnfShouldBeRemoved(_ note: Notification) {
+        
+        // does the Notification contain a Tnf object?
+        if let tnf = note.object as? xFlexAPI.Tnf {
+            
+            // YES, log the event
+            _log.msg("Tnf will be removed, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)
+            
+            // remove Tnf property observers
+            observations(tnf, paths: _tnfKeyPaths, remove: true)
+            
+            // remove the Tnf
+            _radio.tnfs[tnf.id] = nil
+            
+            // force a redraw of the Layer containing the Tnf's
+            redrawLayer(kFrequencyLegendLayer)
         }
     }
 
