@@ -32,6 +32,7 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
     fileprivate var _vboHandle = [GLuint](repeating: 0, count: 2)  // Vertex Buffer Object handle (Y)
     fileprivate var _uniformLineColor: GLint = 0                // Uniform location for Line Color
     fileprivate var _uniformDelta: GLint = 0                    // Uniform location for delta x
+    fileprivate var _uniformHeight: GLint = 0                   // Uniform location for frame height
     fileprivate var _delta: GLfloat = 0                         // delta x
     fileprivate var _previousNumberOfBins: Int = 0              // number of bins on last draw
 
@@ -175,9 +176,13 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
 //                bufferPtr.advanced(by: i * 2).pointee = GLfloat(-1)
 //                bufferPtr.advanced(by: i * 2).pointee = GLfloat(1) - (GLfloat(2) * GLfloat(dataFrame.bins[i]) / GLfloat(frame.height))
                 
+//                 incoming values range from 0 to height with 0 being the max and height being the min (i.e. it's upside down)
+//                 normalize to range between -1 to +1 for OpenGL
+//                bufferPtr.advanced(by: i).pointee = GLfloat(1) - (GLfloat(2) * GLfloat(dataFrame.bins[i]) / GLfloat(frame.height))
+
                 // incoming values range from 0 to height with 0 being the max and height being the min (i.e. it's upside down)
-                // normalize to range between -1 to +1 for OpenGL
-                bufferPtr.advanced(by: i).pointee = GLfloat(1) - (GLfloat(2) * GLfloat(dataFrame.bins[i]) / GLfloat(frame.height))
+                // the Vertex Shader will normalize to range between -1 to +1 for OpenGL
+                bufferPtr.advanced(by: i).pointee = GLfloat(dataFrame.bins[i])
             }
             
             // release the buffer
@@ -185,8 +190,10 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
         }
         
         // set the uniforms
+        // FIXME: Should only be done when needed
         glUniform4fv(_uniformLineColor , 1, _lineColor)
         glUniform1f(_uniformDelta , _delta)
+        glUniform1f(_uniformHeight , GLfloat(frame.height))
         
         // draw the Panadapter trace
         glDrawArrays(GLenum(GL_LINE_STRIP), GLint(0), GLsizei(dataFrame.numberOfBins) )
@@ -258,6 +265,7 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
         // get the uniform locations
         _uniformLineColor = glGetUniformLocation(_shaders[0].program!, "lineColor")
         _uniformDelta = glGetUniformLocation(_shaders[0].program!, "delta")
+        _uniformHeight = glGetUniformLocation(_shaders[0].program!, "height")
 
         // FIXME: This should only be done once?
         
