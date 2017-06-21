@@ -237,22 +237,22 @@ final class PanafallViewController: NSSplitViewController {
             
             menu.insertItem(NSMenuItem.separator(), at: 2)
             item = menu.insertItem(withTitle: kPermanentTnf, action: #selector(contextMenu(_:)), keyEquivalent: "", at: 3)
-            item.state = tnf.permanent ? NSOnState : NSOffState
+            item.state = tnf.permanent ? NSControl.StateValue.onState : NSControl.StateValue.offState
             item.representedObject = tnf
             item.target = self
             
             item = menu.insertItem(withTitle: kNormalTnf, action: #selector(contextMenu(_:)), keyEquivalent: "", at: 4)
-            item.state = (tnf.depth == Tnf.Depth.normal.rawValue) ? NSOnState : NSOffState
+            item.state = (tnf.depth == Tnf.Depth.normal.rawValue) ? NSControl.StateValue.onState : NSControl.StateValue.offState
             item.representedObject = tnf
             item.target = self
             
             item = menu.insertItem(withTitle: kDeepTnf, action: #selector(contextMenu(_:)), keyEquivalent: "", at: 5)
-            item.state = (tnf.depth == Tnf.Depth.deep.rawValue) ? NSOnState : NSOffState
+            item.state = (tnf.depth == Tnf.Depth.deep.rawValue) ? NSControl.StateValue.onState : NSControl.StateValue.offState
             item.representedObject = tnf
             item.target = self
             
             item = menu.insertItem(withTitle: kVeryDeepTnf, action: #selector(contextMenu(_:)), keyEquivalent: "", at: 6)
-            item.state = (tnf.depth == Tnf.Depth.veryDeep.rawValue) ? NSOnState : NSOffState
+            item.state = (tnf.depth == Tnf.Depth.veryDeep.rawValue) ? NSControl.StateValue.onState : NSControl.StateValue.offState
             item.representedObject = tnf
             item.target = self
             

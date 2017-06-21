@@ -40,7 +40,7 @@ final class WaterfallView: NSView, CALayerDelegate {
     fileprivate var _spectrumLayer: WaterfallLayer!
     fileprivate var _legendLayer: CALayer!
     
-    fileprivate var _legendAttributes = [String:AnyObject]()    // Font & Size for the Legend
+    fileprivate var _legendAttributes = [NSAttributedStringKey:Any]()    // Font & Size for the Legend
     fileprivate var _numberOfLegends = 0                        // Number of legend marks
     fileprivate var _increment = 0                              // Seconds between marks
 
@@ -63,7 +63,7 @@ final class WaterfallView: NSView, CALayerDelegate {
     override func awakeFromNib() {
         
         // setup the Legend font & size
-        _legendAttributes[NSFontAttributeName] = NSFont(name: "Monaco", size: 12.0)
+        _legendAttributes[NSAttributedStringKey.font] = NSFont(name: "Monaco", size: 12.0)
         
         // give the Waterfall layer a reference to the Params
         _spectrumLayer.params = params
@@ -260,7 +260,7 @@ final class WaterfallView: NSView, CALayerDelegate {
     func draw(_ layer: CALayer, in ctx: CGContext) {
         
         // set the legend color
-        _legendAttributes[NSForegroundColorAttributeName] = Defaults[.dbLegend]
+        _legendAttributes[NSAttributedStringKey.foregroundColor] = Defaults[.dbLegend]
         
         // draw the Waterfall Legend
         if layer.name == "legend" {
@@ -268,7 +268,7 @@ final class WaterfallView: NSView, CALayerDelegate {
             // setup the graphics context
             let context = NSGraphicsContext(cgContext: ctx, flipped: false)
             NSGraphicsContext.saveGraphicsState()
-            NSGraphicsContext.setCurrent(context)
+            NSGraphicsContext.current = context
             
             // FIXME: Legend values during line duration change???
             

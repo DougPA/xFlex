@@ -35,13 +35,13 @@ final class PreferencesTabViewController : NSTabViewController {
     override func viewWillAppear() {
         super.viewWillAppear()
         
-        view.window!.setFrameUsingName(_autosaveName)
+        view.window!.setFrameUsingName(NSWindow.FrameAutosaveName(rawValue: _autosaveName))
     }
 
     override func viewWillDisappear() {
         super.viewWillDisappear()
         
-        view.window!.saveFrame(usingName: _autosaveName)
+        view.window!.saveFrame(usingName: NSWindow.FrameAutosaveName(rawValue: _autosaveName))
     }
     
     override func tabView(_ tabView: NSTabView, didSelect tabViewItem: NSTabViewItem?) {

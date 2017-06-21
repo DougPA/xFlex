@@ -41,7 +41,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     fileprivate var _end: Int  { return _center + (_bandwidth/2) }
     fileprivate var _hzPerUnit: CGFloat { return CGFloat(_end - _start) / self.frame.width }
     
-    fileprivate var _rootLayer: CALayer!                                // layers
+    fileprivate var _rootLayer: CALayer!                                        // layers
     fileprivate var _spectrumLayer: PanadapterLayer!
     fileprivate var _frequencyLegendLayer: CALayer!
     fileprivate var _sliceLayer: CALayer!
@@ -52,18 +52,18 @@ final class PanadapterView : NSView, CALayerDelegate {
     fileprivate var _maxY: CAConstraint!
     fileprivate var _maxX: CAConstraint!
     fileprivate var _aboveFrequencyLegendY: CAConstraint!
-    fileprivate var _numberOfLegends: CGFloat!                          // number of legend values
-    fileprivate var _dbLegendAttributes = [String:AnyObject]()          // Font & Size for the db Legend
-    fileprivate var _frequencyLegendAttributes = [String:AnyObject]()   // Font & Size for the Frequency Legend
+    fileprivate var _numberOfLegends: CGFloat!                                  // number of legend values
+    fileprivate var _dbLegendAttributes = [NSAttributedStringKey:Any]()         // Font & Size for the db Legend
+    fileprivate var _frequencyLegendAttributes = [NSAttributedStringKey:Any]()  // Font & Size for the Frequency Legend
     fileprivate var _path = NSBezierPath()
-    fileprivate var _dbLegendHeight: CGFloat = 0                        // height of dbLegend labels
+    fileprivate var _dbLegendHeight: CGFloat = 0                                // height of dbLegend labels
     fileprivate var _dbLegendXPosition: CGFloat = 0
-    fileprivate var _frequencyParams: FrequencyParamTuple {             // given Bandwidth, return a Spacing & a Format
+    fileprivate var _frequencyParams: FrequencyParamTuple {                     // given Bandwidth, return a Spacing & a Format
         get { return kFrequencyParamTuples.filter { $0.high > _bandwidth && $0.low <= _bandwidth }.first ?? kFrequencyParamTuples[0] } }
     
     // tracking areas
     fileprivate var _tnfTracking = [String : NSTrackingArea]()
-    fileprivate let _trackingOptions = NSTrackingAreaOptions.mouseEnteredAndExited.union(.activeInActiveApp)
+    fileprivate let _trackingOptions = NSTrackingArea.Options.mouseEnteredAndExited.union(.activeInActiveApp)
     fileprivate var _activeTrackingArea: NSTrackingArea?
     
     // band & markers
@@ -346,8 +346,8 @@ final class PanadapterView : NSView, CALayerDelegate {
         layer.backgroundColor = Defaults[.dbLegendBackground].cgColor
         
         // setup the db Legend font & size
-        _dbLegendAttributes[NSForegroundColorAttributeName] = Defaults[.dbLegend]
-        _dbLegendAttributes[NSFontAttributeName] = dbLegendFont
+        _dbLegendAttributes[NSAttributedStringKey.foregroundColor] = Defaults[.dbLegend]
+        _dbLegendAttributes[NSAttributedStringKey.font] = dbLegendFont
         _dbLegendHeight = "-000".size(withAttributes: _dbLegendAttributes).height
         _dbLegendXPosition = layer.bounds.width - 40
 
@@ -392,8 +392,8 @@ final class PanadapterView : NSView, CALayerDelegate {
         layer.backgroundColor = Defaults[.frequencyLegendBackground].cgColor
         
         // setup the Frequency Legend font & size
-        _frequencyLegendAttributes[NSForegroundColorAttributeName] = Defaults[.frequencyLegend]
-        _frequencyLegendAttributes[NSFontAttributeName] = frequencyLegendFont
+        _frequencyLegendAttributes[NSAttributedStringKey.foregroundColor] = Defaults[.frequencyLegend]
+        _frequencyLegendAttributes[NSAttributedStringKey.font] = frequencyLegendFont
 
         let legendHeight = "123.456".size(withAttributes: _frequencyLegendAttributes).height
         
@@ -819,7 +819,7 @@ final class PanadapterView : NSView, CALayerDelegate {
         // setup the graphics context
         let context = NSGraphicsContext(cgContext: ctx, flipped: false)
         NSGraphicsContext.saveGraphicsState()
-        NSGraphicsContext.setCurrent(context)
+        NSGraphicsContext.current = context
         
         // draw a layer
         switch layerName {

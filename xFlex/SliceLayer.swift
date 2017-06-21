@@ -55,7 +55,7 @@ class SliceLayer: CALayer, CALayerDelegate {
         // setup the graphics context
         let context = NSGraphicsContext(cgContext: ctx, flipped: false)
         NSGraphicsContext.saveGraphicsState()
-        NSGraphicsContext.setCurrent(context)
+        NSGraphicsContext.current = context
         
         drawFilterOutlines(slice)
         

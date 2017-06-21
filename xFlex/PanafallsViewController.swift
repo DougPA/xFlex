@@ -250,10 +250,10 @@ class PanafallsViewController: NSSplitViewController {
             DispatchQueue.main.async { [unowned self] in
                 
                 // get the Storyboard containing a Panafall Button View Controller
-                let sb = NSStoryboard(name: self.kPanafallStoryboard, bundle: nil)
+                let sb = NSStoryboard(name: NSStoryboard.Name(rawValue: self.kPanafallStoryboard), bundle: nil)
                 
                 // create a Panafall Button View Controller
-                let panafallButtonVc = sb.instantiateController(withIdentifier: self.kPanafallButtonIdentifier) as! PanafallButtonViewController
+                let panafallButtonVc = sb.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: self.kPanafallButtonIdentifier)) as! PanafallButtonViewController
                 
                 // setup the Params tuple
                 panafallButtonVc.representedObject = Params(radio: self._radioViewController.radio!, panadapter: panadapter, waterfall: nil)

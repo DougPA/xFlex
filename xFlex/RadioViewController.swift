@@ -139,7 +139,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func cwxButton(_ sender: NSButton) {
         
         // toggle the CWX state
-        Defaults[.cwxOpen] = (sender.state == NSOnState)
+        Defaults[.cwxOpen] = (sender.state == NSControl.StateValue.onState)
     }
     /// Respond to the Headphone Gain slider
     ///
@@ -164,7 +164,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func markerButton(_ sender: NSButton) {
         
         // toggle the Markers
-        Defaults[.showMarkers] = (sender.state == NSOnState)
+        Defaults[.showMarkers] = (sender.state == NSControl.StateValue.onState)
     }
     /// Respond to the Headphone Mute button
     ///
@@ -172,7 +172,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @IBAction func muteHeadphone(_ sender: NSButton) {
         
-        radio?.headphoneMute = ( sender.state == NSOnState ? true : false )
+        radio?.headphoneMute = ( sender.state == NSControl.StateValue.onState ? true : false )
     }
     /// Respond to the Lineout Mute button
     ///
@@ -180,7 +180,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @IBAction func muteLineout(_ sender: NSButton) {
         
-        radio?.lineoutMute = ( sender.state == NSOnState ? true : false )
+        radio?.lineoutMute = ( sender.state == NSControl.StateValue.onState ? true : false )
     }
     /// Respond to the Pan button
     ///
@@ -198,7 +198,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func remoteRxButton(_ sender: NSButton) {
         
         // ask the Radio (hardware) to start/stop Rx Opus
-        radio?.requestRemoteRxAudio(sender.state == NSOnState)
+        radio?.requestRemoteRxAudio(sender.state == NSControl.StateValue.onState)
     }
     /// Respond to the Remote Tx button
     ///
@@ -207,7 +207,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func remoteTxButton(_ sender: NSButton) {
         
         // ask the Radio (hardware) to start/stop Tx Opus
-        radio?.micSelection = (sender.state == NSOnState ? "PC" : "MIC")
+        radio?.micSelection = (sender.state == NSControl.StateValue.onState ? "PC" : "MIC")
         
         // FIXME: This is just for testing
     }
@@ -218,8 +218,8 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func sideButton(_ sender: NSButton) {
         
         // open / collapse the Side view
-        splitViewItems[1].isCollapsed = (sender.state != NSOnState)
-        Defaults[.sideOpen] = (sender.state == NSOnState)
+        splitViewItems[1].isCollapsed = (sender.state != NSControl.StateValue.onState)
+        Defaults[.sideOpen] = (sender.state == NSControl.StateValue.onState)
     }
     /// Respond to the Tnf button
     ///
@@ -228,7 +228,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func tnfButton(_ sender: NSButton) {
         
         // enable / disable Tnf's
-        radio?.tnfEnabled = (sender.state == NSOnState)
+        radio?.tnfEnabled = (sender.state == NSControl.StateValue.onState)
     }
     
     // ----------------------------------------------------------------------------
@@ -241,7 +241,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func openRadioPicker(_ sender: AnyObject) {
         
         // get an instance of the RadioPicker
-        _radioPickerViewController = storyboard!.instantiateController(withIdentifier: kRadioPickerIdentifier) as? RadioPickerViewController
+        _radioPickerViewController = storyboard!.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: kRadioPickerIdentifier)) as? RadioPickerViewController
         
         // make this View Controller the delegate of the RadioPicker
         _radioPickerViewController!.representedObject = self
@@ -267,13 +267,13 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @IBAction func tabEq(_ sender: NSButton) {
         
-        if sender.state == NSOnState {
+        if sender.state == NSControl.StateValue.onState {
             
             // create a new Equalizer UI
-            let sb = NSStoryboard(name: kSideStoryboard, bundle: nil)
+            let sb = NSStoryboard(name: NSStoryboard.Name(rawValue: kSideStoryboard), bundle: nil)
             
             // create an Equalizer view controller
-            let vc = sb.instantiateController(withIdentifier: kEqualizerIdentifier) as! EqViewController
+            let vc = sb.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: kEqualizerIdentifier)) as! EqViewController
             
             // give it a reference to its Radio object
             vc.representedObject = radio
@@ -298,13 +298,13 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @IBAction func tabPcw(_ sender: NSButton) {
         
-        if sender.state == NSOnState {
+        if sender.state == NSControl.StateValue.onState {
             
             // create a new Equalizer UI
-            let sb = NSStoryboard(name: kSideStoryboard, bundle: nil)
+            let sb = NSStoryboard(name: NSStoryboard.Name(rawValue: kSideStoryboard), bundle: nil)
             
             // create an Pcw view controller
-            let vc = sb.instantiateController(withIdentifier: kPcwIdentifier) as! PCWViewController
+            let vc = sb.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: kPcwIdentifier)) as! PCWViewController
             
             // give it a reference to its Radio object
             vc.representedObject = radio
@@ -329,13 +329,13 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @IBAction func tabPhne(_ sender: NSButton) {
         
-        if sender.state == NSOnState {
+        if sender.state == NSControl.StateValue.onState {
             
             // create a new Equalizer UI
-            let sb = NSStoryboard(name: kSideStoryboard, bundle: nil)
+            let sb = NSStoryboard(name: NSStoryboard.Name(rawValue: kSideStoryboard), bundle: nil)
             
             // create an Phone view controller
-            let vc = sb.instantiateController(withIdentifier: kPhoneIdentifier) as! PhoneViewController
+            let vc = sb.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: kPhoneIdentifier)) as! PhoneViewController
             
             // give it a reference to its Radio object
             vc.representedObject = radio
@@ -360,13 +360,13 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @IBAction func tabRx(_ sender: NSButton) {
         
-        if sender.state == NSOnState {
+        if sender.state == NSControl.StateValue.onState {
             
             // create a new Equalizer UI
-            let sb = NSStoryboard(name: kSideStoryboard, bundle: nil)
+            let sb = NSStoryboard(name: NSStoryboard.Name(rawValue: kSideStoryboard), bundle: nil)
             
             // create an Rx view controller
-            let vc = sb.instantiateController(withIdentifier: kRxIdentifier) as! NSViewController
+            let vc = sb.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: kRxIdentifier)) as! NSViewController
             
             // give it a reference to its Radio object
             vc.representedObject = radio
@@ -391,7 +391,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @IBAction func tabTx(_ sender: NSButton) {
         
-        if sender.state == NSOnState {
+        if sender.state == NSControl.StateValue.onState {
             
             // FIXME: Code needed
             
@@ -453,7 +453,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
                 if let toolbar = NSApp.mainWindow?.toolbar {
                     
                     // find the VoltageTemperature toolbar item
-                    let items = toolbar.items.filter( {$0.itemIdentifier == self.kVoltageTemperature} )
+                    let items = toolbar.items.filter( {$0.itemIdentifier.rawValue == self.kVoltageTemperature} )
                     
                     // there should be only one
                     if items.count == 1 {
@@ -565,19 +565,19 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
                         self._mainWindowController?.lineoutGain.integerValue = ch[.newKey] as! Int
                         
                     case #keyPath(Radio.lineoutMute):
-                        self._mainWindowController?.lineoutMute.state = (ch[.newKey] as! Bool) ? NSOnState : NSOffState
+                        self._mainWindowController?.lineoutMute.state = (ch[.newKey] as! Bool) ? NSControl.StateValue.onState : NSControl.StateValue.offState
                         
                     case #keyPath(Radio.headphoneGain):
                         self._mainWindowController?.headphoneGain.integerValue = ch[.newKey] as! Int
                         
                     case #keyPath(Radio.headphoneMute):
-                        self._mainWindowController?.headphoneMute.state = (ch[.newKey] as! Bool) ? NSOnState : NSOffState
+                        self._mainWindowController?.headphoneMute.state = (ch[.newKey] as! Bool) ? NSControl.StateValue.onState : NSControl.StateValue.offState
                         
                     case #keyPath(Radio.tnfEnabled):
-                        self._mainWindowController?.tnfEnabled.state = (ch[.newKey] as! Bool) ? NSOnState : NSOffState
+                        self._mainWindowController?.tnfEnabled.state = (ch[.newKey] as! Bool) ? NSControl.StateValue.onState : NSControl.StateValue.offState
                         
                     case #keyPath(Radio.fullDuplexEnabled):
-                        self._mainWindowController?.fdxEnabled.state = (ch[.newKey] as! Bool) ? NSOnState : NSOffState
+                        self._mainWindowController?.fdxEnabled.state = (ch[.newKey] as! Bool) ? NSControl.StateValue.onState : NSControl.StateValue.offState
                         
                     case #keyPath(Opus.remoteRxOn):
                         
@@ -722,9 +722,9 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
                 
                 // Initialize the toolbar items
                 self._mainWindowController?.lineoutGain.integerValue = radio.lineoutGain
-                self._mainWindowController?.lineoutMute.state = radio.lineoutMute ? NSOnState : NSOffState
+                self._mainWindowController?.lineoutMute.state = radio.lineoutMute ? NSControl.StateValue.onState : NSControl.StateValue.offState
                 self._mainWindowController?.headphoneGain.integerValue = radio.headphoneGain
-                self._mainWindowController?.headphoneMute.state = radio.headphoneMute ? NSOnState : NSOffState
+                self._mainWindowController?.headphoneMute.state = radio.headphoneMute ? NSControl.StateValue.onState : NSControl.StateValue.offState
                 self._mainWindowController?.window?.viewsNeedDisplay = true
             }
         }

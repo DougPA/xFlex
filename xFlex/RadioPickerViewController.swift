@@ -233,10 +233,10 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
     func tableView( _ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         // get a view for the cell
-        let view = tableView.make(withIdentifier: tableColumn!.identifier, owner:self) as! NSTableCellView
+        let view = tableView.makeView(withIdentifier: tableColumn!.identifier, owner:self) as! NSTableCellView
         
         // what field?
-        if tableColumn!.identifier == kColumnIdentifierDefaultRadio {
+        if tableColumn!.identifier.rawValue == kColumnIdentifierDefaultRadio {
             
             // default field, is this row the default?
             let params = Defaults[.defaultRadioParameters]
@@ -247,7 +247,7 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
         } else {
             
             // all other fields, set the stringValue of the cell's text field to the appropriate field
-            view.textField!.stringValue = _availableRadios[row].valueForName(tableColumn!.identifier) ?? ""
+            view.textField!.stringValue = _availableRadios[row].valueForName(tableColumn!.identifier.rawValue) ?? ""
         }
         return view
     }

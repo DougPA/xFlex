@@ -16,8 +16,8 @@ final class ColorsViewController : NSViewController {
     override func viewDidDisappear() {
         
         // close the ColorPicker (if open)
-        if NSColorPanel.shared().isVisible {
-            NSColorPanel.shared().performClose(nil)
+        if NSColorPanel.shared.isVisible {
+            NSColorPanel.shared.performClose(nil)
         }
     }
 

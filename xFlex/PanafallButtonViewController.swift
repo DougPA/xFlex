@@ -114,7 +114,7 @@ final class PanafallButtonViewController: NSViewController {
     ///
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
 
-        switch segue.identifier! {
+        switch segue.identifier!.rawValue {
         
         case kPanafallEmbed:                            // this will always occur first
             

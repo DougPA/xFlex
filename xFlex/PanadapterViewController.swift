@@ -263,21 +263,21 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
             
             if location.x > panadapterView.frame.width - _dbLegendWidth {
                 
-                _newCursor = NSCursor.resizeUpDown()
+                _newCursor = NSCursor.resizeUpDown
                 
                 // top or bottom?
                 _dbmTop = (location.y > panadapterView.frame.height/2)
                 
             } else {
                 
-                _newCursor = NSCursor.resizeLeftRight()
+                _newCursor = NSCursor.resizeLeftRight
             }
             _newCursor!.push()
             
         case .changed:
             
             // Up/Down   or   Left/Right ?
-            if NSCursor.current() == NSCursor.resizeUpDown() {
+            if NSCursor.current == NSCursor.resizeUpDown {
                 
                 // Up/Down, update the dbM Legend
                 if _dbmTop {
@@ -306,7 +306,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
             
         case .ended:
             
-            if NSCursor.current() == NSCursor.resizeUpDown() {
+            if NSCursor.current == NSCursor.resizeUpDown {
                 
                 // Up/Down, update the dbM Legend
                 if _dbmTop {

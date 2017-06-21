@@ -24,7 +24,7 @@ final class PanafallButtonView: NSView {
 
     // constants
     fileprivate let kModule = "PanafallButtonView"              // Module Name reported in log messages
-    fileprivate let _trackingOptions = NSTrackingAreaOptions.mouseEnteredAndExited.union(.activeInActiveApp)
+    fileprivate let _trackingOptions = NSTrackingArea.Options.mouseEnteredAndExited.union(.activeInActiveApp)
     fileprivate let kButtonViewWidth: CGFloat = 75              // default button area width
     
     // ----------------------------------------------------------------------------
