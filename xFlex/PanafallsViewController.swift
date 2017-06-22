@@ -212,29 +212,29 @@ class PanafallsViewController: NSSplitViewController {
     ///
     fileprivate func addNotifications() {
         
-        // Panadapter initialized
-        NC.makeObserver(self, with: #selector(panadapterInitialized(_:)), of: .panadapterInitialized, object: nil)
+        // a Panadapter was added
+        NC.makeObserver(self, with: #selector(panadapterHasBeenAdded(_:)), of: .panadapterHasBeenAdded, object: nil)
 
-        // Panadapter will be removed
-        NC.makeObserver(self, with: #selector(panadapterWillBeRemoved(_:)), of: .panadapterWillBeRemoved, object: nil)
+        // a Panadapter should be removed
+        NC.makeObserver(self, with: #selector(panadapterShouldBeRemoved(_:)), of: .panadapterShouldBeRemoved, object: nil)
 
-        // Waterfall initialized
-        NC.makeObserver(self, with: #selector(waterfallInitialized(_:)), of: .waterfallInitialized, object: nil)
+        // a Waterfall was added
+        NC.makeObserver(self, with: #selector(waterfallHasBeenAdded(_:)), of: .waterfallHasBeenAdded, object: nil)
 
-        // Waterfall will be removed
-        NC.makeObserver(self, with: #selector(waterfallWillBeRemoved(_:)), of: .waterfallWillBeRemoved, object: nil)
+        // a Waterfall should be removed
+        NC.makeObserver(self, with: #selector(waterfallShouldBeRemoved(_:)), of: .waterfallShouldBeRemoved, object: nil)
     }
     //
-    //  Panafall creation:
+    //  Panafall creation occurs in two steps:
     //
-    //      Step 1 .panadapterInitialized
-    //      Step 2 .waterfallInitialized
+    //      Step 1 .panadapterHasBeenAdded
+    //      Step 2 .waterfallHasBeenAdded
     //
-    /// Process .panadapterInitialized Notification
+    /// Process a newly added Panadapter
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func panadapterInitialized(_ note: Notification) {
+    @objc fileprivate func panadapterHasBeenAdded(_ note: Notification) {
         // a Panadapter model has been added to the Panadapters collection and Initialized
         
         // does the Notification contain a Panadapter?
@@ -242,58 +242,62 @@ class PanafallsViewController: NSSplitViewController {
             
             // YES, log the event
             _log.msg("Panadapter Initialized, ID = \(panadapter.id)", level: .debug, function: #function, file: #file, line: #line)
-            
-            // observe changes to Panadapter properties
-            observations(panadapter, paths: _panadapterKeyPaths)
-            
-            // interact with the UI
-            DispatchQueue.main.async { [unowned self] in
-                
-                // get the Storyboard containing a Panafall Button View Controller
-                let sb = NSStoryboard(name: NSStoryboard.Name(rawValue: self.kPanafallStoryboard), bundle: nil)
-                
-                // create a Panafall Button View Controller
-                let panafallButtonVc = sb.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: self.kPanafallButtonIdentifier)) as! PanafallButtonViewController
-                
-                // setup the Params tuple
-                panafallButtonVc.representedObject = Params(radio: self._radioViewController.radio!, panadapter: panadapter, waterfall: nil)
-                
-                // add PanafallButtonViewController to the PanafallsViewController
-                self.addChildViewController(panafallButtonVc)
-                
-                // tell the SplitView to adjust
-                self.splitView.adjustSubviews()
-            }
         }
     }
-    /// Process .waterfallInitialized Notification
+    /// Process a newly added Waterfall
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func waterfallInitialized(_ note: Notification) {
+    @objc fileprivate func waterfallHasBeenAdded(_ note: Notification) {
         // a Waterfall model has been added to the Waterfalls collection and Initialized
         
-        // does the Notification contain a Panadapter?
+        // does the Notification contain a Waterfall?
         if let waterfall = note.object as? Waterfall {
             
             // YES, log the event
             _log.msg("Waterfall Initialized, ID = \(waterfall.id)", level: .debug, function: #function, file: #file, line: #line)
-
-            // observe changes to Waterfall properties
-            observations(waterfall, paths: _waterfallKeyPaths)
+            
+            // get the Panadapter for this Waterfall
+            if let panadapter = _radioViewController.radio!.panadapters[waterfall.panadapterId] {
+                
+                // interact with the UI
+                DispatchQueue.main.async { [unowned self] in
+                    
+                    // get the Storyboard containing a Panafall Button View Controller
+                    let sb = NSStoryboard(name: NSStoryboard.Name(rawValue: self.kPanafallStoryboard), bundle: nil)
+                    
+                    // create a Panafall Button View Controller
+                    let panafallButtonVc = sb.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: self.kPanafallButtonIdentifier)) as! PanafallButtonViewController
+                    
+                    // setup the Params tuple
+                    panafallButtonVc.representedObject = Params(radio: self._radioViewController.radio!, panadapter: panadapter, waterfall: waterfall)
+                    
+                    // add PanafallButtonViewController to the PanafallsViewController
+                    self.addChildViewController(panafallButtonVc)
+                    
+                    // tell the SplitView to adjust
+                    self.splitView.adjustSubviews()
+                    
+                    // observe changes to Panadapter properties
+                    self.observations(panadapter, paths: self._panadapterKeyPaths)
+                    
+                    // observe changes to Waterfall properties
+                    self.observations(waterfall, paths: self._waterfallKeyPaths)
+                }
+            }
         }
     }
     //
-    //  Panafall removal:
+    //  Panafall removal occurs in two steps:
     //
-    //      Step 1 .panadapterWillBeRemoved
-    //      Step 2 .waterfallWIllBeRemoved
+    //      Step 1 .panadapterShouldBeRemoved
+    //      Step 2 .waterfallShouldBeRemoved
     //
-    /// Process .panadapterWillBeRemoved Notification
+    /// Process the removal of a Panadapter
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func panadapterWillBeRemoved(_ note: Notification) {
+    @objc fileprivate func panadapterShouldBeRemoved(_ note: Notification) {
         // a Panadapter model has been marked for removal and will be removed from the Panadapters collection
         
         // does the Notification contain a Panadapter?
@@ -309,11 +313,11 @@ class PanafallsViewController: NSSplitViewController {
         }
         
     }
-    /// Process .waterfallWillBeRemoved Notification
+    /// Process the removal of a Waterfall
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func waterfallWillBeRemoved(_ note: Notification) {
+    @objc fileprivate func waterfallShouldBeRemoved(_ note: Notification) {
         // a Waterfall model has been marked for removal and will be removed from the Waterfalls collection
         
         // does the Notification contain a Waterfall?
@@ -326,15 +330,12 @@ class PanafallsViewController: NSSplitViewController {
             observations(waterfall, paths: _waterfallKeyPaths, remove: true)
             
             waterfall.delegate = nil
-
+            
             // interact with the UI
-            DispatchQueue.main.async { [unowned self] in
+            DispatchQueue.main.sync { [unowned self] in
                 
-                // get the Panadapter Id for this Waterfall
-                let panadapterId = waterfall.panadapterId
-                
-                // find the Panafall Button View Controller for the Panafall containing the Waterfall
-                for vc in self.childViewControllers where (((vc as! PanafallButtonViewController).representedObject) as! Params).panadapter!.id == panadapterId {
+                // find the Panafall Button View Controller containing the Waterfall
+                for vc in self.childViewControllers where (((vc as! PanafallButtonViewController).representedObject) as! Params).waterfall == waterfall {
                     
                     let panafallButtonVc = vc as! PanafallButtonViewController
                     
@@ -342,26 +343,8 @@ class PanafallsViewController: NSSplitViewController {
                     panafallButtonVc.removeFromParentViewController()
                     panafallButtonVc.dismiss(self)
                 }
-                
-//                // remove the Waterfall from its collection
-//                self._radioViewController.radio?.waterfalls[waterfall.id] = nil
-//                
-//                // remove the Panadapter from its collection
-//                self._radioViewController.radio?.panadapters[waterfall.panadapterId] = nil
             }
-//            DispatchQueue.main.async { [unowned self] in 
-//            
-//                // remove the Waterfall from its collection
-//                self._radioViewController.radio?.waterfalls[waterfall.id] = nil
-//                
-//                // remove the Panadapter from its collection
-//                self._radioViewController.radio?.panadapters[waterfall.panadapterId] = nil
-//
-//            }
         }
     }
-
-    // ----------------------------------------------------------------------------
-    // MARK: - Delegate Methods
     
 }

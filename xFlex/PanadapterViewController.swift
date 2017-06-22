@@ -26,10 +26,10 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     
     fileprivate var _params: Params { return representedObject as! Params }
 
-//    fileprivate var _radio: Radio { return params.radio }       // values derived from Params
+    fileprivate var _radio: Radio { return _params.radio }       // values derived from Params
     fileprivate var _panadapter: Panadapter? { return _params.panadapter }
-//    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
-
+    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
+    
     fileprivate var _start: Int { return _panadapter!.center - (_panadapter!.bandwidth/2) }
     fileprivate var _end: Int  { return _panadapter!.center + (_panadapter!.bandwidth/2) }
     fileprivate var _hzPerUnit: CGFloat { return CGFloat(_end - _start) / view.frame.width }

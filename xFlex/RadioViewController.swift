@@ -632,14 +632,14 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         // TCP Connection disconnect
         NC.makeObserver(self, with: #selector(tcpDidDisconnect(_:)), of: .tcpDidDisconnect, object: nil)
 
-        // Meter Initialized
-        NC.makeObserver(self, with: #selector(meterInitialized(_:)), of: .meterInitialized, object: nil)
+        // a Meter was Added
+        NC.makeObserver(self, with: #selector(meterHasBeenAdded(_:)), of: .meterHasBeenAdded, object: nil)
 
         // Radio Initialized
         NC.makeObserver(self, with: #selector(radioInitialized(_:)), of: .radioInitialized, object: nil)
 
-        // Opus Initialized
-        NC.makeObserver(self, with: #selector(opusInitialized(_:)), of: .opusInitialized, object: nil)
+        // an Opus was Added
+        NC.makeObserver(self, with: #selector(opusHasBeenAdded(_:)), of: .opusHasBeenAdded, object: nil)
 }
     /// Process .tcpDidConnect Notification
     ///
@@ -687,11 +687,11 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
             openRadioPicker(self)
         }
     }
-    /// Process .meterInitialized Notification
+    /// Process a newly added Meter object
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func meterInitialized(_ note: Notification) {
+    @objc fileprivate func meterHasBeenAdded(_ note: Notification) {
 
         if let meter = note.object as? Meter {
             
@@ -729,11 +729,11 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
             }
         }
     }
-    /// Process .opusInitialized Notification
+    /// Process a newly added Opus
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func opusInitialized(_ note: Notification) {
+    @objc fileprivate func opusHasBeenAdded(_ note: Notification) {
         
         // the Opus class has been initialized
         if let opus = note.object as? Opus {

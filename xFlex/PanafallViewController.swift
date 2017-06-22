@@ -27,7 +27,7 @@ final class PanafallViewController: NSSplitViewController {
 
     fileprivate var _radio: Radio { return _params.radio }
     fileprivate var _panadapter: Panadapter? { return _params.panadapter }
-//    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
+    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
 
     fileprivate var _center: Int {return _panadapter!.center }
     fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
@@ -116,20 +116,6 @@ final class PanafallViewController: NSSplitViewController {
                 adjustSliceFrequency(slice, incr: incr)
             }
         }
-    }
-    
-    deinit {
-
-//        // get the Waterfall Id before removing the Panadapter
-//        let waterfallId = _radio.panadapters[_panadapterId]!.waterfallId
-//        
-//        // remove the Waterfall from its collection
-//        _radio.waterfalls[waterfallId] = nil
-//
-//        // remove the Panadapter from its collection
-//        _radio.panadapters[_panadapterId] = nil
-        
-//        print( #function + " - " + kModule)
     }
     
     // ----------------------------------------------------------------------------

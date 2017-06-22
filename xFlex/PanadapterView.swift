@@ -33,8 +33,8 @@ final class PanadapterView : NSView, CALayerDelegate {
     
     fileprivate var _radio: Radio { return params.radio }       // values derived from Params
     fileprivate var _panadapter: Panadapter? { return params.panadapter }
-//    fileprivate var _waterfall: Waterfall? { return params.waterfall }
-
+    fileprivate var _waterfall: Waterfall? { return params.waterfall }
+    
     fileprivate var _center: Int {return _panadapter!.center }
     fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
     fileprivate var _start: Int { return _center - (_bandwidth/2) }
@@ -139,13 +139,11 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     deinit {
 
-//        Swift.print("deinit - PanadapterView")
-
         // remove observations of Defaults
         observations(UserDefaults.standard, paths: _defaultsKeyPaths, remove: true)
         
-        // remove the Panadapter from its collection
-        self._radio.panadapters[_panadapter!.id] = nil
+        // remove the Panadapter
+        _radio.removeObject(_panadapter)
     }
     
     // ----------------------------------------------------------------------------
@@ -710,23 +708,23 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     fileprivate func addNotifications() {
         
-        // Slice initialized
-        NC.makeObserver(self, with: #selector(sliceInitialized(_:)), of: .sliceInitialized, object: nil)
+        // a Slice has been added
+        NC.makeObserver(self, with: #selector(sliceHasBeenAdded(_:)), of: .sliceHasBeenAdded, object: nil)
         
-        // Slice should be removed
+        // a Slice should be removed
         NC.makeObserver(self, with: #selector(sliceShouldBeRemoved(_:)), of: .sliceShouldBeRemoved, object: nil)
         
-        // Tnf initialized
-        NC.makeObserver(self, with: #selector(tnfInitialized(_:)), of: .tnfInitialized, object: nil)
+        // a Tnf has been added
+        NC.makeObserver(self, with: #selector(tnfHasBeenAdded(_:)), of: .tnfHasBeenAdded, object: nil)
         
-        // Tnf should be removed
+        // a Tnf should be removed
         NC.makeObserver(self, with: #selector(tnfShouldBeRemoved(_:)), of: .tnfShouldBeRemoved, object: nil)
     }
-    /// Process .sliceInitialized Notification
+    /// Process a newly added Slice
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func sliceInitialized(_ note: Notification) {
+    @objc fileprivate func sliceHasBeenAdded(_ note: Notification) {
         
         // does the Notification contain a Slice object?
         if let slice = note.object as? xFlexAPI.Slice {
@@ -739,7 +737,7 @@ final class PanadapterView : NSView, CALayerDelegate {
 
         }
     }
-    /// Process .sliceShouldBeRemoved Notification
+    /// Process the removal of a Slice
     ///
     /// - Parameter note: a Notification instance
     ///
@@ -754,16 +752,16 @@ final class PanadapterView : NSView, CALayerDelegate {
             // remove the Slice Layer
             removeSlice(slice)
             
-            // remove the Slice object
-            _radio.slices[slice.id] = nil
+            // remove the Slice
+            _radio.removeObject(slice)
 
         }
     }
-    /// Process .tnfInitialized Notification
+    /// Process a newly added Tnf
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func tnfInitialized(_ note: Notification) {
+    @objc fileprivate func tnfHasBeenAdded(_ note: Notification) {
         
         // does the Notification contain a Tnf object?
         if let tnf = note.object as? xFlexAPI.Tnf {
@@ -778,7 +776,7 @@ final class PanadapterView : NSView, CALayerDelegate {
             redrawLayer(kFrequencyLegendLayer)
         }
     }
-    /// Process .tnfShouldBeRemoved Notification
+    /// Process the removal of a Tnf
     ///
     /// - Parameter note: a Notification instance
     ///
@@ -794,7 +792,7 @@ final class PanadapterView : NSView, CALayerDelegate {
             observations(tnf, paths: _tnfKeyPaths, remove: true)
             
             // remove the Tnf
-            _radio.tnfs[tnf.id] = nil
+            _radio.removeObject(tnf)
             
             // force a redraw of the Layer containing the Tnf's
             redrawLayer(kFrequencyLegendLayer)

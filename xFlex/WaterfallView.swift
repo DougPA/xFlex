@@ -32,7 +32,7 @@ final class WaterfallView: NSView, CALayerDelegate {
 
     fileprivate var _radio: Radio { return params.radio }       // values derived from Params
     fileprivate var _panadapter: Panadapter? { return params.panadapter }
-    fileprivate var _waterfall: Waterfall? { return _radio.waterfalls[_panadapter!.waterfallId] }
+    fileprivate var _waterfall: Waterfall? { return params.waterfall }
 
     fileprivate var _lineDuration: Int { return (_waterfall?.lineDuration) ?? 100 }
     
@@ -95,13 +95,11 @@ final class WaterfallView: NSView, CALayerDelegate {
     ///
     deinit {
         
-//        Swift.print("deinit - WaterfallView")
-
         // remove observations of Waterfall
         observations(_waterfall!, paths: _waterfallKeyPaths, remove: true)
         
-        // remove the Waterfall from its collection
-        _radio.waterfalls[_waterfall!.id] = nil
+        // remove the Waterfall
+        _radio.removeObject(_waterfall!)
         
     }
     
