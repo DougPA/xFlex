@@ -711,22 +711,22 @@ final class PanadapterView : NSView, CALayerDelegate {
     fileprivate func addNotifications() {
         
         // Slice initialized
-        NC.makeObserver(self, with: #selector(sliceInitialized(_:)), of: .sliceInitialized, object: nil)
+        NC.makeObserver(self, with: #selector(sliceHasBeenAdded(_:)), of: .sliceHasBeenAdded, object: nil)
         
         // Slice should be removed
-        NC.makeObserver(self, with: #selector(sliceShouldBeRemoved(_:)), of: .sliceShouldBeRemoved, object: nil)
+        NC.makeObserver(self, with: #selector(sliceWillBeRemoved(_:)), of: .sliceWillBeRemoved, object: nil)
         
         // Tnf initialized
-        NC.makeObserver(self, with: #selector(tnfInitialized(_:)), of: .tnfInitialized, object: nil)
+        NC.makeObserver(self, with: #selector(tnfHasBeenAdded(_:)), of: .tnfHasBeenAdded, object: nil)
         
         // Tnf should be removed
-        NC.makeObserver(self, with: #selector(tnfShouldBeRemoved(_:)), of: .tnfShouldBeRemoved, object: nil)
+        NC.makeObserver(self, with: #selector(tnfWillBeRemoved(_:)), of: .tnfWillBeRemoved, object: nil)
     }
-    /// Process .sliceInitialized Notification
+    /// Process .sliceHasBeenAdded Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func sliceInitialized(_ note: Notification) {
+    @objc fileprivate func sliceHasBeenAdded(_ note: Notification) {
         
         // does the Notification contain a Slice object?
         if let slice = note.object as? xFlexAPI.Slice {
@@ -743,7 +743,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func sliceShouldBeRemoved(_ note: Notification) {
+    @objc fileprivate func sliceWillBeRemoved(_ note: Notification) {
         
         // does the Notification contain a Slice object?
         if let slice = note.object as? xFlexAPI.Slice {
@@ -759,11 +759,11 @@ final class PanadapterView : NSView, CALayerDelegate {
 
         }
     }
-    /// Process .tnfInitialized Notification
+    /// Process .tnfHasBeenAdded Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func tnfInitialized(_ note: Notification) {
+    @objc fileprivate func tnfHasBeenAdded(_ note: Notification) {
         
         // does the Notification contain a Tnf object?
         if let tnf = note.object as? xFlexAPI.Tnf {
@@ -782,7 +782,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func tnfShouldBeRemoved(_ note: Notification) {
+    @objc fileprivate func tnfWillBeRemoved(_ note: Notification) {
         
         // does the Notification contain a Tnf object?
         if let tnf = note.object as? xFlexAPI.Tnf {

@@ -278,17 +278,17 @@ final class PanafallViewController: NSSplitViewController {
             
         case kCreateSlice:        // tell the Radio to create a new Slice
             let freq = (sender.representedObject! as! NSNumber).intValue
-            _radio.createSlice(panadapter: _panadapter!, frequency: freq)
+            _radio.sliceCreate(panadapter: _panadapter!, frequency: freq)
             
         case kRemoveSlice:        // tell the Radio to remove the Slice
-            _radio.removeSlice((sender.representedObject as! xFlexAPI.Slice).id)
+            _radio.sliceRemove((sender.representedObject as! xFlexAPI.Slice).id)
             
         case kCreateTnf:          // tell the Radio to create a new Tnf
             let freq = (sender.representedObject! as! NSNumber).intValue
-            _radio.createTnf(frequency: freq, panadapter: _panadapter!)
+            _radio.tnfCreate(frequency: freq, panadapter: _panadapter!)
             
         case kRemoveTnf:          // tell the Radio to remove the Tnf
-            _radio.removeTnf(tnf: sender.representedObject as! Tnf)
+            _radio.tnfRemove(tnf: sender.representedObject as! Tnf)
             
         case kPermanentTnf:           // update the Tnf
             (sender.representedObject as! Tnf).permanent = !(sender.representedObject as! Tnf).permanent

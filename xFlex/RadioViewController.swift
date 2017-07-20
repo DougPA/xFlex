@@ -189,7 +189,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func panButton(_ sender: AnyObject) {
         
         // dimensions are dummy values; when created, will be resized to fit its view
-        radio?.createPanafall(CGSize(width: 50, height: 50))
+        radio?.panafallCreate(CGSize(width: 50, height: 50))
     }
     /// Respond to the Remote Rx button
     ///
@@ -198,7 +198,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func remoteRxButton(_ sender: NSButton) {
         
         // ask the Radio (hardware) to start/stop Rx Opus
-        radio?.requestRemoteRxAudio(sender.state == NSOnState)
+        radio?.remoteRxAudioRequest(sender.state == NSOnState)
     }
     /// Respond to the Remote Tx button
     ///
@@ -633,13 +633,13 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         NC.makeObserver(self, with: #selector(tcpDidDisconnect(_:)), of: .tcpDidDisconnect, object: nil)
 
         // Meter Initialized
-        NC.makeObserver(self, with: #selector(meterInitialized(_:)), of: .meterInitialized, object: nil)
+        NC.makeObserver(self, with: #selector(meterHasBeenAdded(_:)), of: .meterHasBeenAdded, object: nil)
 
         // Radio Initialized
         NC.makeObserver(self, with: #selector(radioInitialized(_:)), of: .radioInitialized, object: nil)
 
         // Opus Initialized
-        NC.makeObserver(self, with: #selector(opusInitialized(_:)), of: .opusInitialized, object: nil)
+        NC.makeObserver(self, with: #selector(opusHasBeenAdded(_:)), of: .opusHasBeenAdded, object: nil)
 }
     /// Process .tcpDidConnect Notification
     ///
@@ -687,11 +687,11 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
             openRadioPicker(self)
         }
     }
-    /// Process .meterInitialized Notification
+    /// Process .meterHasBeenAdded Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func meterInitialized(_ note: Notification) {
+    @objc fileprivate func meterHasBeenAdded(_ note: Notification) {
 
         if let meter = note.object as? Meter {
             
@@ -729,11 +729,11 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
             }
         }
     }
-    /// Process .opusInitialized Notification
+    /// Process .opusHasBeenAdded Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func opusInitialized(_ note: Notification) {
+    @objc fileprivate func opusHasBeenAdded(_ note: Notification) {
         
         // the Opus class has been initialized
         if let opus = note.object as? Opus {

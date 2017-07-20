@@ -213,13 +213,13 @@ class PanafallsViewController: NSSplitViewController {
     fileprivate func addNotifications() {
         
         // Panadapter initialized
-        NC.makeObserver(self, with: #selector(panadapterInitialized(_:)), of: .panadapterInitialized, object: nil)
+        NC.makeObserver(self, with: #selector(panadapterHasBeenAdded(_:)), of: .panadapterHasBeenAdded, object: nil)
 
         // Panadapter will be removed
         NC.makeObserver(self, with: #selector(panadapterWillBeRemoved(_:)), of: .panadapterWillBeRemoved, object: nil)
 
         // Waterfall initialized
-        NC.makeObserver(self, with: #selector(waterfallInitialized(_:)), of: .waterfallInitialized, object: nil)
+        NC.makeObserver(self, with: #selector(waterfallHasBeenAdded(_:)), of: .waterfallHasBeenAdded, object: nil)
 
         // Waterfall will be removed
         NC.makeObserver(self, with: #selector(waterfallWillBeRemoved(_:)), of: .waterfallWillBeRemoved, object: nil)
@@ -230,11 +230,11 @@ class PanafallsViewController: NSSplitViewController {
     //      Step 1 .panadapterInitialized
     //      Step 2 .waterfallInitialized
     //
-    /// Process .panadapterInitialized Notification
+    /// Process .panadapterHasBeenAdded Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func panadapterInitialized(_ note: Notification) {
+    @objc fileprivate func panadapterHasBeenAdded(_ note: Notification) {
         // a Panadapter model has been added to the Panadapters collection and Initialized
         
         // does the Notification contain a Panadapter?
@@ -266,11 +266,11 @@ class PanafallsViewController: NSSplitViewController {
             }
         }
     }
-    /// Process .waterfallInitialized Notification
+    /// Process .waterfallHasBeenAdded Notification
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func waterfallInitialized(_ note: Notification) {
+    @objc fileprivate func waterfallHasBeenAdded(_ note: Notification) {
         // a Waterfall model has been added to the Waterfalls collection and Initialized
         
         // does the Notification contain a Panadapter?

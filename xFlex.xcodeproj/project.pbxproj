@@ -16,6 +16,18 @@
 		9116D8F61CF71DEC0043C542 /* Tritanopia.tex in Resources */ = {isa = PBXBuildFile; fileRef = 9116D8F01CF71DEC0043C542 /* Tritanopia.tex */; };
 		911AF72B1D0A5EDB00DCC20B /* PanafallButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911AF72A1D0A5EDB00DCC20B /* PanafallButtonViewController.swift */; };
 		911C83F71E3A5F2300E8AD1B /* RxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911C83F61E3A5F2300E8AD1B /* RxViewController.swift */; };
+		911EF8D81F215EBC00F37791 /* AudioLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D21F215EBC00F37791 /* AudioLibrary.framework */; };
+		911EF8D91F215EBC00F37791 /* AudioLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D21F215EBC00F37791 /* AudioLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		911EF8DA1F215EBC00F37791 /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D31F215EBC00F37791 /* ObjcExceptionBridging.framework */; };
+		911EF8DB1F215EBC00F37791 /* ObjcExceptionBridging.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D31F215EBC00F37791 /* ObjcExceptionBridging.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		911EF8DC1F215EBC00F37791 /* OpusOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D41F215EBC00F37791 /* OpusOSX.framework */; };
+		911EF8DD1F215EBC00F37791 /* OpusOSX.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D41F215EBC00F37791 /* OpusOSX.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		911EF8DE1F215EBC00F37791 /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D51F215EBC00F37791 /* SwiftyUserDefaults.framework */; };
+		911EF8DF1F215EBC00F37791 /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D51F215EBC00F37791 /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		911EF8E01F215EBC00F37791 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D61F215EBC00F37791 /* XCGLogger.framework */; };
+		911EF8E11F215EBC00F37791 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D61F215EBC00F37791 /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		911EF8E21F215EBC00F37791 /* xFlexAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D71F215EBC00F37791 /* xFlexAPI.framework */; };
+		911EF8E31F215EBC00F37791 /* xFlexAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 911EF8D71F215EBC00F37791 /* xFlexAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		912B75841DDE33EF00398AED /* WaterfallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912B75831DDE33EF00398AED /* WaterfallViewController.swift */; };
 		9130BE461D07245D00ED1E94 /* PanadapterLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9130BE451D07245D00ED1E94 /* PanadapterLayer.swift */; };
 		91362CDC1E82112600505758 /* OpusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91362CDB1E82112600505758 /* OpusManager.swift */; };
@@ -23,18 +35,6 @@
 		914C2DCA1E20992000B5A5B2 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 914C2DC91E20992000B5A5B2 /* Defaults.plist */; };
 		914FC3EF1E67C7BD0024D87D /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914FC3EE1E67C7BD0024D87D /* MainWindowController.swift */; };
 		915EE2841CFA0025006B8365 /* WaterfallLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915EE2831CFA0025006B8365 /* WaterfallLayer.swift */; };
-		917228611EE23E8200440A5D /* AudioLibrary.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9172285B1EE23E8200440A5D /* AudioLibrary.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		917228621EE23E8200440A5D /* ObjcExceptionBridging.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9172285C1EE23E8200440A5D /* ObjcExceptionBridging.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		917228631EE23E8200440A5D /* OpusOSX.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9172285D1EE23E8200440A5D /* OpusOSX.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		917228641EE23E8200440A5D /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9172285E1EE23E8200440A5D /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		917228651EE23E8200440A5D /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9172285F1EE23E8200440A5D /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		917228661EE23E8200440A5D /* xFlexAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 917228601EE23E8200440A5D /* xFlexAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9172286D1EE23EBE00440A5D /* AudioLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 917228671EE23EBE00440A5D /* AudioLibrary.framework */; };
-		9172286E1EE23EBE00440A5D /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 917228681EE23EBE00440A5D /* ObjcExceptionBridging.framework */; };
-		9172286F1EE23EBE00440A5D /* OpusOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 917228691EE23EBE00440A5D /* OpusOSX.framework */; };
-		917228701EE23EBE00440A5D /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9172286A1EE23EBE00440A5D /* SwiftyUserDefaults.framework */; };
-		917228711EE23EBE00440A5D /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9172286B1EE23EBE00440A5D /* XCGLogger.framework */; };
-		917228721EE23EBE00440A5D /* xFlexAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9172286C1EE23EBE00440A5D /* xFlexAPI.framework */; };
 		917F2B191CE9463D001C6BB6 /* PCWViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917F2B181CE9463D001C6BB6 /* PCWViewController.swift */; };
 		919449471E3C367A00678C1C /* PanafallButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 919449461E3C367A00678C1C /* PanafallButtonView.swift */; };
 		91B170B91CDF80A000600E02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B170771CDF80A000600E02 /* AppDelegate.swift */; };
@@ -79,12 +79,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				917228611EE23E8200440A5D /* AudioLibrary.framework in Embed Frameworks */,
-				917228621EE23E8200440A5D /* ObjcExceptionBridging.framework in Embed Frameworks */,
-				917228631EE23E8200440A5D /* OpusOSX.framework in Embed Frameworks */,
-				917228641EE23E8200440A5D /* SwiftyUserDefaults.framework in Embed Frameworks */,
-				917228651EE23E8200440A5D /* XCGLogger.framework in Embed Frameworks */,
-				917228661EE23E8200440A5D /* xFlexAPI.framework in Embed Frameworks */,
+				911EF8E11F215EBC00F37791 /* XCGLogger.framework in Embed Frameworks */,
+				911EF8E31F215EBC00F37791 /* xFlexAPI.framework in Embed Frameworks */,
+				911EF8DB1F215EBC00F37791 /* ObjcExceptionBridging.framework in Embed Frameworks */,
+				911EF8DF1F215EBC00F37791 /* SwiftyUserDefaults.framework in Embed Frameworks */,
+				911EF8DD1F215EBC00F37791 /* OpusOSX.framework in Embed Frameworks */,
+				911EF8D91F215EBC00F37791 /* AudioLibrary.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -102,6 +102,12 @@
 		911AF72A1D0A5EDB00DCC20B /* PanafallButtonViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanafallButtonViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		911C83F61E3A5F2300E8AD1B /* RxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxViewController.swift; sourceTree = "<group>"; };
 		911ED5AC1E9EAAE40021CAAB /* xFlexAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = xFlexAPI.framework; path = "../../../Library/Developer/Xcode/DerivedData/xFlexAPI-hkzbxdzrkgrlqvfjmymgmyftgalx/Build/Products/Debug/xFlexAPI.framework"; sourceTree = "<group>"; };
+		911EF8D21F215EBC00F37791 /* AudioLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AudioLibrary.framework; sourceTree = "<group>"; };
+		911EF8D31F215EBC00F37791 /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ObjcExceptionBridging.framework; sourceTree = "<group>"; };
+		911EF8D41F215EBC00F37791 /* OpusOSX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpusOSX.framework; sourceTree = "<group>"; };
+		911EF8D51F215EBC00F37791 /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftyUserDefaults.framework; sourceTree = "<group>"; };
+		911EF8D61F215EBC00F37791 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = "<group>"; };
+		911EF8D71F215EBC00F37791 /* xFlexAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = xFlexAPI.framework; sourceTree = "<group>"; };
 		912B75831DDE33EF00398AED /* WaterfallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterfallViewController.swift; sourceTree = "<group>"; };
 		9130BE451D07245D00ED1E94 /* PanadapterLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PanadapterLayer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		91362CDB1E82112600505758 /* OpusManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OpusManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -109,12 +115,6 @@
 		914C2DC91E20992000B5A5B2 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		914FC3EE1E67C7BD0024D87D /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		915EE2831CFA0025006B8365 /* WaterfallLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WaterfallLayer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		9172285B1EE23E8200440A5D /* AudioLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AudioLibrary.framework; sourceTree = "<group>"; };
-		9172285C1EE23E8200440A5D /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ObjcExceptionBridging.framework; sourceTree = "<group>"; };
-		9172285D1EE23E8200440A5D /* OpusOSX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpusOSX.framework; sourceTree = "<group>"; };
-		9172285E1EE23E8200440A5D /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftyUserDefaults.framework; sourceTree = "<group>"; };
-		9172285F1EE23E8200440A5D /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = "<group>"; };
-		917228601EE23E8200440A5D /* xFlexAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = xFlexAPI.framework; sourceTree = "<group>"; };
 		917228671EE23EBE00440A5D /* AudioLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioLibrary.framework; path = ../../Library/Frameworks/AudioLibrary.framework; sourceTree = "<group>"; };
 		917228681EE23EBE00440A5D /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjcExceptionBridging.framework; path = ../../Library/Frameworks/ObjcExceptionBridging.framework; sourceTree = "<group>"; };
 		917228691EE23EBE00440A5D /* OpusOSX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpusOSX.framework; path = ../../Library/Frameworks/OpusOSX.framework; sourceTree = "<group>"; };
@@ -171,12 +171,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9172286D1EE23EBE00440A5D /* AudioLibrary.framework in Frameworks */,
-				9172286E1EE23EBE00440A5D /* ObjcExceptionBridging.framework in Frameworks */,
-				9172286F1EE23EBE00440A5D /* OpusOSX.framework in Frameworks */,
-				917228701EE23EBE00440A5D /* SwiftyUserDefaults.framework in Frameworks */,
-				917228711EE23EBE00440A5D /* XCGLogger.framework in Frameworks */,
-				917228721EE23EBE00440A5D /* xFlexAPI.framework in Frameworks */,
+				911EF8E01F215EBC00F37791 /* XCGLogger.framework in Frameworks */,
+				911EF8E21F215EBC00F37791 /* xFlexAPI.framework in Frameworks */,
+				911EF8DA1F215EBC00F37791 /* ObjcExceptionBridging.framework in Frameworks */,
+				911EF8DE1F215EBC00F37791 /* SwiftyUserDefaults.framework in Frameworks */,
+				911EF8DC1F215EBC00F37791 /* OpusOSX.framework in Frameworks */,
+				911EF8D81F215EBC00F37791 /* AudioLibrary.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,12 +251,12 @@
 		91B16FCE1CDF7F5E00600E02 = {
 			isa = PBXGroup;
 			children = (
-				9172285B1EE23E8200440A5D /* AudioLibrary.framework */,
-				9172285C1EE23E8200440A5D /* ObjcExceptionBridging.framework */,
-				9172285D1EE23E8200440A5D /* OpusOSX.framework */,
-				9172285E1EE23E8200440A5D /* SwiftyUserDefaults.framework */,
-				9172285F1EE23E8200440A5D /* XCGLogger.framework */,
-				917228601EE23E8200440A5D /* xFlexAPI.framework */,
+				911EF8D21F215EBC00F37791 /* AudioLibrary.framework */,
+				911EF8D31F215EBC00F37791 /* ObjcExceptionBridging.framework */,
+				911EF8D41F215EBC00F37791 /* OpusOSX.framework */,
+				911EF8D51F215EBC00F37791 /* SwiftyUserDefaults.framework */,
+				911EF8D61F215EBC00F37791 /* XCGLogger.framework */,
+				911EF8D71F215EBC00F37791 /* xFlexAPI.framework */,
 				91B16FD91CDF7F5E00600E02 /* xFlex */,
 				91B16FD81CDF7F5E00600E02 /* Products */,
 				91ED52501E1EE5390086A56D /* Frameworks */,
