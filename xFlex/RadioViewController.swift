@@ -662,6 +662,9 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         let apiBuild = frameworkBundle?.object(forInfoDictionaryKey: kBuildKey) ?? "0"
 
         Defaults[.apiVersion] = "v\(apiVersion) build \(apiBuild)"
+        
+        _log.msg("Using xFlexAPI version " + Defaults[.apiVersion], level: .info, function: #function, file: #file, line: #line)
+        
         Defaults[.apiFirmwareSupport] = radio!.kApiFirmwareSupport
         
         // get the version info for this app
