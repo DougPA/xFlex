@@ -141,11 +141,11 @@ final class PanadapterView : NSView, CALayerDelegate {
 
 //        Swift.print("deinit - PanadapterView")
 
-        // remove observations of Defaults
-        observations(UserDefaults.standard, paths: _defaultsKeyPaths, remove: true)
-        
-        // remove the Panadapter from its collection
-        self._radio.panadapters[_panadapter!.id] = nil
+//        // remove observations of Defaults
+//        observations(UserDefaults.standard, paths: _defaultsKeyPaths, remove: true)
+//        
+//        // remove the Panadapter from its collection
+//        self._radio.panadapters[_panadapter!.id] = nil
     }
     
     // ----------------------------------------------------------------------------
@@ -710,17 +710,28 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     fileprivate func addNotifications() {
         
-        // Slice initialized
+        NC.makeObserver(self, with: #selector(panadapterWillBeRemoved(_:)), of: .panadapterWillBeRemoved, object: nil)
+
         NC.makeObserver(self, with: #selector(sliceHasBeenAdded(_:)), of: .sliceHasBeenAdded, object: nil)
         
-        // Slice should be removed
         NC.makeObserver(self, with: #selector(sliceWillBeRemoved(_:)), of: .sliceWillBeRemoved, object: nil)
         
-        // Tnf initialized
         NC.makeObserver(self, with: #selector(tnfHasBeenAdded(_:)), of: .tnfHasBeenAdded, object: nil)
         
-        // Tnf should be removed
         NC.makeObserver(self, with: #selector(tnfWillBeRemoved(_:)), of: .tnfWillBeRemoved, object: nil)
+    }
+    /// Process .panadapterWillBeRemoved Notification
+    ///
+    /// - Parameter note: a Notification instance
+    ///
+    @objc fileprivate func panadapterWillBeRemoved(_ note: Notification) {
+        
+        // does the Notification contain a Panadapter object?
+        if (note.object as? Panadapter) != nil {
+
+            // remove Defaults property observers
+            observations(Defaults, paths: _defaultsKeyPaths, remove: true)
+        }
     }
     /// Process .sliceHasBeenAdded Notification
     ///
