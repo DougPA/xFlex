@@ -97,11 +97,11 @@ final class WaterfallView: NSView, CALayerDelegate {
         
 //        Swift.print("deinit - WaterfallView")
 
-        // remove observations of Waterfall
-        observations(_waterfall!, paths: _waterfallKeyPaths, remove: true)
+//        // remove observations of Waterfall
+//        observations(_waterfall!, paths: _waterfallKeyPaths, remove: true)
         
-        // remove the Waterfall from its collection
-        _radio.waterfalls[_waterfall!.id] = nil
+//        // remove the Waterfall from its collection
+//        _radio.waterfalls[_waterfall!.id] = nil
         
     }
     
@@ -172,6 +172,9 @@ final class WaterfallView: NSView, CALayerDelegate {
         // setup the layer hierarchy
         _rootLayer.addSublayer(_spectrumLayer)
         _rootLayer.addSublayer(_legendLayer)
+        
+        // add notification subscriptions
+        addNotifications()
     }
     /// Calculate the number & spacing of the Time legends
     ///
@@ -248,6 +251,27 @@ final class WaterfallView: NSView, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Notification methods
     
+    /// Add subsciptions to Notifications
+    ///     (as of 10.11, subscriptions are automatically removed on deinit when using the Selector-based approach)
+    ///
+    fileprivate func addNotifications() {
+        
+        NC.makeObserver(self, with: #selector(waterfallWillBeRemoved(_:)), of: .waterfallWillBeRemoved, object: nil)
+    }
+    /// Process .waterfallWillBeRemoved Notification
+    ///
+    /// - Parameter note: a Notification instance
+    ///
+    @objc fileprivate func waterfallWillBeRemoved(_ note: Notification) {
+        
+        // does the Notification contain a Waterfall object?
+        if let waterfall = note.object as? Waterfall {
+            
+            // remove Panadapter property observers
+            observations(waterfall, paths: _waterfallKeyPaths, remove: true)
+        }
+    }
+
     // ----------------------------------------------------------------------------
     // MARK: - CALayerDelegate methods
     
