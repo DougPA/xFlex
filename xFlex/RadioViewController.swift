@@ -68,9 +68,6 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     fileprivate enum ToolbarButton: String {                        // toolbar item identifiers
         case Pan, Tnf, Markers, Remote, Speaker, Headset, VoltTemp, Side
     }
-
-    fileprivate var _shouldOpenPicker = false
-    fileprivate var _radioFactory = RadioFactory()
     
     // ----------------------------------------------------------------------------
     // MARK: - Overriden methods
@@ -97,33 +94,9 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         // show/hide the Side view
         splitViewItems[1].isCollapsed = !Defaults[.sideOpen]
         splitView.needsLayout = true
-
-        // see if there is a default Radio
-        let params = Defaults[.defaultRadioParameters]
-        let defaultRadio = RadioParameters.parametersFromArray(valuesArray: params)
         
-        if defaultRadio.ipAddress != "" && defaultRadio.port != 0 {
-            
-            _log.msg("Attempting to open Default Radio, IP \(defaultRadio.ipAddress), Port \(defaultRadio.port)", level: .info, function: #function, file: #file, line: #line)
-            
-            // there is a default, try to open it
-            if !openRadio(defaultRadio) {
-                
-                // open failed, open the picker
-                _shouldOpenPicker = true
-            }
-            
-        } else {
-            
-            // no default, open the Radio Picker sheet (when the Window appears)
-            _shouldOpenPicker = true
-        }
-    }
-
-    override func viewDidAppear() {
-        
-        // if there wasn't any Default, open the Radio Picker
-        if _shouldOpenPicker { openRadioPicker( self) ; _shouldOpenPicker = false }
+        // open the Radio Picker
+        openRadioPicker( self)
     }
     
     // ----------------------------------------------------------------------------
@@ -245,9 +218,12 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         
         // make this View Controller the delegate of the RadioPicker
         _radioPickerViewController!.representedObject = self
+
+        DispatchQueue.main.async {
         
-        // show the RadioPicker sheet
-        presentViewControllerAsSheet(_radioPickerViewController!)
+            // show the RadioPicker sheet
+            self.presentViewControllerAsSheet(self._radioPickerViewController!)
+        }
     }
     /// Respond to the xFlex Quit menu
     ///
@@ -626,20 +602,17 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     fileprivate func addNotifications() {
         
-        // Initial TCP Connection opened
         NC.makeObserver(self, with: #selector(tcpDidConnect(_:)), of: .tcpDidConnect, object: nil)
 
-        // TCP Connection disconnect
         NC.makeObserver(self, with: #selector(tcpDidDisconnect(_:)), of: .tcpDidDisconnect, object: nil)
 
-        // Meter Initialized
         NC.makeObserver(self, with: #selector(meterHasBeenAdded(_:)), of: .meterHasBeenAdded, object: nil)
 
-        // Radio Initialized
         NC.makeObserver(self, with: #selector(radioInitialized(_:)), of: .radioInitialized, object: nil)
 
-        // Opus Initialized
         NC.makeObserver(self, with: #selector(opusHasBeenAdded(_:)), of: .opusHasBeenAdded, object: nil)
+
+        NC.makeObserver(self, with: #selector(opusWillBeRemoved(_:)), of: .opusWillBeRemoved, object: nil)
 }
     /// Process .tcpDidConnect Notification
     ///
@@ -683,12 +656,12 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     @objc fileprivate func tcpDidDisconnect(_ note: Notification) {
         
-        // the TCP connection has disconnected
-        if (note.object as! Radio.DisconnectReason) != .closed {
-            
-            // not a normal disconnect
-            openRadioPicker(self)
-        }
+//        // the TCP connection has disconnected
+//        if (note.object as! Radio.DisconnectReason) != .closed {
+//            
+//            // not a normal disconnect
+//            openRadioPicker(self)
+//        }
     }
     /// Process .meterHasBeenAdded Notification
     ///
@@ -748,16 +721,32 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
             }
         }
     }
+    /// Process .opusWillBeRemoved Notification
+    ///
+    /// - Parameter note: a Notification instance
+    ///
+    @objc fileprivate func opusWillBeRemoved(_ note: Notification) {
+        
+        // an Opus class will be removed
+        if let opus = note.object as? Opus {
+            
+            DispatchQueue.main.async { [unowned self] in
+                
+                // remove Opus property observations
+                self.observations(opus, paths: self._opusKeyPaths, remove: true)
+            }
+        }
+    }
     
     // ----------------------------------------------------------------------------
     // MARK: - RadioPickerDelegate methods
     
-    /// Force the Radio Factory to resend availableRadios
-    ///
-    func updateAvailableRadios() {
-        
-        _radioFactory.updateAvailableRadios()
-    }
+//    /// Force the Radio Factory to resend availableRadios
+//    ///
+//    func updateAvailableRadios() {
+//        
+//        _radioFactory.updateAvailableRadios()
+//    }
     /// Stop the active Radio
     ///
     func closeRadio() {
@@ -778,7 +767,9 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     func openRadio(_ selectedRadio: RadioParameters?) -> Bool {
 
         // if open, close the Radio Picker
-        if _radioPickerViewController != nil { _radioPickerViewController = nil }
+//        if _radioPickerViewController != nil { _radioPickerViewController = nil }
+        
+        if _radioPickerViewController != nil { dismissViewController(_radioPickerViewController!) }
         
         self._selectedRadio = selectedRadio
         
