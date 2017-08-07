@@ -31,37 +31,25 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     fileprivate var _sideViewController: NSSplitViewController?
     fileprivate var _panafallsViewController: PanafallsViewController?
     fileprivate var _mainWindowController: MainWindowController?
-    
     fileprivate var _notifications = [NSObjectProtocol]()           // Notification observers
     fileprivate var _radioPickerViewController: RadioPickerViewController?  // RadioPicker sheet controller
     fileprivate var _voltageTempMonitor: ParameterMonitor?          // the Voltage/Temp ParameterMonitor
+
     fileprivate let _opusManager = OpusManager()
-    
-    // constants
-//    fileprivate let _log = Log.sharedInstance                       // Shared log
-//    fileprivate let _log: XCGLogger!                                // Shared log
-    
     fileprivate let _log = (NSApp.delegate as! AppDelegate)
-    fileprivate let kModule = "RadioViewController"                 // Module Name reported in log messages
-
-
     fileprivate let kGuiFirmwareSupport = "1.10.16.x"               // Radio firmware supported by this App
     fileprivate let kxFlexApiIdentifier = "net.k3tzr.xFlexAPI"      // Bundle identifier for xFlexApi
     fileprivate let kVoltageMeter = "+13.8B"                        // Short name of voltage meter
     fileprivate let kPaTempMeter = "PATEMP"                         // Short name of temperature meter
     fileprivate let kVoltageTemperature = "VoltageTemp"             // Identifier of toolbar VoltageTemperature toolbarItem
-    
     fileprivate let kSideStoryboard = "Side"                        // Storyboard names
-    
     fileprivate let kRadioPickerIdentifier = "RadioPicker"          // Storyboard identifiers
     fileprivate let kPcwIdentifier = "PCW"
     fileprivate let kPhoneIdentifier = "Phone"
     fileprivate let kRxIdentifier = "Rx"
     fileprivate let kEqualizerIdentifier = "Equalizer"
-    
     fileprivate let kConnectFailed = "Initial Connection failed"    // Error messages
     fileprivate let kUdpBindFailed = "Initial UDP bind failed"
-    
     fileprivate let kVersionKey = "CFBundleShortVersionString"      // CF constants
     fileprivate let kBuildKey = "CFBundleVersion"
     
@@ -512,8 +500,6 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         // for each KeyPath Add / Remove observations
         for keyPath in paths {
             
-//            print("\(remove ? "Remove" : "Add   ") \(object.className):\(keyPath) in " + kModule)
-            
             if remove { object.removeObserver(self, forKeyPath: keyPath, context: nil) }
             else { object.addObserver(self, forKeyPath: keyPath, options: [.initial, .new], context: nil) }
         }
@@ -741,12 +727,6 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - RadioPickerDelegate methods
     
-//    /// Force the Radio Factory to resend availableRadios
-//    ///
-//    func updateAvailableRadios() {
-//        
-//        _radioFactory.updateAvailableRadios()
-//    }
     /// Stop the active Radio
     ///
     func closeRadio() {
@@ -767,9 +747,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     func openRadio(_ selectedRadio: RadioParameters?) -> Bool {
 
         // if open, close the Radio Picker
-//        if _radioPickerViewController != nil { _radioPickerViewController = nil }
-        
-        if _radioPickerViewController != nil { dismissViewController(_radioPickerViewController!) }
+        if _radioPickerViewController != nil { dismissViewController(_radioPickerViewController!) ; _radioPickerViewController = nil }
         
         self._selectedRadio = selectedRadio
         
@@ -806,8 +784,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     func closeRadioPicker() {
         
         // close the RadioPicker
-        if _radioPickerViewController != nil { dismissViewController(_radioPickerViewController!) }
-        _radioPickerViewController = nil
+        if _radioPickerViewController != nil { dismissViewController(_radioPickerViewController!) ; _radioPickerViewController = nil }
     }
 
 }
