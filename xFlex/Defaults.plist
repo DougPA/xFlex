@@ -98,18 +98,21 @@
 	<string>&quot;&quot;</string>
 	<key>defaultRadioParameters</key>
 	<array>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
-		<string>&quot;&quot;</string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
+		<string></string>
 	</array>
 	<key>timeLegendSpacing</key>
 	<string>2</string>
