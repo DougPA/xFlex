@@ -27,7 +27,6 @@ extension UserDefaults {
         get { return CGFloat(numberForKey(key._key)?.doubleValue ?? 0.0) }
         set { set(key, Double(newValue)) }
     }
-    
 }
 
 extension DefaultsKeys {
@@ -35,7 +34,8 @@ extension DefaultsKeys {
     // Radio level info
     static let apiFirmwareSupport = DefaultsKey<String>("apiFirmwareSupport")
     static let apiVersion = DefaultsKey<String>("apiVersion")
-    static let defaultRadioParameters = DefaultsKey<[String]>("defaultRadioParameters")
+    static let defaultRadioParameters = DefaultsKey<[String]>("defaultRadioParameters") // obsolete
+    static let defaultsDictionary = DefaultsKey<[String: Any]>("defaultsDictionary")
     static let guiFirmwareSupport = DefaultsKey<String>("guiFirmwareSupport")
     static let guiVersion = DefaultsKey<String>("guiVersion")
     static let logNumber = DefaultsKey<Int>("logNumber")

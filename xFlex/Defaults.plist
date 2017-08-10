@@ -98,21 +98,18 @@
 	<string>&quot;&quot;</string>
 	<key>defaultRadioParameters</key>
 	<array>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
-		<string></string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
+		<string>&quot;&quot;</string>
 	</array>
 	<key>timeLegendSpacing</key>
 	<string>2</string>
@@ -130,5 +127,7 @@
 	<true/>
 	<key>logNumber</key>
 	<integer>0</integer>
+	<key>defaultsDictionary</key>
+	<dict/>
 </dict>
 </plist>

@@ -38,13 +38,14 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
     @IBOutlet fileprivate var _selectButton: NSButton!              // Connect / Disconnect
     @IBOutlet fileprivate var _defaultButton: NSButton!             // Set as default
     
-    fileprivate var _availableRadios = [RadioParameters]()          // Array of available Radios
+    fileprivate var _availableRadios = [ RadioParameters]()         // Array of of Radio Parameters
     fileprivate var _notifications = [NSObjectProtocol]()           // Notification observers
     fileprivate var _selectedRadio: RadioParameters?                // Radio in selected row
+//    fileprivate var _hasDefaultRadio = false
+//    fileprivate var _defaultRadio: RadioParameters?
+
     fileprivate var _delegate : RadioPickerDelegate {               // Delegate
          return representedObject as! RadioPickerDelegate }
-    fileprivate var _hasDefaultRadio = false
-    fileprivate var _defaultRadio: RadioParameters?
 
     fileprivate var _radioFactory = RadioFactory()
 
@@ -71,10 +72,9 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
         _selectButton.title = kConnectTitle
         addNotifications()
         
-        // see if there is a valid default Radio
-        let params = Defaults[.defaultRadioParameters]
-        _defaultRadio = RadioParameters.parametersFromArray(valuesArray: params)
-        if _defaultRadio!.ipAddress != "" && _defaultRadio!.port != 0 { _hasDefaultRadio = true }
+//        // see if there is a valid default Radio
+//        _defaultRadio = RadioParameters( Defaults[.defaultsDictionary] )
+//        if _defaultRadio?.ipAddress != "" && _defaultRadio?.port != 0 { _hasDefaultRadio = true }
         
         _radioFactory.updateAvailableRadios()
     }
@@ -97,21 +97,19 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
     /// - Parameter sender: the button
     ///
     @IBAction func defaultButton(_ sender: NSButton) {
-        var params = [String]()
-        
+
         // save the selection
         let selectedRow = _radioTableView.selectedRow
         
         // Clear / Set the Default
-        if sender.title == kClearDefault {
+        if sender.title == kSetAsDefault {
             
-            params = RadioParameters(lastSeen: Date()).valuesArray()
-            
+            Defaults[.defaultsDictionary] = _availableRadios[selectedRow].dictFromParams()
+        
         } else {
             
-            params = (_availableRadios[selectedRow] as RadioParameters).valuesArray()
+            Defaults[.defaultsDictionary] = RadioParameters().dictFromParams()
         }
-        Defaults[.defaultRadioParameters] = params
         
         // to display the Default status
         _radioTableView.reloadData()
@@ -164,9 +162,6 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
             // tell the delegate to connect to the selected Radio
             let _ = _delegate.openRadio(_selectedRadio)
                 
-//            // close this controller
-//            dismissViewController(self)
-            
         } else {
             // RadioPicker sheet will remain open & Radio will be disconnected
             
@@ -205,29 +200,28 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
         DispatchQueue.main.async {
             
             // receive the updated list of Radios
-            self._availableRadios = (note.object as! [RadioParameters])
+            self._availableRadios = (note.object as! [ RadioParameters ])
             
             // reload the table of Radios
             self.reload()
             
             // see if there is a valid default Radio
-            let params = Defaults[.defaultRadioParameters]
-            let defaultRadio = RadioParameters.parametersFromArray(valuesArray: params)
-            self._hasDefaultRadio = ( defaultRadio.ipAddress != "" && defaultRadio.port != 0 )
-
-            if self._hasDefaultRadio {
+            let defaultRadio = RadioParameters( Defaults[.defaultsDictionary] )
+            if defaultRadio.ipAddress != "" && defaultRadio.port != 0 {
                 
                 // has the default Radio been found?
-                for (i, radioParams) in self._availableRadios.enumerated() where radioParams.serialNumber == self._defaultRadio?.serialNumber{
+                for (i, foundRadio) in self._availableRadios.enumerated() where foundRadio == defaultRadio {
                     
                     // YES, Save it in case something changed
-                    Defaults[.defaultRadioParameters] = radioParams.valuesArray()
-                                        
+                    Defaults[.defaultsDictionary] = foundRadio.dictFromParams()
+                    
                     // select it in the TableView
                     self._radioTableView.selectRowIndexes(IndexSet(integer: i), byExtendingSelection: true)
                     
+                    // is a Radio open?
                     if self._delegate.activeRadio == nil {
-                        // open it
+                        
+                        // NO, open the default radio
                         self.openClose()
                     }
                 }
@@ -268,16 +262,14 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
         // what field?
         if tableColumn!.identifier == kColumnIdentifierDefaultRadio {
             
-            // default field, is this row the default?
-            let params = Defaults[.defaultRadioParameters]
-            let defaultRadio = RadioParameters.parametersFromArray(valuesArray: params)
-            let isDefault = ( defaultRadio == _availableRadios[row] )
-            view.textField!.stringValue = (isDefault ? kDefaultFlag : "")
+            // is this row the default?
+            let defaultRadio = RadioParameters( Defaults[.defaultsDictionary] )
+            view.textField!.stringValue = (defaultRadio == _availableRadios[row] ? kDefaultFlag : "")
             
         } else {
             
             // all other fields, set the stringValue of the cell's text field to the appropriate field
-            view.textField!.stringValue = _availableRadios[row].valueForName(tableColumn!.identifier) ?? ""
+            view.textField!.stringValue = _availableRadios[row].valueForName(tableColumn!.identifier)!
         }
         return view
     }
@@ -298,11 +290,8 @@ final class RadioPickerViewController : NSViewController, NSTableViewDelegate, N
             _selectedRadio = _availableRadios[_radioTableView.selectedRow]
             
             // set "default button" title appropriately
-            let params = Defaults[.defaultRadioParameters]
-            let radioParameters = RadioParameters.parametersFromArray(valuesArray: params)
-            
-            let isDefault = ( radioParameters == _availableRadios[_radioTableView.selectedRow] )
-            _defaultButton.title = (isDefault ? kClearDefault : kSetAsDefault)
+            let defaultRadio = RadioParameters( Defaults[.defaultsDictionary] )
+            _defaultButton.title = (defaultRadio == _availableRadios[_radioTableView.selectedRow] ? kClearDefault : kSetAsDefault)
             
             // set the "select button" title appropriately
             let isActive = _delegate.activeRadio == _availableRadios[_radioTableView.selectedRow]

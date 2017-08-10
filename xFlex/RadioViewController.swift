@@ -751,7 +751,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         
         self._selectedRadio = selectedRadio
         
-        if selectedRadio != nil && selectedRadio == activeRadio {
+        if selectedRadio != nil && selectedRadio! == activeRadio {
             
             // Disconnect the active Radio
             closeRadio()
