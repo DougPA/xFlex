@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import xFlexAPI
+import xLib6000
 import OpusOSX
 import AudioLibrary
 import Accelerate

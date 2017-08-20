@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 // --------------------------------------------------------------------------------
@@ -31,8 +31,8 @@ final class WaterfallViewController : NSViewController, NSGestureRecognizerDeleg
     fileprivate var _panLeftButton: NSPanGestureRecognizer!
     fileprivate var _panRightButton: NSPanGestureRecognizer!
     fileprivate var _panStart: NSPoint?
-    fileprivate var _panSlice: xFlexAPI.Slice?
-    fileprivate var _panTnf: xFlexAPI.Tnf?
+    fileprivate var _panSlice: xLib6000.Slice?
+    fileprivate var _panTnf: xLib6000.Tnf?
     fileprivate var _dbmTop = false
     fileprivate var _newCursor: NSCursor?
     fileprivate var _timeLegendSpacings = [String]()        // Time legend spacing choices
@@ -62,10 +62,6 @@ final class WaterfallViewController : NSViewController, NSGestureRecognizerDeleg
         _rightClick.buttonMask = kRightButton
         _rightClick.delegate = self
         _waterfallView.addGestureRecognizer(_rightClick)
-    }
-    
-    deinit {
-//        Swift.print("deinit - WaterfallViewController")
     }
     
     // ----------------------------------------------------------------------------

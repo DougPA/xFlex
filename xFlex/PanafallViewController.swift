@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 
 // --------------------------------------------------------------------------------
 // MARK: - Panafall View Controller class implementation
@@ -55,7 +55,6 @@ final class PanafallViewController: NSSplitViewController {
 
     // constants
     fileprivate let _log = (NSApp.delegate as! AppDelegate)
-    fileprivate let kModule = "PanafallViewController"      // Module Name reported in log messages
     fileprivate let kButtonViewWidth: CGFloat = 75          // Width of ButtonView when open
     fileprivate let kEdgeTolerance = 10                     // percent of bandwidth
     fileprivate let kLeftButton = 0x01                      // masks for Gesture Recognizers
@@ -79,11 +78,7 @@ final class PanafallViewController: NSSplitViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-//        print( kModule + " " + #function)
-
         splitView.delegate = self
-//        splitView.adjustSubviews()
-//        splitView.addConstraint(NSLayoutConstraint(item: splitViewItems[0].view, attribute: .height, relatedBy: .equal, toItem: splitViewItems[1].view, attribute: .height, multiplier: 1, constant: 200))
         
         // setup Left Double Click recognizer
         _doubleClick = NSClickGestureRecognizer(target: self, action: #selector(leftDoubleClick(_:)))
@@ -116,20 +111,6 @@ final class PanafallViewController: NSSplitViewController {
                 adjustSliceFrequency(slice, incr: incr)
             }
         }
-    }
-    
-    deinit {
-
-//        // get the Waterfall Id before removing the Panadapter
-//        let waterfallId = _radio.panadapters[_panadapterId]!.waterfallId
-//        
-//        // remove the Waterfall from its collection
-//        _radio.waterfalls[waterfallId] = nil
-//
-//        // remove the Panadapter from its collection
-//        _radio.panadapters[_panadapterId] = nil
-        
-//        print( #function + " - " + kModule)
     }
     
     // ----------------------------------------------------------------------------
@@ -281,7 +262,7 @@ final class PanafallViewController: NSSplitViewController {
             _radio.sliceCreate(panadapter: _panadapter!, frequency: freq)
             
         case kRemoveSlice:        // tell the Radio to remove the Slice
-            _radio.sliceRemove((sender.representedObject as! xFlexAPI.Slice).id)
+            _radio.sliceRemove((sender.representedObject as! xLib6000.Slice).id)
             
         case kCreateTnf:          // tell the Radio to create a new Tnf
             let freq = (sender.representedObject! as! NSNumber).intValue
@@ -312,7 +293,7 @@ final class PanafallViewController: NSSplitViewController {
     ///   - slice: the Slice
     ///   - incr: frequency step
     ///
-    fileprivate func adjustSliceFrequency(_ slice: xFlexAPI.Slice, incr: Int) {
+    fileprivate func adjustSliceFrequency(_ slice: xLib6000.Slice, incr: Int) {
         
         // moving Up in frequency?
         let isUp = (incr > 0)
@@ -349,7 +330,6 @@ final class PanafallViewController: NSSplitViewController {
         }
         
     }
-    /// Load the selected Waterfall Gradient
     
     // ----------------------------------------------------------------------------
     // MARK: - Observation methods

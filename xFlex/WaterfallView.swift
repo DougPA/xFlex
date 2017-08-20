@@ -8,7 +8,7 @@
 
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import Quartz
 import SwiftyUserDefaults
 
@@ -45,9 +45,12 @@ final class WaterfallView: NSView, CALayerDelegate {
     fileprivate var _increment = 0                              // Seconds between marks
 
     // constants
-    fileprivate let kModule = "WaterfallView"                   // Module Name reported in log messages
+    fileprivate let _log = (NSApp.delegate as! AppDelegate)
     fileprivate let kTimeLegendWidth: CGFloat = 40              // width of legend layer
     fileprivate let kXPosition: CGFloat = 4                     // x-position of legend
+    fileprivate let kRootlayer = "rootLayer"
+    fileprivate let kLegendlayer = "legendLayer"
+    fileprivate let kWaterfalllayer = "waterfallLayer"
 
     // ----------------------------------------------------------------------------
     // MARK: - Overridden methods
@@ -91,19 +94,6 @@ final class WaterfallView: NSView, CALayerDelegate {
         calcLegendParams()
         redrawLegend()
     }
-    /// Cleanup
-    ///
-    deinit {
-        
-//        Swift.print("deinit - WaterfallView")
-
-//        // remove observations of Waterfall
-//        observations(_waterfall!, paths: _waterfallKeyPaths, remove: true)
-        
-//        // remove the Waterfall from its collection
-//        _radio.waterfalls[_waterfall!.id] = nil
-        
-    }
     
     // ----------------------------------------------------------------------------
     // MARK: - Internal methods
@@ -136,7 +126,7 @@ final class WaterfallView: NSView, CALayerDelegate {
         
         // Root layer
         _rootLayer = CALayer()                                      // ***** Root layer *****
-        _rootLayer.name = "rootLayer"
+        _rootLayer.name = kRootlayer
         _rootLayer.layoutManager = CAConstraintLayoutManager()
         _rootLayer.bounds = NSRectToCGRect(bounds)
         layerUsesCoreImageFilters = true
@@ -147,7 +137,7 @@ final class WaterfallView: NSView, CALayerDelegate {
 
         // Spectrum layer
         _spectrumLayer = WaterfallLayer()                           // ***** Waterfall layer *****
-        _spectrumLayer.name = "waterfall"
+        _spectrumLayer.name = kWaterfalllayer
         _spectrumLayer.frame = _rootLayer.frame
         _spectrumLayer.addConstraint(minY)                          // constraints
         _spectrumLayer.addConstraint(maxY)
@@ -157,7 +147,7 @@ final class WaterfallView: NSView, CALayerDelegate {
 
         // Legend layer
         _legendLayer = CALayer()                                    // ***** Time Legend layer *****
-        _legendLayer.name = "legend"
+        _legendLayer.name = kLegendlayer
         _legendLayer.frame = CGRect(x: _rootLayer.frame.width - kTimeLegendWidth, y: 0, width: kTimeLegendWidth, height: _rootLayer.frame.height)
         _legendLayer.addConstraint(minY)                            // constraints
         _legendLayer.addConstraint(maxY)
@@ -199,9 +189,8 @@ final class WaterfallView: NSView, CALayerDelegate {
             // calc the "seconds" between legends
             self._increment = maxDuration / (self._numberOfLegends + 1)
         }
-
-        
     }
+
     // ----------------------------------------------------------------------------
     // MARK: - Observation methods
 
@@ -244,7 +233,7 @@ final class WaterfallView: NSView, CALayerDelegate {
             redrawLegend()
             
         default:
-            assert( true, "Invalid observation - \(keyPath!) in " + kModule)
+            _log.msg("Invalid observation - \(keyPath!)", level: .error, function: #function, file: #file, line: #line)
         }
     }
     
@@ -287,7 +276,7 @@ final class WaterfallView: NSView, CALayerDelegate {
         _legendAttributes[NSForegroundColorAttributeName] = Defaults[.dbLegend]
         
         // draw the Waterfall Legend
-        if layer.name == "legend" {
+        if layer.name == kLegendlayer {
             
             // setup the graphics context
             let context = NSGraphicsContext(cgContext: ctx, flipped: false)
@@ -309,5 +298,4 @@ final class WaterfallView: NSView, CALayerDelegate {
         // restore the graphics context
         NSGraphicsContext.restoreGraphicsState()
     }
-
 }

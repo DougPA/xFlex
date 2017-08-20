@@ -23,7 +23,6 @@ final class PanafallButtonView: NSView {
     fileprivate var _buttonTracking: NSTrackingArea?
 
     // constants
-    fileprivate let kModule = "PanafallButtonView"              // Module Name reported in log messages
     fileprivate let _trackingOptions = NSTrackingAreaOptions.mouseEnteredAndExited.union(.activeInActiveApp)
     fileprivate let kButtonViewWidth: CGFloat = 75              // default button area width
     
@@ -47,8 +46,6 @@ final class PanafallButtonView: NSView {
         
         // remove the Tracking area (if any)
         removeTrackingArea()
-
-//        Swift.print( #function + " - " + kModule)
     }
 
     /// Mouse entered the Button area

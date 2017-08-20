@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 typealias FrequencyParamTuple = (high: Int, low: Int, spacing: Int, format: String)
@@ -33,7 +33,6 @@ final class PanadapterView : NSView, CALayerDelegate {
     
     fileprivate var _radio: Radio { return params.radio }       // values derived from Params
     fileprivate var _panadapter: Panadapter? { return params.panadapter }
-//    fileprivate var _waterfall: Waterfall? { return params.waterfall }
 
     fileprivate var _center: Int {return _panadapter!.center }
     fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
@@ -71,7 +70,7 @@ final class PanadapterView : NSView, CALayerDelegate {
 
     // constants
     fileprivate let _log = (NSApp.delegate as! AppDelegate)
-    fileprivate let kModule = "PanadapterView"                          // Module Name reported in log messages
+
     fileprivate let _dbLegendFormat = " %4.0f"
     fileprivate let _dbLegendWidth: CGFloat = 40                        // width of Db Legend layer
     fileprivate let _frequencyLineWidth: CGFloat = 3.0
@@ -135,18 +134,6 @@ final class PanadapterView : NSView, CALayerDelegate {
         // tell the Panadapter to tell the Radio the new dimensions
         _panadapter!.panDimensions = CGSize(width: frame.width, height: frame.height - frequencyLegendHeight)
     }
-    /// Cleanup
-    ///
-    deinit {
-
-//        Swift.print("deinit - PanadapterView")
-
-//        // remove observations of Defaults
-//        observations(UserDefaults.standard, paths: _defaultsKeyPaths, remove: true)
-//        
-//        // remove the Panadapter from its collection
-//        self._radio.panadapters[_panadapter!.id] = nil
-    }
     
     // ----------------------------------------------------------------------------
     // MARK: - Internal methods
@@ -173,7 +160,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     }
     /// Redraw a Slice Layer
     ///
-    func redrawSliceLayer(_ slice: xFlexAPI.Slice) {
+    func redrawSliceLayer(_ slice: xLib6000.Slice) {
         var sliceLayer: CALayer? = nil
         
         // find the specified SliceLayer
@@ -271,13 +258,12 @@ final class PanadapterView : NSView, CALayerDelegate {
         
         // add notification subscriptions
         addNotifications()
-        
     }
     /// Create a new Slice layer
     ///
     /// - Parameter slice:      a Slice reference
     ///
-    public func addSlice(_ slice: xFlexAPI.Slice) {
+    public func addSlice(_ slice: xLib6000.Slice) {
         
         DispatchQueue.main.async { [unowned self] in
             
@@ -315,7 +301,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     ///
     /// - Parameter slice:      a Slice reference
     ///
-    func removeSlice(_ slice: xFlexAPI.Slice) {
+    func removeSlice(_ slice: xLib6000.Slice) {
         
         DispatchQueue.main.async { [unowned self] in
             var sliceLayer: CALayer? = nil
@@ -335,7 +321,6 @@ final class PanadapterView : NSView, CALayerDelegate {
             }
         }
     }
-    
     /// Draw the Db Legend Layer
     ///
     ///     layer includes the Db Legends and the horizontal Db lines
@@ -414,8 +399,6 @@ final class PanadapterView : NSView, CALayerDelegate {
         let numberOfMarks = freqRange / _frequencyParams.spacing
         let firstFreqValue = _start + _frequencyParams.spacing - (_start - ( (_start / _frequencyParams.spacing) * _frequencyParams.spacing))
         let firstFreqPosition = CGFloat(firstFreqValue - _start) / _hzPerUnit
-        
-//        Swift.print("firstValue = \(firstFreqValue), firstPosition = \(firstFreqPosition)")
         
         for i in 0...numberOfMarks {
             let xPosition = firstFreqPosition + (CGFloat(i) * xIncrPerLegend)
@@ -698,7 +681,7 @@ final class PanadapterView : NSView, CALayerDelegate {
             redrawLayer(kFrequencyLegendLayer)
         
         default:
-            assert( true, "Invalid observation - \(keyPath!) in " + kModule)
+            _log.msg("Invalid observation - \(keyPath!)", level: .error, function: #function, file: #file, line: #line)
         }
     }
 
@@ -740,7 +723,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     @objc fileprivate func sliceHasBeenAdded(_ note: Notification) {
         
         // does the Notification contain a Slice object?
-        if let slice = note.object as? xFlexAPI.Slice {
+        if let slice = note.object as? xLib6000.Slice {
             
             // YES, add a Slice Layer
             addSlice(slice)
@@ -757,7 +740,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     @objc fileprivate func sliceWillBeRemoved(_ note: Notification) {
         
         // does the Notification contain a Slice object?
-        if let slice = note.object as? xFlexAPI.Slice {
+        if let slice = note.object as? xLib6000.Slice {
             
             // YES, log the event
             _log.msg("Slice will be removed, ID = \(slice.id), pan = \(slice.panadapterId)", level: .debug, function: #function, file: #file, line: #line)
@@ -777,7 +760,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     @objc fileprivate func tnfHasBeenAdded(_ note: Notification) {
         
         // does the Notification contain a Tnf object?
-        if let tnf = note.object as? xFlexAPI.Tnf {
+        if let tnf = note.object as? xLib6000.Tnf {
             
             // YES, log the event
             _log.msg("Tnf initialized, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)
@@ -796,7 +779,7 @@ final class PanadapterView : NSView, CALayerDelegate {
     @objc fileprivate func tnfWillBeRemoved(_ note: Notification) {
         
         // does the Notification contain a Tnf object?
-        if let tnf = note.object as? xFlexAPI.Tnf {
+        if let tnf = note.object as? xLib6000.Tnf {
             
             // YES, log the event
             _log.msg("Tnf will be removed, ID = \(tnf.id)", level: .debug, function: #function, file: #file, line: #line)

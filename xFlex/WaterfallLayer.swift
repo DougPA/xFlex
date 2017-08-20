@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import OpenGL.GL3
 import SwiftyUserDefaults
 
@@ -44,7 +44,6 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     fileprivate var _waterfallTime: [Date?]!
 
     // OpenGL
-
     fileprivate var _tools = OpenGLTools()                              // OpenGL support class
     fileprivate var _vaoHandle: GLuint = 0                              // Vertex Array Object handle
     fileprivate var _verticesVboHandle: GLuint = 0                      // Vertex Buffer Object handle (vertices)
@@ -85,15 +84,12 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     
     // constants
     fileprivate let _log = (NSApp.delegate as! AppDelegate)
-    fileprivate let kModule = "WaterfallLayer"                          // Module Name reported in log messages
 
     fileprivate let kTextureWidth: GLint = 4096                         // must be >= max number of Bins
     fileprivate let kTextureHeight: GLint = 2048                        // must be >= max number of lines
     fileprivate let _blackRGBA: GLuint = 0xFF000000                     // Black color in RGBA format
     fileprivate let _verticesLocation: GLuint = 0                       // fixed - in location (vertices)
     fileprivate let _texCoordsLocation: GLuint = 1                      // fixed - in location ( Texture coordinates)
-
-    
     
     fileprivate let _waterfallQ =                                      // Waterfall property synchronization
         DispatchQueue(label: "xFlex" + ".waterfallQ", attributes: [.concurrent])
@@ -122,16 +118,6 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     // ----------------------------------------------------------------------------
     // MARK: - Overridden methods
     
-//    deinit {
-//
-//        glDeleteProgram(_shaders[0].program!)
-//
-//        glDeleteVertexArrays(1, &_vaoHandle)
-//        glDeleteBuffers(1, &_verticesVboHandle)        //  All objects must be deleted manually
-//        glDeleteBuffers(1, &_texCoordsVboHandle)
-//        glDeleteBuffers(1, &_tboHandle)
-//        
-//    }
     override func copyCGLPixelFormat(forDisplayMask mask: UInt32) -> CGLPixelFormatObj {
         
         let attribs: [CGLPixelFormatAttribute] = // Pixel format attributes
@@ -283,8 +269,6 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
         // enable Waterfall stream processing
         _waterfall!.delegate = self
 
-        
-        
         // prepare is complete
         _prepared = true
     }
@@ -299,7 +283,7 @@ final class WaterfallLayer: CAOpenGLLayer, CALayerDelegate, WaterfallStreamHandl
     // MARK: - WaterfallStreamHandler protocol methods
     //
 
-    //  dataFrame Struct Layout: (see xFlexAPI WaterfallFrame)
+    //  dataFrame Struct Layout: (see xLib6000 WaterfallFrame)
     //
     //  public var firstBinFreq: CGFloat                        // Frequency of first Bin in Hz
     //  public var binBandwidth: CGFloat                        // Bandwidth of a single bin in Hz

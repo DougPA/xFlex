@@ -7,9 +7,8 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 
-//typealias Params = (radio: Radio, panadapterId: Radio.PanadapterId)     // Radio & Panadapter references
 typealias Params = (radio: Radio, panadapter: Panadapter?, waterfall: Waterfall?)     // Radio & Panadapter references
 
 class PanafallsViewController: NSSplitViewController {
@@ -26,8 +25,8 @@ class PanafallsViewController: NSSplitViewController {
     // constants
     fileprivate let _waterfallGradient = WaterfallGradient.sharedInstance
     fileprivate let _log = (NSApp.delegate as! AppDelegate)
-    fileprivate let kModule = "PanafallsViewController"                     // Module Name reported in log messages
-    fileprivate let kPanafallStoryboard = "Panafall"                        // Storyboard names    
+
+    fileprivate let kPanafallStoryboard = "Panafall"                        // Storyboard names
     fileprivate let kPanafallButtonIdentifier = "Button"                    // Storyboard identifiers
     fileprivate let kPanadapterIdentifier = "Panadapter"
     fileprivate let kWaterfallIdentifier = "Waterfall"
@@ -40,26 +39,13 @@ class PanafallsViewController: NSSplitViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        print( kModule + " " + #function)
-        
         // add notification subscriptions
         addNotifications()
     }
         
-    deinit {
-
-//        print( kModule + " " + #function)
-    }
-    
     // ----------------------------------------------------------------------------
     // MARK: - Public methods
 
-//    /// Redraw the Grids on all Panadapters
-//    ///
-//    func redrawAllGrids() {
-//        
-//        childViewControllers.forEach{ controller in (controller as! PanafallButtonViewController).redrawGrid() }
-//    }
     /// Redraw the FrequencyLegends on all Panadapters
     ///
     func redrawAllFrequencyLegends() {
@@ -74,10 +60,6 @@ class PanafallsViewController: NSSplitViewController {
     }
     /// Redraw the Slices on all Panadapters
     ///
-//    func redrawAllSlices() {
-//        
-//        childViewControllers.forEach{ controller in (controller as! PanafallButtonViewController).redrawSlices() }
-//    }
     /// Redraw all Panadapters (all components)
     ///
     open func redrawAll() {
@@ -92,20 +74,6 @@ class PanafallsViewController: NSSplitViewController {
     // ----------------------------------------------------------------------------
     // MARK: - Private methods
     
-    /// Redraw Slices on a Panadapter (if any)
-    ///
-    /// - Parameter id: the Panadapter ID
-    ///
-//    fileprivate func redrawSlices(on id: Radio.PanadapterId) {
-//        
-//        // find the containing PanafallButtonViewControllers
-//        for controller in childViewControllers where (controller.representedObject as! Params).panadapterId == id {
-//            
-//            // redraw its Slices
-//            (controller as! PanafallButtonViewController).redrawSlices()
-//        }
-//    }
-
     // ----------------------------------------------------------------------------
     // MARK: - Observation methods
 
@@ -135,8 +103,6 @@ class PanafallsViewController: NSSplitViewController {
         // for each KeyPath Add / Remove observations
         for keyPath in paths {            
             
-//            print("\(remove ? "Remove" : "Add   ") \(object):\(keyPath) in " + kModule)
-
             if remove { object.removeObserver(self, forKeyPath: keyPath, context: nil) }
             else { object.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil) }
         }
@@ -177,7 +143,7 @@ class PanafallsViewController: NSSplitViewController {
                 panafallButtonVc?.redrawDbLegend()
                 
             default:
-                assert( true, "Invalid observation - \(keyPath!) in " + kModule)
+                _log.msg("Invalid observation - \(keyPath!)", level: .error, function: #function, file: #file, line: #line)
             }
             
         case is Waterfall:
@@ -196,7 +162,7 @@ class PanafallsViewController: NSSplitViewController {
                 _waterfallGradient.calcLevels(waterfall)
                 
             default:
-                assert( true, "Invalid observation - \(keyPath!) in " + kModule)
+                _log.msg("Invalid observation - \(keyPath!)", level: .error, function: #function, file: #file, line: #line)
             }
             
         default:
@@ -307,7 +273,6 @@ class PanafallsViewController: NSSplitViewController {
 
             panadapter.delegate = nil
         }
-        
     }
     /// Process .waterfallWillBeRemoved Notification
     ///
@@ -342,22 +307,7 @@ class PanafallsViewController: NSSplitViewController {
                     panafallButtonVc.removeFromParentViewController()
                     panafallButtonVc.dismiss(self)
                 }
-                
-//                // remove the Waterfall from its collection
-//                self._radioViewController.radio?.waterfalls[waterfall.id] = nil
-//                
-//                // remove the Panadapter from its collection
-//                self._radioViewController.radio?.panadapters[waterfall.panadapterId] = nil
             }
-//            DispatchQueue.main.async { [unowned self] in 
-//            
-//                // remove the Waterfall from its collection
-//                self._radioViewController.radio?.waterfalls[waterfall.id] = nil
-//                
-//                // remove the Panadapter from its collection
-//                self._radioViewController.radio?.panadapters[waterfall.panadapterId] = nil
-//
-//            }
         }
     }
 

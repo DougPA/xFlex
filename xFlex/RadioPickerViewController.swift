@@ -5,7 +5,7 @@
 //  Created by Douglas Adams on 5/21/15.
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 // --------------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 typealias NC = NotificationCenter

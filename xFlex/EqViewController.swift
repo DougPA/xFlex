@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 // --------------------------------------------------------------------------------
@@ -30,6 +30,7 @@ final class EqViewController: NSViewController {
     @IBOutlet fileprivate weak var slider5: NSSlider!
     @IBOutlet fileprivate weak var slider6: NSSlider!
     @IBOutlet fileprivate weak var slider7: NSSlider!
+
     fileprivate var _radio: Radio!                                  // radio class
     fileprivate var _equalizerRx: Equalizer!                        // Rx Equalizer
     fileprivate var _equalizerTx: Equalizer!                        // Tx Equalizer

@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 // --------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ class SliceLayer: CALayer, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Internal properties
     
-    var slice: xFlexAPI.Slice!
+    var slice: xLib6000.Slice!
     var params: Params!                                             // Radio & Panadapter references
     var frequencyLineWidth: CGFloat = 3.0
     var markerHeight: CGFloat = 0.6                                 // height % for band markers
@@ -29,9 +29,7 @@ class SliceLayer: CALayer, CALayerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Private properties
     
-//    fileprivate var _radio: Radio { return params.radio }       // values derived from Params
     fileprivate var _panadapter: Panadapter? { return params.panadapter }
-//    fileprivate var _waterfall: Waterfall? { return params.waterfall }
     
     fileprivate var _center: Int {return _panadapter!.center }
     fileprivate var _bandwidth: Int { return _panadapter!.bandwidth }
@@ -40,6 +38,9 @@ class SliceLayer: CALayer, CALayerDelegate {
     fileprivate var _hzPerUnit: CGFloat { return CGFloat(_end - _start) / bounds.width }
 
     fileprivate var _path = NSBezierPath()
+
+    // constants
+    fileprivate let _log = (NSApp.delegate as! AppDelegate)
 
     // ----------------------------------------------------------------------------
     // MARK: - Public methods
@@ -82,7 +83,7 @@ class SliceLayer: CALayer, CALayerDelegate {
     ///
     /// - Parameter slice:  this Slice
     ///
-    fileprivate func drawFilterOutlines(_ slice: xFlexAPI.Slice) {
+    fileprivate func drawFilterOutlines(_ slice: xLib6000.Slice) {
         
         // calculate the Filter position & width
         let _filterPosition = CGFloat(slice.filterLow + slice.frequency - _start) / _hzPerUnit
@@ -98,7 +99,7 @@ class SliceLayer: CALayer, CALayerDelegate {
     ///
     /// - Parameter slice:  this Slice
     ///
-    fileprivate func drawFrequencyLines(_ slice: xFlexAPI.Slice) {
+    fileprivate func drawFrequencyLines(_ slice: xLib6000.Slice) {
         
         // set the width & color
         _path.lineWidth = frequencyLineWidth
@@ -133,10 +134,10 @@ class SliceLayer: CALayer, CALayerDelegate {
     
     fileprivate let _sliceKeyPaths =
         [
-            #keyPath(xFlexAPI.Slice.active),
-            #keyPath(xFlexAPI.Slice.frequency),
-            #keyPath(xFlexAPI.Slice.filterHigh),
-            #keyPath(xFlexAPI.Slice.filterLow)
+            #keyPath(xLib6000.Slice.active),
+            #keyPath(xLib6000.Slice.frequency),
+            #keyPath(xLib6000.Slice.filterHigh),
+            #keyPath(xLib6000.Slice.filterLow)
     ]
     
     /// Add / Remove property observations
@@ -167,20 +168,20 @@ class SliceLayer: CALayer, CALayerDelegate {
         
         switch keyPath! {
             
-        case #keyPath(xFlexAPI.Slice.active):
+        case #keyPath(xLib6000.Slice.active):
             redraw()
             
-        case #keyPath(xFlexAPI.Slice.frequency):
+        case #keyPath(xLib6000.Slice.frequency):
             redraw()
             
-        case #keyPath(xFlexAPI.Slice.filterHigh):
+        case #keyPath(xLib6000.Slice.filterHigh):
             redraw()
             
-        case #keyPath(xFlexAPI.Slice.filterLow):
+        case #keyPath(xLib6000.Slice.filterLow):
             redraw()
             
         default:
-            assert( true, "Invalid observation - \(keyPath!) in " + #file)
+            _log.msg("Invalid observation - \(keyPath!)", level: .error, function: #function, file: #file, line: #line)
         }
     }
 }

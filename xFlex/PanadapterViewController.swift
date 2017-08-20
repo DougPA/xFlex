@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 // --------------------------------------------------------------------------------
@@ -26,9 +26,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     
     fileprivate var _params: Params { return representedObject as! Params }
 
-//    fileprivate var _radio: Radio { return params.radio }       // values derived from Params
     fileprivate var _panadapter: Panadapter? { return _params.panadapter }
-//    fileprivate var _waterfall: Waterfall? { return _params.waterfall }
 
     fileprivate var _start: Int { return _panadapter!.center - (_panadapter!.bandwidth/2) }
     fileprivate var _end: Int  { return _panadapter!.center + (_panadapter!.bandwidth/2) }
@@ -39,8 +37,8 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     fileprivate var _panLeftButton: NSPanGestureRecognizer!
     fileprivate var _panRightButton: NSPanGestureRecognizer!
     fileprivate var _panStart: NSPoint?
-    fileprivate var _panSlice: xFlexAPI.Slice?
-    fileprivate var _panTnf: xFlexAPI.Tnf?
+    fileprivate var _panSlice: xLib6000.Slice?
+    fileprivate var _panTnf: xLib6000.Tnf?
     fileprivate var _dbmTop = false
     fileprivate var _newCursor: NSCursor?
     fileprivate var _dbLegendSpacings = [String]()          // Db spacing choices
@@ -48,7 +46,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     // constants
     fileprivate let _dbLegendWidth: CGFloat = 40            // width of Db Legend layer
     fileprivate let _log = (NSApp.delegate as! AppDelegate)
-    fileprivate let kModule = "PanadapterViewController"    // Module Name reported in log messages
+
     fileprivate let kLeftButton = 0x01                      // button masks
     fileprivate let kRightButton = 0x02
     fileprivate let kEdgeTolerance = 10                     // percent of bandwidth
@@ -104,7 +102,6 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
 //        print("subviews = \(panadapterView.subviews)")
         
         
-//        print(kModule + " x = \(view.frame.size.width), y = \(view.frame.size.height)")
     }
     /// View did layout
     ///
@@ -113,10 +110,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
         // tell the Panadapter to tell the Radio the current dimensions
         _panadapter?.panDimensions = CGSize(width: view.frame.width, height: view.frame.height - panadapterView.frequencyLegendHeight)
     }
-    
-    deinit {
-//        Swift.print("deinit - PanadapterViewController")
-    }
+
     // ----------------------------------------------------------------------------
     // MARK: - Public methods
     
@@ -136,7 +130,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     }
     /// Redraw a Slice
     ///
-    public func redrawSlice(_ slice: xFlexAPI.Slice) {
+    public func redrawSlice(_ slice: xLib6000.Slice) {
         
         // force a redraw of a Slice layer
         panadapterView?.redrawSliceLayer(slice)
@@ -180,7 +174,7 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
     ///   - slice: the Slice
     ///   - incr: frequency step
     ///
-//    fileprivate func adjustSliceFrequency(_ slice: xFlexAPI.Slice, incr: Int) {
+//    fileprivate func adjustSliceFrequency(_ slice: xLib6000.Slice, incr: Int) {
 //        
 //        // moving Up in frequency?
 //        let isUp = (incr > 0)
@@ -290,7 +284,6 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
                 }
                 // only rn|0| is returned for dbm changes so must refresh
                 // redraw the changed components
-//                redrawGrid()
                 redrawDbLegend()
 
             } else {
@@ -318,7 +311,6 @@ final class PanadapterViewController : NSViewController, NSGestureRecognizerDele
                     _panadapter!.minDbm += (_panStart!.y - location.y)
                 }
                 // redraw the changed components
-//                redrawGrid()
                 redrawDbLegend()
                 
             } else {

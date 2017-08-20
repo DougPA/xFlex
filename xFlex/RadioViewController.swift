@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 import XCGLogger
 
@@ -27,7 +27,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     // MARK: - Private properties
     
     fileprivate var _selectedRadio: RadioParameters?                // Radio to start
-    fileprivate var _toolbar: NSToolbar?
+//    fileprivate var _toolbar: NSToolbar?
     fileprivate var _sideViewController: NSSplitViewController?
     fileprivate var _panafallsViewController: PanafallsViewController?
     fileprivate var _mainWindowController: MainWindowController?
@@ -38,7 +38,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     fileprivate let _opusManager = OpusManager()
     fileprivate let _log = (NSApp.delegate as! AppDelegate)
     fileprivate let kGuiFirmwareSupport = "1.10.16.x"               // Radio firmware supported by this App
-    fileprivate let kxFlexApiIdentifier = "net.k3tzr.xFlexAPI"      // Bundle identifier for xFlexApi
+    fileprivate let kxLib6000Identifier = "net.k3tzr.xLib6000"      // Bundle identifier for xLib6000
     fileprivate let kVoltageMeter = "+13.8B"                        // Short name of voltage meter
     fileprivate let kPaTempMeter = "PATEMP"                         // Short name of temperature meter
     fileprivate let kVoltageTemperature = "VoltageTemp"             // Identifier of toolbar VoltageTemperature toolbarItem
@@ -65,7 +65,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // give the API access to the logger
+        // give the Log object (in the API) access to our logger
         Log.sharedInstance.delegate = (NSApp.delegate as! LogHandler)
         
         // register the User defaults
@@ -93,15 +93,6 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     // ----------------------------------------------------------------------------
     // MARK: - Toolbar Action methods
     
-    /// Respond to the CWX button
-    ///
-    /// - Parameter sender: the Button
-    ///
-    @IBAction func cwxButton(_ sender: NSButton) {
-        
-        // toggle the CWX state
-        Defaults[.cwxOpen] = (sender.state == NSOnState)
-    }
     /// Respond to the Headphone Gain slider
     ///
     /// - Parameter sender: the Slider
@@ -117,15 +108,6 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func lineoutGain(_ sender: NSSlider) {
         
         radio?.lineoutGain = sender.integerValue
-    }
-    /// Respond to the Markers button
-    ///
-    /// - Parameter sender: the Button
-    ///
-    @IBAction func markerButton(_ sender: NSButton) {
-        
-        // toggle the Markers
-        Defaults[.showMarkers] = (sender.state == NSOnState)
     }
     /// Respond to the Headphone Mute button
     ///
@@ -168,7 +150,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     @IBAction func remoteTxButton(_ sender: NSButton) {
         
         // ask the Radio (hardware) to start/stop Tx Opus
-        radio?.micSelection = (sender.state == NSOnState ? "PC" : "MIC")
+        radio?.transmit.micSelection = (sender.state == NSOnState ? "PC" : "MIC")
         
         // FIXME: This is just for testing
     }
@@ -180,7 +162,6 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         
         // open / collapse the Side view
         splitViewItems[1].isCollapsed = (sender.state != NSOnState)
-        Defaults[.sideOpen] = (sender.state == NSOnState)
     }
     /// Respond to the Tnf button
     ///
@@ -400,7 +381,6 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
             processMeterUpdate(meter)
         }
     }
-    
     /// The value of a meter needs to be processed
     ///
     /// - Parameter meter: a Meter instance
@@ -590,8 +570,8 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         
         NC.makeObserver(self, with: #selector(tcpDidConnect(_:)), of: .tcpDidConnect, object: nil)
 
-        NC.makeObserver(self, with: #selector(tcpDidDisconnect(_:)), of: .tcpDidDisconnect, object: nil)
-
+//        NC.makeObserver(self, with: #selector(tcpDidDisconnect(_:)), of: .tcpDidDisconnect, object: nil)
+//
         NC.makeObserver(self, with: #selector(meterHasBeenAdded(_:)), of: .meterHasBeenAdded, object: nil)
 
         NC.makeObserver(self, with: #selector(radioInitialized(_:)), of: .radioInitialized, object: nil)
@@ -599,7 +579,7 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         NC.makeObserver(self, with: #selector(opusHasBeenAdded(_:)), of: .opusHasBeenAdded, object: nil)
 
         NC.makeObserver(self, with: #selector(opusWillBeRemoved(_:)), of: .opusWillBeRemoved, object: nil)
-}
+    }
     /// Process .tcpDidConnect Notification
     ///
     /// - Parameter note: a Notification instance
@@ -615,14 +595,14 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
         Defaults[.radioFirmwareVersion] = activeRadio!.firmwareVersion!
         Defaults[.radioModel] = activeRadio!.model
         
-        // get the version info for the underlying xFlexAPI
-        let frameworkBundle = Bundle(identifier: kxFlexApiIdentifier)
+        // get the version info for the underlying xLib6000
+        let frameworkBundle = Bundle(identifier: kxLib6000Identifier)
         let apiVersion = frameworkBundle?.object(forInfoDictionaryKey: kVersionKey) ?? "0"
         let apiBuild = frameworkBundle?.object(forInfoDictionaryKey: kBuildKey) ?? "0"
 
         Defaults[.apiVersion] = "v\(apiVersion) build \(apiBuild)"
         
-        _log.msg("Using xFlexAPI version " + Defaults[.apiVersion], level: .info, function: #function, file: #file, line: #line)
+        _log.msg("Using xLib6000 version " + Defaults[.apiVersion], level: .info, function: #function, file: #file, line: #line)
         
         Defaults[.apiFirmwareSupport] = radio!.kApiFirmwareSupport
         
@@ -640,15 +620,15 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     /// - Parameter note: a Notification instance
     ///
-    @objc fileprivate func tcpDidDisconnect(_ note: Notification) {
-        
+//    @objc fileprivate func tcpDidDisconnect(_ note: Notification) {
+//        
 //        // the TCP connection has disconnected
 //        if (note.object as! Radio.DisconnectReason) != .closed {
 //            
 //            // not a normal disconnect
 //            openRadioPicker(self)
 //        }
-    }
+//    }
     /// Process .meterHasBeenAdded Notification
     ///
     /// - Parameter note: a Notification instance
@@ -746,8 +726,8 @@ final class RadioViewController : NSSplitViewController, RadioPickerDelegate {
     ///
     func openRadio(_ selectedRadio: RadioParameters?) -> Bool {
 
-        // if open, close the Radio Picker
-        if _radioPickerViewController != nil { dismissViewController(_radioPickerViewController!) ; _radioPickerViewController = nil }
+        // close the Radio Picker (if open)
+        closeRadioPicker()
         
         self._selectedRadio = selectedRadio
         

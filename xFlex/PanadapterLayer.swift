@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 import SwiftyUserDefaults
 
 // --------------------------------------------------------------------------------
@@ -56,13 +56,6 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
     // ----------------------------------------------------------------------------
     // MARK: - Overridden methods
     
-//    deinit {
-//        
-//        glDeleteProgram(_shaders[0].program!)
-//        glDeleteVertexArrays(1, &_vaoHandle)
-//        glDeleteBuffers(GLsizei(2), &_vboHandle)        //  All objects must be deleted manually
-//        
-//    }
     /// Create the Pixel Format
     ///
     /// - Parameter mask: display mask
@@ -288,7 +281,7 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
     // ----------------------------------------------------------------------------
     // MARK: - PanadapterStreamHandler protocol methods
     //
-    //  DataFrame Layout: (see xFlexAPI PanadapterFrame)
+    //  DataFrame Layout: (see xLib6000 PanadapterFrame)
     //
     //  public var startingBinIndex: Int                    // Index of first bin
     //  public var numberOfBins: Int                        // Number of bins
@@ -311,5 +304,4 @@ final class PanadapterLayer: CAOpenGLLayer, CALayerDelegate, PanadapterStreamHan
             self.setNeedsDisplay()
         }
     }
-    
 }

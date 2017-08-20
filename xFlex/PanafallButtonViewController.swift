@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 
 // --------------------------------------------------------------------------------
 // MARK: - Panafall Button View Controller class implementation
@@ -94,12 +94,12 @@ final class PanafallButtonViewController: NSViewController {
     fileprivate var _maxDbm: CGFloat { return _panadapter!.maxDbm }
 
     // constants
-    fileprivate let kModule = "PanafallButtonViewController" // Module Name reported in log messages
-    fileprivate let kPanafallEmbed = "PanafallEmbed"
+    fileprivate let kPanafallEmbed = "PanafallEmbed"        // Segue names
     fileprivate let kBandPopover = "BandPopover"
     fileprivate let kAntennaPopover = "AntennaPopover"
     fileprivate let kDisplayPopover = "DisplayPopover"
     fileprivate let kDaxPopover = "DaxPopover"
+
     fileprivate let kPanadapterSplitViewItem = 0
     fileprivate let kWaterfallSplitViewItem = 1
     
@@ -142,12 +142,6 @@ final class PanafallButtonViewController: NSViewController {
         default:
             break
         }
-    }
-    /// the Class is being destroyed
-    ///
-    deinit {
-        
-//        print( #function + " - " + kModule)
     }
     
     // ----------------------------------------------------------------------------

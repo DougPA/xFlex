@@ -6,7 +6,7 @@
 //
 
 import Cocoa
-import xFlexAPI
+import xLib6000
 
 // ----------------------------------------------------------------------------
 // MARK: - Band Model class implementation
